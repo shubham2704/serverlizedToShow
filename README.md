@@ -1,2 +1,2 @@
-# serverlized
+# Serverlized
 RJIT Minor Project
