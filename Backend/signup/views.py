@@ -4,4 +4,6 @@ from django.shortcuts import render
 
 
 def signup(request):
-    pass
+    
+
+    return render(request, "/user/signup.html")
