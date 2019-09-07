@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('Backend.signup.urls')),
+    path('', include('Backend.userLogin.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
