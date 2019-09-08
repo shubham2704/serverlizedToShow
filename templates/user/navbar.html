@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-ser fixed-top">
+        <a class="navbar-brand" href="#">Serverlized</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+  
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+              <ul class="navbar-nav mr-auto">
+                   </ul>
+                     <ul class="navbar-nav">
+                     
+                      <li class="nav-item dropdown">
+                              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               
+                                {{user.first_name}} {{user.last_name}}
+                              </a>
+                              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">My Account</a>
+                                <a class="dropdown-item" href="#">Billing</a>
+                               </div>
+                            </li>
+                               
+                    </ul>
+       
+        </div>
+       
+      </nav>
+      {% if user.email_verify == False %}
+      <div style="margin-top: -2px;">
+            <br><hr>
+            <div class="alert alert-warning text-dark " role="alert">
+                Your email is not verfied please you email address to unlock all server managment options <button onclick="email_verify()" class="btn btn-sm"> resend verification email </button>.
+               
+                  </div>
+                </div>
+ {% endif %}
