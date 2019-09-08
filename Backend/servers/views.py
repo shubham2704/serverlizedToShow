@@ -11,12 +11,24 @@ from .models import list as server_list
 
 # Create your views here.
 
+def deploy(request):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        return render(request, "user/deploy.html", params)
+
+    else:
+        return redirect("/login")
+
 def panel(request):
     login = CheckLogin(request)
     if login == True:
         params = {}
         user = getUser(request)
         params['user'] = user
+        print(user.first_name)
         get_all_servers = server_list.objects.filter(user_id=user)
         params['servers'] = get_all_servers
         
