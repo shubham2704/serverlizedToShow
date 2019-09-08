@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class user(models.Model):
 
     first_name = models.CharField(max_length=75)
@@ -16,6 +17,14 @@ class user(models.Model):
     money = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
     gstin = models.CharField(max_length=75)
     date = models.DateTimeField(auto_now_add=True)
+
+
+class projects(models.Model):
+    
+    user_id = models.ForeignKey(user, on_delete=models.CASCADE)
+    project_name = models.CharField(max_length=75)
+    project_description = models.TextField()
+
 
 
 class address(models.Model):
