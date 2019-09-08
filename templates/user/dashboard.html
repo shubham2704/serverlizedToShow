@@ -1,0 +1,153 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+        body{
+            font-family: 'Hind Madurai', sans-serif;
+        }
+        .starter-template {
+            padding: 3rem 1.5rem;
+            text-align: center;
+          }
+          .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
+         .btn-labeled {padding-top: 0;padding-bottom: 0;}
+         .bg-ser{
+             background-color: #428bca;
+         }
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-ser fixed-top">
+      <a class="navbar-brand" href="#">Serverlized</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                 </ul>
+                   <ul class="navbar-nav">
+                   
+                    <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             
+                              Rajendra Singh
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <a class="dropdown-item" href="#">My Account</a>
+                              <a class="dropdown-item" href="#">Billing</a>
+                             </div>
+                          </li>
+                             
+                  </ul>
+     
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+            <br><br> <br><br> 
+            
+        {% if server_count == 0 %}
+
+        <br><br>
+               <div class=" text-center" >
+                    <div class="card-body">
+                      <h3 class="card-title">No Managed Server</h3>
+                      <p class="card-text">Manage you first Server by clicking below button.</p>
+                      <a href="/wpanel/deploy" class="btn btn-primary">Start Managing Server</a>
+                    </div>
+                  </div> 
+        {% endif %}   
+               
+         {% if server_count > 0 %}
+          <div class=" ">
+                <div class="card ">
+                        <div class="card-header">
+                                <div class="row">
+                            <div class="col-md-9 col-xs-4 col-sm-6">
+                            <b><p style="margin-bottom: 6px;"></p>Managed Server</b></div>
+                            <div class="col-md-3 col-xs-8  col-sm-6 text-right ">
+                            <button type="button" class="align-middle btn btn-labeled btn-primary btn-sm">
+                                        <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</button>
+                                    </div>
+                        </div></div>
+                        <div class="">
+                            
+                                <table class="table table-bordered" style="margin-bottom: 0px;">
+                   
+                                        <tbody>
+                                            {% for servers in servers %}
+                                          <tr >
+                                            <td style="width:40%;" class="align-middle">
+                                                    <div class=" row">
+                                                             
+                                                            <div class="col-md-8">
+                                                              <h5 class="card-title" style="font-size: 18px;margin-bottom: 5px;">{{servers.server_name}}</h5>
+                                                             <p class="card-text text-info" style="font-size: 14px;">{{servers.stack_name}}
+                                                                   <br> <small class="text-success">{{servers.server_ip}}</small>
+                                                                   
+                                                              </p>
+                                                              
+                                                           </div>
+                                                           <div class="col-md-4"><br>
+                                                                <span class="inlinesparkline"></span>
+                                                                
+                                                             </div>
+                                                           
+                                                          </div>
+                                            </td>
+                                            <td class="align-middle"><strong>Rs {{servers.Charges}}</strong></td>
+                                            <td class="align-middle"><strong>{{servers.date}}</strong></td>
+                                            <td class="align-middle"><span class="badge badge-primary">{{servers.server_status}}</span></td>
+                                            <td class="align-middle">
+                                                <button type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
+                                                <a type="button" href="/wpanel/manage/{{servers.id}}" class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
+                                                <a href="/wpanel/delete/{{servers.id}}" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
+                                            </td>
+                                          </tr>
+                    {% endfor %}
+                                        
+                                              
+                                        </tbody>
+                                      </table>
+
+
+                        </div>
+                      </div>
+                
+                </div>
+                
+            
+                </div>
+                {% endif %}
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script>$('.inlinesparkline').sparkline(); </script>
+  </body>
+</html>
