@@ -148,26 +148,40 @@
   <body>
 
     {% include "user/navbar.html" %}
-
+     <form method="POST">
+       {% csrf_token %}
     <div style="max-width: 1200px;" class="container starter-template">
+      
             <h1>Manage Server</h1>
+            {% if messages %}
+
+
+            {% for message in messages %}
+    
+            
+            
+            <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
+                <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                <div class="message">{{message}}</div>
+              </div>
+    
+    
+        
+            {% endfor %}
+         {% endif %}
             <label for="email">Operating System </label>
             <div class="form cf">
                    
                 <section class="plan cf">
                    
-                    <input type="radio" name="radio1" id="free" value="free"><label class="free-label four col" for="free">
-                        
-                                Ubuntu 18.04 x86
+                  {% for key, SERVER in SERVER_OS_DISTRIBUTION.items %}
+
+                    <input type="radio" name="os" id="sr{{key}}" value="{{key}}"><label class="free-label four col" for="sr{{key}}">
+                        {{SERVER.0}} {{SERVER.1}}
                     </label>
-                    <input type="radio" name="radio1" id="premium" value="premium"><label class="premium-label four col" for="premium">
-                            Ubuntu 14.04 x86
-                           </label>
-                  
-                          <input type="radio" name="radio1" id="premium" value="premium"><label class="premium-label four col" for="premium">
-                            CentOS 4 x86
-                           </label>
-                
+               
+                {% endfor %}
                 </section>
                 
                 
@@ -175,172 +189,80 @@
                 
                             </div>
 
-            <label for="email">Choose Stack </label>
+                    <label for="email">Choose Stack </label>
 
-            <p>
-                    <button class="btn btn-primary" data-toggle="collapse" href="#SINGLE_SERVER" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">SINGLE SERVER MANAGMENT </button>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#MultiServer" aria-expanded="false" aria-controls="multiCollapseExample2">MULTI-SERVER MANAGMENT</button>
-                  </p>
+                     
 
-                  <div class="collapse " id="MultiServer">
-                        <p>All Stack here are Managed for MULTI SERVER to ensure High Availability of your app or website, Don't know what to choose? Ask Expert!</p>
-                        <div class="form cf">
-               
-                                <section class="plan cf">
-                                   
-                                    <input type="radio" name="radio1" id="free" value="free"><label class="free-label four col" for="free">
-                                        
-                                                  <div class="" style="margin-top: 15px;line-height: 0px;">
-                                                    <h5 class="card-title">LAMP with Load Balancer</h5>
-                                                    <p style="font-size: 13px;line-height: 1.5;" >Linux, Apache, MySQL + PhpMyAdmin, PHP warp with Load balancer to ensure High Avaibality</p>
-                                                    <small style="font-size: 10px;">RS 599 / MONTH </small>
-                                                    <div>
-                                                    <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                                   
-                                                   
-                                                </div>
-                                                  </div>
-                
-                
-                                    </label>
-                                    
-                                       <input type="radio" name="radio1" id="basic" value="basic" checked><label class="basic-label four col" for="basic">
-                                           <div class="" style="margin-top: 15px;line-height: 0px;">
-                                            <h5 class="card-title">Django 2.2.1 Hosting with Load Balancer</h5>
-                                            <p style="font-size: 13px;line-height: 1.5;" >Host your Django website with Simple Interface it includes Apache, MySQL & Python 3.7</p>
-                                            <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                            <div>
-                                            <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                           
-                                           
-                                        </div>
-                                          </div></label>
-                                        <input type="radio" name="radio1" id="premium" value="premium"><label class="premium-label four col" for="premium">
-                                            
-                                            <div class="" style="margin-top: 15px;line-height: 0px;">
-                                            <h5 class="card-title">MySQL Cluster CGE</h5>
-                                            <p style="font-size: 13px;line-height: 1.5;" >Remote MySQL  allow you to access database from external server.</p>
-                                            <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                            <div>
-                                            <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                           
-                                           
-                                        </div>
-                                          </div></label>
-                                
-                                </section>
-                                
-                                
-                               
-                                
-                                            </div> 
-        
-                  </div>
+                    <div class="collapse show " id="SINGLE_SERVER">
 
-
-                     <div class="collapse " id="SINGLE_SERVER">
                             <p>All Stacks are Managed in SINGLE SERVER, Don't know what to choose? Ask Expert!</p>
-                            <div class="form cf">
+                                <div class="form cf">
                    
                                     <section class="plan cf">
                                        
-                                        <input type="radio" name="radio1" id="free" value="free"><label class="free-label four col" for="free">
+                                       {% for key, STACK in STACK.items %}
+                                        <input type="radio" name="stack" id="stackid{{key}}" value="{{key}}"><label class="free-label four col" for="stackid{{key}}">
                                             
                                                       <div class="" style="margin-top: 15px;line-height: 0px;">
-                                                        <h5 class="card-title">LAMP</h5>
-                                                        <p style="font-size: 13px;line-height: 1.5;" >Linux, Apache, MySQL + PhpMyAdmin, PHP</p>
-                                                        <small style="font-size: 10px;">RS 0.00 / MONTH</small>
+                                                        <h5 class="card-title">{{STACK.NAME}}</h5>
+                                                        <p style="font-size: 13px;line-height: 1.5;" >{{STACK.DESCRIPTION}}</p>
+                                                        <small style="font-size: 10px;">	&#8377; {{STACK.PRICE}} / MONTH</small>
                                                         <div>
-                                                        <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
+                                                        <hr ><small style="font-size: 10px;"><a href="/stack/details/{{key}}" style="color:black">DETAILS</a></small>
                                                        
                                                        
                                                     </div>
-                                                      </div>
+                                                    
+                                          </div>
                     
                     
                                         </label>
                                         
-                                           <input type="radio" name="radio1" id="basic" value="basic" checked><label class="basic-label four col" for="basic">
-                                               <div class="" style="margin-top: 15px;line-height: 0px;">
-                                                <h5 class="card-title">Django 2.2.1 Hosting Automation</h5>
-                                                <p style="font-size: 13px;line-height: 1.5;" >Host your Django website with Simple Interface it includes Apache, MySQL & Python 3.7</p>
-                                                <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                                <div>
-                                                <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                               
-                                               
-                                            </div>
-                                              </div></label>
-                                            <input type="radio" name="radio1" id="premium" value="premium"><label class="premium-label four col" for="premium">
-                                                
-                                                <div class="" style="margin-top: 15px;line-height: 0px;">
-                                                <h5 class="card-title">Remote MySQL</h5>
-                                                <p style="font-size: 13px;line-height: 1.5;" >Remote MySQL  allow you to access database from external server.</p>
-                                                <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                                <div>
-                                                <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                               
-                                               
-                                            </div>
-                                              </div></label>
+                                          {% endfor %} 
                                     
                                     </section>
                                     
-                                    
+                               
                                    
                                     
                                                 </div> 
-            <div class="form cf">
-                   
-                    <section class="plan cf">
-                       
-                        <input type="radio" name="radio1" id="free" value="free"><label class="free-label four col" for="free">
-                            
-                                      <div class="" style="margin-top: 15px;line-height: 0px;">
-                                        <h5 class="card-title">DNS Server</h5>
-                                        <p style="font-size: 13px;line-height: 1.5;" >Linux, Apache, MySQL + PhpMyAdmin, PHP</p>
-                                        <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                        <div>
-                                        <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                                       
-                                       
-                                    </div>
-                                      </div>
-    
-    
-                        </label>
-                        
-                           <input type="radio" name="radio1" id="basic" value="basic" checked><label class="basic-label four col" for="basic">
-                               <div class="" style="margin-top: 15px;line-height: 0px;">
-                                <h5 class="card-title">HTTP Load Balancer</h5>
-                                <p style="font-size: 13px;line-height: 1.5;" >Host your Django website with Simple Interface it includes Apache, MySQL & Python 3.7</p>
-                                <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                <div>
-                                <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                               
-                               
-                            </div>
-                              </div></label>
-                            <input type="radio" name="radio1" id="premium" value="premium"><label class="premium-label four col" for="premium">
-                                
-                                <div class="" style="margin-top: 15px;line-height: 0px;">
-                                <h5 class="card-title">VPN Server</h5>
-                                <p style="font-size: 13px;line-height: 1.5;" >Remote MySQL  allow you to access database from external server.</p>
-                                <small style="font-size: 10px;">RS 0.00 / MONTH</small>
-                                <div>
-                                <hr ><small style="font-size: 10px;"><a href="#" style="color:black">DETAILS</a></small>
-                               
-                               
-                            </div>
-                              </div></label>
-                    
-                    </section>
-                    
-                    
-                   
-                    
-                                </div>
+                                                <br>
+                                                <h3 for="email">Server Credential </h3>
+                                                 <br>
+                                                <div class="form-group">
+                                                  <label for="ip">IPv4 Address:</label>
+                                                  <input type="text" name="ip" class="form-control" id="ip">
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                  <label for="user">Super Username:</label>
+                                                  <input type="text" class="form-control" name="username" value="root" id="user">
+                                                </div>  
+
+                                                <div class="form-group">
+                                                  <label for="pwd">Password:</label>
+                                                  <input type="password" class="form-control" name="password" value="" id="pwd">
+                                                </div> 
+
+                                                
+                                                <div class="form-group">
+                                                    <label for="pwd">Project :</label>
+                                                 <select class="form-control" name="project">
+                                                  {% for pr in PROJECT %}
+                                                  <option value="{{pr.id}}">{{pr.project_name}}</option>
+                                                  {% endfor %}
+                                                 </select>
+                                                  </div>
+                                                  <div class="form-group">
+                                                      <label for="user">Label:</label>
+                                                      <input type="text" class="form-control" name="sr_name" value="root" id="user">
+                                                    </div>  
+
+                                                <div class="form-group">
+                                                <button class="btn btn-primary btn-block" type="submit">Install Stack and Manage Server</button>
+                                                </div> 
                       </div>
+                    </form>
 
                             <br>
                             
