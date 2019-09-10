@@ -1,6 +1,6 @@
 
 SERVER_OS_DISTRIBUTION = {
-    1: ['Ubuntu', '18.04 x64']
+    1: ['Ubuntu', '18.04 x64', 'sudo', 'bash']
 }
 
 STACK_DIST = {
@@ -8,9 +8,17 @@ STACK_DIST = {
         'NAME' : 'LAMP',
         'DESCRIPTION' : 'A LAMP Stack is a set of software that can be used to create and host websites and web applications.',
         'PRICE' : 0.00 ,
+        'PACKAGES':(1, 2, 3, 4),
+        'PACKAGES_COUNT': 3
+    },
+    2:{
+        'NAME' : 'HaProxy',
+        'DESCRIPTION' : 'A LAMP Stack is a set of software that can be used to create and host websites and web applications.',
+        'PRICE' : 0.00 ,
         'PACKAGES':(1, 2, 3),
         'PACKAGES_COUNT': 3
-    }
+    },
+    
 }
 
 PACKAGES = {
@@ -21,10 +29,10 @@ PACKAGES = {
         'DESCRIPTION':'',
         'VERSION':'2.2',
         'INIT_COMMAND' : {
-            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+            1:[('sudo apt-get -y update', 'sudo apt-get -y upgrade')],
         },
-        'INSTALLATION_COMMAND' : {
-            1:[('INSTALLATION', 'sudo apt get install apache2')]
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
             'WEBSITE':{
@@ -51,8 +59,8 @@ PACKAGES = {
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
         },
-        'INSTALLATION_COMMAND' : {
-            1:[('INSTALLATION', 'sudo apt get install mysql-server'), ('PHPMYADMIN', 'sudo apt get install mysql-server')]
+        'INSTALLATION_BASH_SCRIPT' : {
+           1:[('SCRIPT', 'mysql_ubunt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
             'MySQL':{
@@ -70,7 +78,7 @@ PACKAGES = {
                 }
         },
         3:{
-        'NAME' : 'PHP 7',
+        'NAME' : 'PHP 7.3',
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
@@ -78,8 +86,23 @@ PACKAGES = {
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
         },
-        'INSTALLATION_COMMAND' : {
-            1:[('INSTALLATION', 'sudo apt get install mysql-server')]
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'php_ubunt_18_04_x86.sh')]
+        },
+        'CONTROL_PANEL' : {}
+        },
+
+        4:{
+        'NAME':'PhpMyAdmin',
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'',
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'phpmyadmin_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
         },
         'CONTROL_PANEL' : {}
         }

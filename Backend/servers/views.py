@@ -5,18 +5,14 @@ import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import installServer
+from ..BackendController.tasks.install_stack import installStack
 from ..BackendController.contri import CheckLogin, getUser
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION
 from .models import list as server_list, projects
 import json
 
-
-# Create your views here.
-
-
-
 def deploy(request):
+    
     login = CheckLogin(request)
     if login == True:
         params = {}
@@ -63,8 +59,9 @@ def deploy(request):
                         if count_exis == 0:
                             stk = str(STACK_DIST[int(stack)]['NAME']) + " in " + str(SERVER_OS_DISTRIBUTION[int(os)][0] + SERVER_OS_DISTRIBUTION[int(os)][1])
                             
-                            insert = server_list.objects.create(
+                            obj, insert = server_list.objects.get_or_create(
                                 server_name = sr_name,
+                                superuser = username,
                                 user_id = user,
                                 distribution_id = os,
                                 stack_id = stack,
@@ -72,14 +69,16 @@ def deploy(request):
                                 ServerType = "MASTER",
                                 server_status = "Installing",
                                 server_ip = ip,
+                                password = password,
                                 project_id = get_project,
                                 JSON_PKG_LST = json.dumps(STACK_DIST[int(stack)]['PACKAGES']),
                                 Charges = 0.00,
                                 running_status = "Installing"
                             )
                             if insert:
+                                
                                 messages.success(request, "Test Connection is succeed! , Your Stack will be installed in 1  or 2 min and you are ready to manage your server without touching command line. ")
-                        
+                                installStack.delay(obj.id)
 
                         else:
                             messages.warning(request, "This server is already managed by Serverlized.")
@@ -111,7 +110,7 @@ def panel(request):
         user = getUser(request)
         params['user'] = user
         print(user.first_name)
-        get_all_servers = server_list.objects.filter(user_id=user)
+        get_all_servers = server_list.objects.filter(user_id=user, ServerType="MASTER",parent_server='')
         params['servers'] = get_all_servers
         
         params['server_count'] = get_all_servers.count()

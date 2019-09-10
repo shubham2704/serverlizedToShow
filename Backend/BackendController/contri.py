@@ -2,6 +2,21 @@ from django.core.signing import Signer
 from ..signup.models import user as usr
 import random
 import string
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+
+
+def sendNotification(user_id, typ, status, title, content):
+    layer = get_channel_layer()
+    print(user_id)
+    async_to_sync(layer.group_send)(str(user_id), {
+        'type': 'events.alarm',
+        'msg_type': typ,
+        'css_a': status,
+        'title': title,
+        'content': content
+    })
 
 def CheckLogin(request):
 
