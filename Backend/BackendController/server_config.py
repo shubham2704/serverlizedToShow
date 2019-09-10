@@ -1,6 +1,7 @@
 
 SERVER_OS_DISTRIBUTION = {
-    1: ['Ubuntu', '18.04 x64']
+    1: ['Ubuntu', '18.04 x64'],
+    2: ['Ubuntu', '18.04 x64']
 }
 
 STACK_DIST = {
@@ -10,7 +11,16 @@ STACK_DIST = {
         'PRICE' : 0.00 ,
         'PACKAGES':(1, 2, 3),
         'PACKAGES_COUNT': 3
+    },
+
+   2:{
+        'NAME' : 'Load Balancer',
+        'DESCRIPTION' : '',
+        'PRICE' : 0.00 ,
+        'PACKAGES':(),
+        'PACKAGES_COUNT': 2
     }
+    
 }
 
 PACKAGES = {
