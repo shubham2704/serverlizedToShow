@@ -10,14 +10,13 @@ STACK_DIST = {
         'PRICE' : 0.00 ,
         'PACKAGES':(1, 2, 3, 4),
         'PACKAGES_COUNT': 3
-    },
-    2:{
-        'NAME' : 'HaProxy',
-        'DESCRIPTION' : 'A LAMP Stack is a set of software that can be used to create and host websites and web applications.',
+    },2:{
+        'NAME' : 'Load Balancer',
+        'DESCRIPTION' : '',
         'PRICE' : 0.00 ,
-        'PACKAGES':(1, 2, 3),
-        'PACKAGES_COUNT': 3
-    },
+        'PACKAGES':(),
+        'PACKAGES_COUNT': 2
+    }
     
 }
 
