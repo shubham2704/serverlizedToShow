@@ -14,7 +14,6 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
 
 @task(name="install Server")
 
-
 def installStack(insert_id = 0):
     
     
