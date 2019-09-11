@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path('wpanel/', views.panel, name='User Sign Up, Code => /Backend/servers/'),
+    path('wpanel/<int:server_id>', views.manage_server, name='Manage Server, Code => /Backend/servers/'),
     path('wpanel/deploy', views.deploy, name='Deploy Server, Code => /Backend/servers/'),
 ]
 
@@ -14,7 +15,8 @@ for key, pkg in PACKAGES.items():
     control = pkg['CONTROL_PANEL']
     for key, cntr in control.items():
         for key_a, cop in cntr.items():
+            if key_a != 'ICON':
             
-            control_url.append(path(cop['URL'][0], import_string(cop['URL'][1])))
+                control_url.append(path(cop['URL'][0], import_string(cop['URL'][1])))
             
 urlpatterns += control_url
