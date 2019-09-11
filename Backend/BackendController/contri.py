@@ -4,7 +4,27 @@ import random
 import string
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from .server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
+import json
 
+
+def rewrite_menu(menu_fir, server_id):
+    d = {}
+    for package in json.loads(menu_fir):
+                control_panel = PACKAGES[package]['CONTROL_PANEL']
+                #d.update(control_panel)
+                for key, val in control_panel.items():
+                    d[key] = {}
+                    for key1, val in val.items():
+                        d[key][key1] = {}
+                        url = val['URL'][0]
+                        new_url = url.replace("<int:manage_id>", str(server_id), 1)
+                        d[key][key1]['URL'] = (new_url,val['URL'][1], val['URL'][2] )
+                    
+                
+    #print(d)
+    return d
+    
 
 
 def sendNotification(user_id, typ, status, title, content):

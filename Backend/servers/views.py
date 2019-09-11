@@ -6,18 +6,10 @@ from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
 from ..BackendController.tasks.install_stack import installStack
-from ..BackendController.contri import CheckLogin, getUser
+from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
 from .models import list as server_list, projects
 import json
-
-def rewrite_menu(menu_fir):
-    d = {}
-    for package in json.loads(menu_fir):
-                control_panel = PACKAGES[package]['CONTROL_PANEL']
-                d.update(control_panel)
-    return d
-    
 
 def manage_server(request, server_id):
     login = CheckLogin(request)
@@ -28,14 +20,15 @@ def manage_server(request, server_id):
         params['menu'] = {}
         try:
             getserver = server_list.objects.get(id=server_id)
-            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
             
 
 
 
-        except:
-            pass
-        print(params)
+        except Exception as e:
+            print(e)
+            
+        
         return render(request, "user/server-home.html", params)
 
     else:

@@ -40,6 +40,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'Backend.signup',
+    'Backend.lamp',
     'Backend.servers',
     'django.contrib.admin',
     'django.contrib.auth',

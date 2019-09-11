@@ -4,12 +4,58 @@ import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
 from Backend.servers.models import list as server_list
+from Backend.lamp.models import domain
 from ..contri import sendNotification
 import os
 import ntpath
 
-
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+@task(name="Lamp Domain")
+
+def ConfigureLampDomain(insert_id = 0):
+    try:
+        domain_get = domain.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(domain_get.server.server_ip, username=domain_get.server.superuser, password=domain_get.server.password)
+        t = paramiko.Transport(domain_get.server_ip, 22)
+        t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        if domain_get.subdomain != '':
+            cmd = " create " + domain_get.subdomain + "." + domain_get.domain + " " + domain_get.folder
+        else:
+            cmd = " create " + domain_get.domain + " " + domain_get.folder
+            
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        print ("stderr: ", stdderr.readlines())
+        client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
+
+        domain_get.status = "Active"
+        domain_get.save()
+                        
+           
+        client.close()
+        sftp.close()
+        #sendNotification(get_server.user_id.id, 'toast', 'success', 'Domain Configured', '<b>'+ STACK_DIST[get_server.stack_id]['NAME'] +'</b> is succesfully installed in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        
+        return "Installed"
+
+        
+    except Exception as e:
+         if domain_get.user.id is not None:
+            domain_get.status = "Error"
+            domain_get.save()
+            sendNotification(domain_get.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + '), Please contact use for asistance.')
+         print(e)
+    
+
 
 
 @task(name="install Server")
