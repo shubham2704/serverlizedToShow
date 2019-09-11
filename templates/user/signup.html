@@ -1,23 +1,66 @@
-<form action="" method="POST">
-    {% csrf_token %}
-    First name:<br>
-    <input type="text" name="first_name" value="Mickey">
-    <br>
-    Last name:<br>
-    <input type="text" name="last_name" value="Mouse">
-    <br><br>
-    Email:<br>
-    <input type="text" name="email" value="Mouse">
-    <br><br>
-    phone_no:<br>
-    <input type="text" name="phone_no" value="Mouse">
-    <br><br>
-    password:<br>
-    <input type="text" name="password" value="Mouse">
-    <br><br>
-    confirm:<br>
-    <input type="text" name="confirm" value="Mouse">
-    <br><br>
-    
-    <input type="submit" value="Submit">
-  </form> 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>serverlized</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fontawesome-all.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/iofrm-style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/iofrm-theme13.css">
+</head>
+<body>
+    <div class="form-body">
+        <div class="website-logo">
+            <a href="index.html">
+                <div class="logo">
+                    <img class="logo-size" src="/static/images/logo-light.svg" alt="">
+                </div>
+            </a>
+        </div>
+        <div class="row">
+            <div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+                    <h3>Get more things done with Loggin platform.</h3>
+                    <p>Access to the most powerfull tool in the entire design and web industry.<br><br>
+                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                </div>
+            </div>
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <div class="page-links">
+                            <a href="login.html">Login</a><a href="signup.html" class="active">Register</a>
+                        </div>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input class="form-control" type="text" name="first_name" placeholder="First Name" required>
+                             <input class="form-control" type="text" name="last_name" placeholder="Last Name" required>
+                            <input class="form-control" type="text" name="email" placeholder="E-mail Address" required>
+                             <input class="form-control" type="text" name="phone_no" placeholder="Mobile" required>
+                            <input class="form-control" type="text" name="password" placeholder="Password" required>
+                            <div class="form-button">
+                            <input class="form-control" type="text" name="confirm" placeholder="Confirm Password" required>
+                            <div class="form-button">
+                                <button id="submit" type="submit" value="submit" class="ibtn">Register</button>
+                            </div>
+                        </form>
+                        <div class="other-links">
+                            <span>Or register with</span><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-google"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+
+</html>
