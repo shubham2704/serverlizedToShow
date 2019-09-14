@@ -155,6 +155,23 @@ PACKAGES = {
         'APP_NAME' : 'loadBalancer',
         'DESCRIPTION':'',
         'VERSION':'1.8',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', ''), ('', '')]
+        },
+        'CONTROL_PANEL' : {
+            'phpMyAdmin':{
+                        "ICON" : {
+                             "URL":('', "", False)
+                         },
+                        "Open phpMyAdmin" : {
+                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
+                         },
+              }
+        
+        }
         }
 
     }
