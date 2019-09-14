@@ -12,7 +12,7 @@ STACK_DIST = {
         'PACKAGES_COUNT': 3
     },2:{
         'NAME' : 'Load Balancer',
-        'DESCRIPTION' : 'HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers. It is written in C and has a reputation for being fast and efficient.',
+        'DESCRIPTION' : 'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
         'PACKAGES':(5),
         'PACKAGES_COUNT': 1
