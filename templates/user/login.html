@@ -14,28 +14,41 @@
 </head>
 <body>
     <div class="form-body">
-        <div class="website-logo">
-            <a href="index.html">
-                <div class="logo">
-                    <img class="logo-size" src="/static/images/logo-light.svg" alt="">
-                </div>
-            </a>
-        </div>
+       
         <div class="row">
             <div class="img-holder">
                 <div class="bg"></div>
                 <div class="info-holder">
-                    <h3>Get more things done with Loggin platform.</h3>
-                    <p>Access to the most powerfull tool in the entire design and web industry.<br><br>
-                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
-                </div>
+                        <h1 style="color: aliceblue; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">Serverlized</h1>
+                        <h3>Get more things done with Serverlized platform.</h3>
+                        <p>Serverlized is a Platform as a Service and it is free of cost (limited features)..<br><br>
+                            It provides an easy and user friendly graphical interface through which a person can manage an unmanaged server.. .</p>
+                    </div>
             </div>
             <div class="form-holder">
+                  
                 <div class="form-content">
                     <div class="form-items">
                         <div class="page-links">
                             <a href="login.html" class="active">Login</a><a href="signup.html">Register</a>
                         </div>
+                        {% if messages %}
+
+
+                        {% for message in messages %}
+                
+                        
+                        
+                        <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                            <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
+                            <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                            <div class="message">{{message}}</div>
+                          </div>
+                
+                
+                    
+                        {% endfor %}
+                     {% endif %}
                         <form  action="" method="POST">
                             {% csrf_token %}
                             <input class="form-control" type="email" name="email" placeholder="E-mail Address" required>

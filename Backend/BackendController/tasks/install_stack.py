@@ -4,23 +4,190 @@ import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
 from Backend.servers.models import list as server_list
-from Backend.lamp.models import domain
+from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database
 from ..contri import sendNotification
 import os
 import ntpath
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
 
-@task(name="Lamp Domain")
 
-def ConfigureLampDomain(insert_id = 0):
+@task(name="MySQL Database Delete")
+
+def MySQLDatabaseDelete(insert_id = 0):
     try:
-        domain_get = domain.objects.get(id=insert_id)
+        mysql_database_det = mysql_database.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(mysql_database_det.server.server_ip, username=mysql_database_det.server.superuser, password=mysql_database_det.server.password)
+        t = paramiko.Transport(mysql_database_det.server.server_ip, 22)
+        t.connect(username=mysql_database_det.server.superuser,password=mysql_database_det.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[2]['CONTROL_PANEL']['MySQL']['Delete Database']['COMMAND'][mysql_database_det.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        
+        if mysql_database_det.mysql_user.remote == True :
+            a = mysql_database_det.server.server_ip
+        else:
+            a = "localhost"
+        
+
+        cmd = " delete " + mysql_database_det.mysql_user.name + " " + mysql_database_det.mysql_user.password + " " + a + " " + mysql_database_det.database_name
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        sendNotification(mysql_database_det.user.id, 'toast', 'success', 'MySQL Database Deleted', ''+ mysql_database_det.database_name +' is succesfully deleted on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + ').')
+        
+        mysql_database_det.delete()
+        
+    
+    except Exception as e:
+         if mysql_database_det.user.id is not None:
+            mysql_database_det.status = "Error"
+            mysql_database_det.save()
+            sendNotification(mysql_database_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while deleting Database on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + '), Please contact use for asistance.')
+         
+         print(e)
+
+
+
+@task(name="Create MySQL Database")
+
+def MySQLDatabaseCreate(insert_id = 0):
+    try:
+        mysql_database_det = mysql_database.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(mysql_database_det.server.server_ip, username=mysql_database_det.server.superuser, password=mysql_database_det.server.password)
+        t = paramiko.Transport(mysql_database_det.server.server_ip, 22)
+        t.connect(username=mysql_database_det.server.superuser,password=mysql_database_det.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[2]['CONTROL_PANEL']['MySQL']['Create Database']['COMMAND'][mysql_database_det.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        
+        if mysql_database_det.mysql_user.remote == True :
+            a = mysql_database_det.server.server_ip
+        else:
+            a = "localhost"
+        
+
+        cmd = " create " + mysql_database_det.mysql_user.name + " " + mysql_database_det.mysql_user.password + " " + a + " " + mysql_database_det.database_name
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        sendNotification(mysql_database_det.user.id, 'toast', 'success', 'MySQL Database Created', ''+ mysql_database_det.database_name +' is succesfully created on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + ').')
+        mysql_database_det.status = "Configured"
+        mysql_database_det.save()
+        
+    
+    except Exception as e:
+         if mysql_database_det.user.id is not None:
+            mysql_database_det.status = "Error"
+            mysql_database_det.save()
+            sendNotification(mysql_database_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Creating Database on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + '), Please contact use for asistance.')
+         
+         print(e)
+
+
+
+@task(name="Delete MySQL User")
+
+def MySQLUserDelete(insert_id = 0):
+    try:
+        mysql_user_det = mysql_user.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(mysql_user_det.server.server_ip, username=mysql_user_det.server.superuser, password=mysql_user_det.server.password)
+        t = paramiko.Transport(mysql_user_det.server.server_ip, 22)
+        t.connect(username=mysql_user_det.server.superuser,password=mysql_user_det.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[2]['CONTROL_PANEL']['MySQL']['Create User']['COMMAND'][mysql_user_det.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        
+        if mysql_user_det.remote == True :
+            a = mysql_user_det.server.server_ip
+        else:
+            a = "localhost"
+        
+
+        cmd = " delete " + mysql_user_det.name + " " + mysql_user_det.password + " " + a
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Deleted', ''+ mysql_user_det.name +' is Succesfully Deleted on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
+        mysql_user_det.delete()
+        
+    
+    except Exception as e:
+         if mysql_user_det.user.id is not None:
+            mysql_user_det.status = "Error"
+            mysql_user_det.save()
+            sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
+         
+         print(e)
+
+
+
+@task(name="Create MySQL User")
+
+def MySQLUserAdd(insert_id = 0):
+    try:
+        mysql_user_det = mysql_user.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(mysql_user_det.server.server_ip, username=mysql_user_det.server.superuser, password=mysql_user_det.server.password)
+        t = paramiko.Transport(mysql_user_det.server.server_ip, 22)
+        t.connect(username=mysql_user_det.server.superuser,password=mysql_user_det.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[2]['CONTROL_PANEL']['MySQL']['Create User']['COMMAND'][mysql_user_det.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        
+        if mysql_user_det.remote == True :
+            a = mysql_user_det.server.server_ip
+        else:
+            a = "localhost"
+        
+
+        cmd = " create " + mysql_user_det.name + " " + mysql_user_det.password + " " + a
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        mysql_user_det.status = "Configured"
+        mysql_user_det.save()
+        sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Created', ''+ mysql_user_det.name +' is Succesfully Created on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
+         
+        
+    
+    except Exception as e:
+         if mysql_user_det.user.id is not None:
+            mysql_user_det.status = "Error"
+            mysql_user_det.save()
+            sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
+         
+         print(e)
+
+@task(name="Lamp Domain Delete")
+
+def DeleteLampDomain(insert_id = 0):
+    
+    try:
+        domain_get = domain_s.objects.get(id=insert_id)
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
         client.connect(domain_get.server.server_ip, username=domain_get.server.superuser, password=domain_get.server.password)
-        t = paramiko.Transport(domain_get.server_ip, 22)
+        t = paramiko.Transport(domain_get.server.server_ip, 22)
         t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
         sftp = paramiko.SFTPClient.from_transport(t)
         GetPKG = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
@@ -29,13 +196,69 @@ def ConfigureLampDomain(insert_id = 0):
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
         if domain_get.subdomain != '':
-            cmd = " create " + domain_get.subdomain + "." + domain_get.domain + " " + domain_get.folder
+            a = domain_get.subdomain + "." + domain_get.domain_name
+            cmd = " delete " + a + " " + domain_get.folder
         else:
-            cmd = " create " + domain_get.domain + " " + domain_get.folder
+            a = domain_get.domain_name
+            cmd = " delete " + domain_get.domain_name + " " + domain_get.folder
+
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
             
         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
         print ("stderr: ", stdderr.readlines())
-        client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
+        #client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
+
+        domain_get.delete()
+                        
+           
+        client.close()
+        sftp.close()
+        sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Deleted', '<b> ' + a +'</b> is succesfully deleted in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
+        
+        return "Installed"
+
+        
+    except Exception as e:
+         if domain_get.user.id is not None:
+            domain_get.status = "Error"
+            domain_get.save()
+            sendNotification(domain_get.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + '), Please contact use for asistance.')
+         print(e)
+    
+
+
+
+
+@task(name="Lamp Domain Add")
+
+def ConfigureLampDomain(insert_id = 0):
+    
+    try:
+        domain_get = domain_s.objects.get(id=insert_id)
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(domain_get.server.server_ip, username=domain_get.server.superuser, password=domain_get.server.password)
+        t = paramiko.Transport(domain_get.server.server_ip, 22)
+        t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        GetPKG = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        if domain_get.subdomain != '':
+            a = domain_get.subdomain + "." + domain_get.domain_name
+            cmd = " create " + a + " " + domain_get.folder
+        else:
+            a = domain_get.domain_name
+            cmd = " create " + domain_get.domain_name + " " + domain_get.folder
+
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+            
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        print ("stderr: ", stdderr.readlines())
+        #client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
 
         domain_get.status = "Active"
         domain_get.save()
@@ -43,7 +266,7 @@ def ConfigureLampDomain(insert_id = 0):
            
         client.close()
         sftp.close()
-        #sendNotification(get_server.user_id.id, 'toast', 'success', 'Domain Configured', '<b>'+ STACK_DIST[get_server.stack_id]['NAME'] +'</b> is succesfully installed in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Configured', '<b> ' + a +'</b> is succesfully installed in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
         
         return "Installed"
 

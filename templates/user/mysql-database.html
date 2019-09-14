@@ -79,29 +79,36 @@
                   <div class="card-header" id="headingOne">
                     <h2 class="">
                       <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
+                        Create MySQL User
                       </h4>
                     </h2>
                   </div>
               
                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/domain/add">
+                        <form method="POST" action="/wpanel/{{server.id}}/mysql/create/database">
                             {%csrf_token%}
                             <div class="form-group">
-                              <label for="exampleInputEmail1">Domain</label>
-                              <input type="text" name="domain" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example.com">
-                              <small id="emailHelp" class="form-text text-muted">without http(s) & www </small>
+                              <label for="exampleInputEmail1">MySQL User</label>
+                            <select name="user" class="form-control">
+                                    {% for usr in users %}
+                                    <option value="{{usr.id}}">{{usr.name}}</option>
+                                    
+                                    {% endfor %}
+                               
+                            </select> 
                             </div>
 
+                            
+
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Directroy</label>
-                                <input type="text" name="folder" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example">
-                                <small id="emailHelp" class="form-text text-muted">Directory will be automatically created. </small>
+                                    <label for="exampleInputEmail1">Database Name</label>
+                                    <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example">
+                                    
                             </div>
                             
                             
-                            <button type="submit" class="btn btn-primary">Addon Domain</button>
+                            <button type="submit" class="btn btn-primary">Create Database</button>
                           
                         </form>
                     </div>
@@ -112,22 +119,23 @@
               <br>
               <div class="card">
                 <div class="card-header">
-                  <b>Hosted Domain </b>
+                  <b>Dabatases</b>
                 </div>
                 <table style="margin-bottom: 0rem;" class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Domain</th>
-                        <th>Directory</th>
+                       
+                        <th>Database Name</th>
+                        <th>MySQL User</th>
                         <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for domain in domains %}
+                      {% for usr in dbs %}
                       <tr>
-                        <td class="align-middle"><a href="">{{domain.subdomain}}.{{domain.domain_name}} </a></td>
-                        <td class="align-middle">/var/www/{{domain.folder}}</td>
-                        <td><button onclick="delete_domain({{domain.id}})" type="button" class="btn btn-info btn-sm">Delete</button></td>
+                        <td class="align-middle">{{usr.database_name}}</td>
+                        <td class="align-middle">{{usr.mysql_user.name}}</td>
+                        <td><button onclick="delete_user({{usr.id}})" type="button" class="btn btn-info btn-sm">Delete</button></td>
                       </tr>
                       {% endfor %}
                      
@@ -175,12 +183,11 @@
     <script>
 
 
-      function delete_domain(e){
+      function delete_user(e){
         $.confirm({
           message: 'Are you sure? this action is unchangeable.',
           onOk: function() {
-            
-            window.location="/wpanel/{{server.id}}/domain/delete/" + e;
+            window.location="/wpanel/{{server.id}}/mysql/database/delete/" + e;
             
           }
         });

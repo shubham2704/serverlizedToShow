@@ -11,6 +11,29 @@ from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION,
 from .models import list as server_list, projects
 import json
 
+def package_manager(request, server_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['menu'] = {}
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            
+
+
+
+        except Exception as e:
+            print(e)
+            
+        
+        return render(request, "user/package-manager.html", params)
+
+    else:
+        return redirect("/login")
+
 def manage_server(request, server_id):
     login = CheckLogin(request)
     if login == True:
