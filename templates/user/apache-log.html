@@ -74,88 +74,45 @@
              {% endif %}
 
 
-            <div class="accordion" id="accordionExample">
-                <div class="card">
+             <div class="accordion" id="accordionExample">
+                <div class="card card-primary">
                   <div class="card-header" id="headingOne">
                     <h2 class="">
-                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
-                      </h4>
+                      <h5  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Apache Logs
+                      </h5>
                     </h2>
                   </div>
               
                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/domain/add">
-                            {%csrf_token%}
-                            <div class="form-group">
-                              <label for="exampleInputEmail1">Domain</label>
-                              <input type="text" name="domain" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example.com">
-                              <small id="emailHelp" class="form-text text-muted">without http(s) & www </small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Directroy</label>
-                                <input type="text" name="folder" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example">
-                                <small id="emailHelp" class="form-text text-muted">Directory will be automatically created. </small>
-                            </div>
-                            
-                            
-                            <button type="submit" class="btn btn-primary">Addon Domain</button>
-                          
-                        </form>
+                        <p>dasfasd asdgfjhasfjhad asda<br>dsjisdhsdgi</p>
+                        
                     </div>
                   </div>
                 </div>
                 
               </div>
               <br>
-              <div class="card">
-                <div class="card-header">
-                  <b>Hosted Domain </b>
-                </div>
-                <table style="margin-bottom: 0rem;" class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Domain</th>
-                        <th>Directory</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for domain in domains %}
-                      <tr>
-                        <td class="align-middle"><a href="">{{domain.subdomain}}.{{domain.domain_name}} </a></td>
-                        <td class="align-middle">/var/www/{{domain.folder}}</td>
-                        <td><button onclick="delete_domain({{domain.id}})" type="button" class="btn btn-info btn-sm">Delete</button></td>
-                      </tr>
-                      {% endfor %}
-                     
-                    </tbody>
-                  </table>
-              </div>
-              <br>
           </div>
           
           <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                  <b>DNS Configuration </b>
+            <div class="card  ">
+                <div class="card-header bg-secondary text-white">
+                  <b>APACHE SERVER </b>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
-                  <br> <code>A example.com {{server.server_ip}} </code>
-                  <ul>
-                      <li>Type : <code>A</code></li>
-                      <li>Host : <code>example.com</code></li>
-                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
-                  </ul>
-                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
+                 
+               
+                      <p>Status : <code>RUNNING</code></p>
+                      <p> <button class="btn btn-warning btn-sm">RESTART </button>
+                        <button class="btn btn-danger btn-sm">STOP </button>
+                        </p>
+               
                 </p>
                   
                    
-                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
+
                 </div>
               </div>
           </div>
@@ -175,12 +132,11 @@
     <script>
 
 
-      function delete_domain(e){
+      function delete_user(e){
         $.confirm({
           message: 'Are you sure? this action is unchangeable.',
           onOk: function() {
-            
-            window.location="/wpanel/{{server.id}}/domain/delete/" + e;
+            window.location="/wpanel/{{server.id}}/mysql/database/delete/" + e;
             
           }
         });

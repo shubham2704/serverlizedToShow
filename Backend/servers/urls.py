@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('wpanel/', views.panel, name='User Sign Up, Code => /Backend/servers/'),
     path('wpanel/<int:server_id>', views.manage_server, name='Manage Server, Code => /Backend/servers/'),
+    path('wpanel/<int:server_id>/package', views.package_manager, name='Manage Package, Code => /Backend/servers/'),
     path('wpanel/deploy', views.deploy, name='Deploy Server, Code => /Backend/servers/'),
 ]
 

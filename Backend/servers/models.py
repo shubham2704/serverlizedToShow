@@ -28,3 +28,12 @@ class list(models.Model):
     password = models.CharField(max_length=250,default="")
     parent_server = models.CharField(max_length=250,default="")
 
+class Pkg_inst_data(models.Model):
+   
+    server = models.ForeignKey(list, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    PackageId = models.IntegerField()
+    PackageName = models.CharField(max_length=250,default="")
+    PackageStatus = models.CharField(max_length=250,default="")
+    date = models.DateTimeField(auto_now_add=True)
+    

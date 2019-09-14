@@ -65,8 +65,8 @@
                             <div class="col-md-9 col-xs-4 col-sm-6">
                             <b><p style="margin-bottom: 6px;"></p>Managed Server</b></div>
                             <div class="col-md-3 col-xs-8  col-sm-6 text-right ">
-                            <button type="button" class="align-middle btn btn-labeled btn-primary btn-sm">
-                                        <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</button>
+                            <a type="button" href="/wpanel/deploy" class="align-middle btn btn-labeled btn-primary btn-sm">
+                                        <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</a>
                                     </div>
                         </div></div>
                         <div class="">
@@ -100,7 +100,7 @@
                                             <td class="align-middle">
                                                 <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
                                                 
-                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/manage/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
                                                 
                                                 <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/delete/{{servers.id}}" {% endif %}  type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
                                             

@@ -20,6 +20,7 @@ STACK_DIST = {
     
 }
 
+
 PACKAGES = {
     1:{
         'NAME' : 'APACHE WEB SERVER',
@@ -36,11 +37,11 @@ PACKAGES = {
         'CONTROL_PANEL' : {
             'WEBSITE':{
                         "ICON" : {
-                             "URL":('fa fa-globe', "Backend.lamp.views.add", False)
+                             "URL":('fa fa-globe', "", False)
                          },
                         "Addon Domain" : {
                              "URL":('wpanel/<int:manage_id>/domain/add', "Backend.lamp.views.add", True),
-                             "COMMAND":{
+                            "COMMAND":{
                                  1:('SCRIPT', 'apache_virtual_host_ubuntu_18_04x86.sh')
                                  }
                          },
@@ -48,15 +49,17 @@ PACKAGES = {
                              "URL":('wpanel/<int:manage_id>/domain/edit/<int:domain_id>', "Backend.lamp.views.edit", False)
                          },
                          "Delete Domain" : {
-                             "URL":('wpanel/<int:manage_id>/domain/delete//<int:domain_id>', "Backend.lamp.views.delete", False)
+                             "URL":('wpanel/<int:manage_id>/domain/delete/<int:domain_id>', "Backend.lamp.views.delete", False)
                          },
                          "Apache Logs" : {
-                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.add", True)
+                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True)
                          }
               },
               
                
                 }
+
+                
         },
         
         2:{
@@ -76,21 +79,31 @@ PACKAGES = {
                         "ICON" : {
                              "URL":('fa fa-database', "Backend.lamp.views.add", False)
                          },
-                        "Create Database" : {
-                             "URL":('wpanel/<int:manage_id>/mysql/create/database', "Backend.lamp.views.add", True)
+                        "Create User" : {
+                             "URL":('wpanel/<int:manage_id>/mysql/create/user', "Backend.lamp.views.mysql_user_add", True),
+                              "COMMAND":{
+                                 1:('SCRIPT', 'mysql_user_18_04_x86.sh')
+                                 }
                          },
-                         "Create User" : {
-                             "URL":('wpanel/<int:manage_id>/mysql/create/user', "Backend.lamp.views.edit", True)
-                         },
-                         "Edit Database" : {
-                             "URL":('wpanel/<int:manage_id>/mysql/edit/<int:db_id>', "Backend.lamp.views.edit", False)
+
+                         "Delete User" : {
+                             "URL":('wpanel/<int:manage_id>/mysql/user/delete/<int:muser_id>', "Backend.lamp.views.mysql_user_delete", False),
+                              "COMMAND":{
+                                 1:('SCRIPT', 'mysql_user_18_04_x86.sh')
+                                 }
+                         },"Create Database" : {
+                             "URL":('wpanel/<int:manage_id>/mysql/create/database', "Backend.lamp.views.mysql_database_add", True),
+                              "COMMAND":{
+                                 1:('SCRIPT', 'mysql_db_create_18_04_x86.sh')
+                                 }
                          },
                          "Delete Database" : {
-                             "URL":('wpanel/<int:manage_id>/mysql/delete//<int:db_id>', "Backend.lamp.views.delete", False)
-                         },
-                         "MySQL Logs" : {
-                             "URL":('wpanel/<int:manage_id>/mysql/logs', "Backend.lamp.views.delete", True)
+                             "URL":('wpanel/<int:manage_id>/mysql/database/delete/<int:muser_id>', "Backend.lamp.views.mysql_db_delete", False),
+                              "COMMAND":{
+                                 1:('SCRIPT', 'mysql_db_create_18_04_x86.sh')
+                                 }
                          }
+                         
               }
                
                 }
@@ -110,6 +123,7 @@ PACKAGES = {
         'CONTROL_PANEL' : {}
         },
 
+        
         4:{
         'NAME':'PhpMyAdmin',
         'NAV_NAME' : 'PHP',
@@ -128,7 +142,7 @@ PACKAGES = {
                              "URL":('fa fa-external-link', "Backend.lamp.views.add", False)
                          },
                         "Open phpMyAdmin" : {
-                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.add", True)
+                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
                          },
               }
         
