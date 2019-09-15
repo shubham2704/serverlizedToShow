@@ -3,7 +3,7 @@ from django.conf import settings
 import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
-from Backend.servers.models import list as server_list
+from Backend.servers.models import list as server_list, Pkg_inst_data
 from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database
 from ..contri import sendNotification
 import os
@@ -321,8 +321,17 @@ def installStack(insert_id = 0):
                         print ("stderr: ", stdderr.readlines())
                         print ("pwd: ", stddout.readlines())
                         print ("INSTALLED : " +  ntpath.basename(file_upload))
+
+                        Pkg_inst_data.objects.create(
+                            server = get_server,
+                            user = get_server.user_id, 
+                            PackageId = pkg_id,
+                            PackageName = PACKAGES[pkg_id]['NAME'],
+                            PackageStatus = "RUNNING"
+                        )
+
                         sendNotification(get_server.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is succesfully installed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-        
+
                         
 
                     if get_cmd[0] == "COMMAND":
