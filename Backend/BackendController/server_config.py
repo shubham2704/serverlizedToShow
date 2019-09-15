@@ -12,7 +12,7 @@ STACK_DIST = {
         'PACKAGES_COUNT': 3
     },2:{
         'NAME' : 'Load Balancer',
-        'DESCRIPTION' : 'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
+        'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
         'PACKAGES':(5),
         'PACKAGES_COUNT': 1
@@ -153,25 +153,16 @@ PACKAGES = {
         'NAME':'HAProxy',
         'NAV_NAME' : '',
         'APP_NAME' : 'loadBalancer',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'VERSION':'1.8',
         'INIT_COMMAND' : {
-            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+            1:[('sudo apt-get update')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', ''), ('', '')]
+            1:[('SCRIPT', 'haproxy_ubunt.sh')]
         },
-        'CONTROL_PANEL' : {
-            'phpMyAdmin':{
-                        "ICON" : {
-                             "URL":('', "", False)
-                         },
-                        "Open phpMyAdmin" : {
-                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
-                         },
-              }
-        
-        }
+
+        'CONTROL_PANEL' : {}
         }
 
     }
