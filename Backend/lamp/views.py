@@ -35,8 +35,24 @@ def apachelog(request, manage_id):
             
             getPKG = json.loads(getserver.JSON_PKG_LST)
             params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
-            
 
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.load_system_host_keys()
+            client.connect(getserver.server_ip, username=getserver.superuser, password=getserver.password)
+
+            get_LogCommand = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Apache Logs']['COMMAND'][getserver.distribution_id]
+            if get_LogCommand[0] == "COMMAND":
+                cmd = get_LogCommand[1]
+                
+                stdidn,stddout,stdderr=client.exec_command(cmd)
+                #print(stddout.readlines())
+                
+
+            
+                
+            
+                params['abs'] = stddout.readlines()
        
         except Exception as e:
             pass

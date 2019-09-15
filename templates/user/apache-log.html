@@ -54,7 +54,7 @@
     <div class="container" style="margin-top: 25px;">
         <div class="row">
              
-          <div class="col-sm-8">
+          <div class="col-sm-12">
                 {% if messages %}
 
 
@@ -86,7 +86,12 @@
               
                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <p>dasfasd asdgfjhasfjhad asda<br>dsjisdhsdgi</p>
+                        <p>
+{% for abc in abs %}
+<p>{{abc}}</p>
+{% endfor %}
+
+                        </p>
                         
                     </div>
                   </div>
@@ -96,26 +101,6 @@
               <br>
           </div>
           
-          <div class="col-sm-4">
-            <div class="card  ">
-                <div class="card-header bg-secondary text-white">
-                  <b>APACHE SERVER </b>
-                </div>
-                <div class="card-body">
-                 
-               
-                      <p>Status : <code>RUNNING</code></p>
-                      <p> <button class="btn btn-warning btn-sm">RESTART </button>
-                        <button class="btn btn-danger btn-sm">STOP </button>
-                        </p>
-               
-                </p>
-                  
-                   
-
-                </div>
-              </div>
-          </div>
           
         </div>
       </div>

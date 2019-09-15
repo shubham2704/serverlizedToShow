@@ -1,4 +1,3 @@
-
 SERVER_OS_DISTRIBUTION = {
     1: ['Ubuntu', '18.04 x64', 'sudo', 'bash']
 }
@@ -41,7 +40,7 @@ PACKAGES = {
                          },
                         "Addon Domain" : {
                              "URL":('wpanel/<int:manage_id>/domain/add', "Backend.lamp.views.add", True),
-                            "COMMAND":{
+                              "COMMAND":{
                                  1:('SCRIPT', 'apache_virtual_host_ubuntu_18_04x86.sh')
                                  }
                          },
@@ -52,7 +51,10 @@ PACKAGES = {
                              "URL":('wpanel/<int:manage_id>/domain/delete/<int:domain_id>', "Backend.lamp.views.delete", False)
                          },
                          "Apache Logs" : {
-                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True)
+                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True),
+                             "COMMAND":{
+                                 1:('COMMAND', 'sudo tail -50 /var/log/apache2/error.log')
+                                 }
                          }
               },
               
