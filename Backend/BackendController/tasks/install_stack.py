@@ -12,6 +12,53 @@ import ntpath
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
 
 
+@task(name="Package Restart")
+def RestartPackage(package_id = 0, server_id = 0, dic_name = ""):
+    try:
+        get_server = server_list.objects.get(id=server_id)
+        get_package = Pkg_inst_data.objects.get(server=get_server, PackageId = package_id)
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        GetRestartCommand = PACKAGES[package_id]['CONTROL_PANEL'][dic_name]['Restart']['COMMAND'][os_id][1]
+        
+        stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetRestartCommand)
+        print ("pwd: ", stddout.readlines())
+        sendNotification(get_server.user_id.id, 'toast', 'success', PACKAGES[package_id]['NAME'] + ' RESTARTED', ''+ PACKAGES[package_id]['NAME'] +' is succesfully restart on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        get_package.PackageStatus = "RUNNING"
+        get_package.save()
+
+    except:
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', ''+ PACKAGES[package_id]['NAME'] +' is unable to restart on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+
+
+
+
+@task(name="Package Stop")
+def StopPackage(package_id = 0, server_id = 0, dic_name = ""):
+    try:
+        get_server = server_list.objects.get(id=server_id)
+        get_package = Pkg_inst_data.objects.get(server=get_server, PackageId = package_id)
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        GetStopCommand = PACKAGES[package_id]['CONTROL_PANEL'][dic_name]['Stop']['COMMAND'][os_id][1]
+        print(SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetStopCommand)
+        stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetStopCommand)
+        print ("pwd: ", stdderr.readlines())
+        sendNotification(get_server.user_id.id, 'toast', 'success', PACKAGES[package_id]['NAME'] + ' STOPPED', ''+ PACKAGES[package_id]['NAME'] +' is succesfully stopped on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        get_package.PackageStatus = "STOP"
+        get_package.save()
+        
+    except:
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', ''+ PACKAGES[package_id]['NAME'] +' is unable to stopped on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+
+
+
 @task(name="MySQL Database Delete")
 
 def MySQLDatabaseDelete(insert_id = 0):

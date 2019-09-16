@@ -26,7 +26,7 @@ PACKAGES = {
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'DOMAIN',
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'The Apache HTTP Server, colloquially called Apache, is free and open-source cross-platform web server software, released under the terms of Apache License 2.0. Apache is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation.',
         'VERSION':'2.2',
         'INIT_COMMAND' : {
             1:[('sudo apt-get -y update', 'sudo apt-get -y upgrade')],
@@ -50,6 +50,20 @@ PACKAGES = {
                          },
                          "Delete Domain" : {
                              "URL":('wpanel/<int:manage_id>/domain/delete/<int:domain_id>', "Backend.lamp.views.delete", False)
+                         },
+                         
+                         "Restart" : {
+                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/restart', "Backend.servers.views.restart_pkg", False),
+                             "COMMAND":{
+                                 1:('COMMAND', 'service apache2 restart')
+                                 }
+                         },
+                         
+                         "Stop" : {
+                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/stop', "Backend.servers.views.stop_pkg", False),
+                             "COMMAND":{
+                                 1:('COMMAND', 'service apache2 stop')
+                                 }
                          },
                          "Apache Logs" : {
                              "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True),
@@ -196,4 +210,26 @@ PACKAGES = {
         'CONTROL_PANEL' : {}
         }
 
+    }
+
+
+PACKAGES_DETAILS = {
+        1:{
+            'NAME' : 'APACHE WEB SERVER',
+            'SERVICE_VIEW' : True,
+            'NAV_NAME' : 'DOMAIN',
+            'APP_NAME' : 'lamp',
+            'DESCRIPTION':'The Apache HTTP Server, colloquially called Apache, is free and open-source cross-platform web server software, released under the terms of Apache License 2.0. Apache is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation.',
+            'TAG':'Software',
+            'VERSION':'2.2',
+            'CONTROL_TREE':{
+                'Website' : ['Addon Domain', 'Delete Domain'],
+                'Monitor' : ['Apache Logs', 'Error Logs']
+                
+            },
+            'HTML':'',
+            'IMG' : [],
+            'BUNDLE' : ['LAMP STACK']
+
+        }
     }

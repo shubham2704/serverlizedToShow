@@ -82,13 +82,13 @@
                             <td>{{inst_pkg.PackageName}}</td>
                             {% if inst_pkg.PackageStatus == "RUNNING" %}
                             <td class=" text-success">RUNNING</td>
-                            <td><button class="btn btn-danger btn-sm">STOP </button> <button class="btn btn-warning btn-sm">RESTART </button></td>
+                            <td><button  onclick="stop({{inst_pkg.id}})" class="btn btn-danger btn-sm">STOP </button> <button  onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm">RESTART </button></td>
                            
                             {% endif %}
 
                             {% if inst_pkg.PackageStatus == "STOP" %}
                             <td class=" text-danger">STOP</td>
-                            <td> <button class="btn btn-warning btn-sm">RESTART </button></td>
+                            <td> <button onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm">RESTART </button></td>
                            
                             {% endif %}
                             </tr>
@@ -141,6 +141,96 @@ function noactive(a){
     </script>
 
     <script>
+
+        function stop(id){
+
+          $.ajax({url: "/wpanel/{{server.id}}/package/" + id + "/stop", success: function(result){
+            if(result.status == "ok"){
+              toastr.success("Package will be STOPPED soon.", "Request Sent",{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }else{
+              toastr.error("Unable to request restart", "Error Occured",{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }});
+        
+        }
+
+
+function restart(id){
+
+  $.ajax({url: "/wpanel/{{server.id}}/package/" + id + "/restart", success: function(result){
+    if(result.status == "ok"){
+      toastr.success("Package will be RESTARTED soon.", "Request Sent",{
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      });
+    }else{
+      toastr.error("Unable to request restart", "Error Occured",{
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      });
+    }
+  }});
+
+}
+
         var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
     
         socket.onopen = e => {

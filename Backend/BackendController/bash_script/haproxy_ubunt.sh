@@ -1,5 +1,4 @@
-
 sudo apt-get update
 sudo apt-get install haproxy
 
-echo "vim/etc/haproxy/haproxy.cfg"
+sudo vim /etc/haproxy/haproxy.cfg

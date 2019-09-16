@@ -1,15 +1,96 @@
 from django.shortcuts import render, redirect
+from django.http import  JsonResponse
 from django.core.signing import Signer
 from django.contrib import messages
 import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import installStack
+from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
-from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
+from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES_DETAILS, PACKAGES
 from .models import list as server_list, projects, Pkg_inst_data
 import json
+
+
+def pkg_details(request, pkg_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        if pkg_id in PACKAGES_DETAILS:
+
+            params['package'] = PACKAGES_DETAILS[pkg_id]
+
+        return render(request, "user/package_details.html", params)
+
+
+
+
+def restart_pkg(request, manage_id, package_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            getpkg = json.loads(getserver.JSON_PKG_LST)
+
+            if package_id in getpkg:
+                pk_g = PACKAGES[package_id]
+                if pk_g['SERVICE_VIEW'] == True:
+                    get_key = ""
+                    
+                    for key, pkg in PACKAGES.items():
+                        control = pkg['CONTROL_PANEL']
+                        for key, cntr in control.items():
+                            for key_a, cop in cntr.items():
+                                if key_a == 'Restart':
+                                    get_key = key
+
+                    
+                    RestartPackage.delay(package_id, manage_id, get_key)
+                    params['status'] = "ok"
+
+
+        except Exception as e:
+            params['status'] = "error"
+    
+    return JsonResponse(params)
+
+
+def stop_pkg(request, manage_id, package_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            getpkg = json.loads(getserver.JSON_PKG_LST)
+
+            if package_id in getpkg:
+                pk_g = PACKAGES[package_id]
+                if pk_g['SERVICE_VIEW'] == True:
+                    get_key = ""
+                    
+                    for key, pkg in PACKAGES.items():
+                        control = pkg['CONTROL_PANEL']
+                        for key, cntr in control.items():
+                            for key_a, cop in cntr.items():
+                                if key_a == 'Stop':
+                                    get_key = key
+
+                    
+                    StopPackage.delay(package_id, manage_id, get_key)
+                    params['status'] = "ok"
+
+
+        except Exception as e:
+            params['status'] = "error"
+            print(e)
+    
+    return JsonResponse(params)
+
+
 
 def package_manager(request, server_id):
     login = CheckLogin(request)

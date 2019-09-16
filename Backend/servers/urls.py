@@ -8,6 +8,7 @@ urlpatterns = [
     path('wpanel/<int:server_id>', views.manage_server, name='Manage Server, Code => /Backend/servers/'),
     path('wpanel/<int:server_id>/package', views.package_manager, name='Manage Package, Code => /Backend/servers/'),
     path('wpanel/deploy', views.deploy, name='Deploy Server, Code => /Backend/servers/'),
+    path('wpanel/package/<int:pkg_id>', views.pkg_details, name='Package Details, Code => /Backend/servers/'),
 ]
 
 control_url = []
