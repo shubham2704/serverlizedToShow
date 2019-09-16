@@ -366,12 +366,3 @@ def installStack(insert_id = 0):
             sendNotification(get_server.user_id.id, 'toast', 'error', 'Error Occured', 'Error was occured while installing Stack on ' + get_server.server_name + '  (' + get_server.server_ip + '), Please contact use for asistance.')
         print(e)
     
-@task(name="install loadBalancer")
-
-def installStack(insert_id = 0):
-
-    try:
-        pass
-    except expression as identifier:
-        pass
-    
