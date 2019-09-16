@@ -325,6 +325,7 @@ def installStack(insert_id = 0):
                         Pkg_inst_data.objects.create(
                             server = get_server,
                             user = get_server.user_id, 
+                            ViewPKGOption = PACKAGES[pkg_id]['SERVICE_VIEW'], 
                             PackageId = pkg_id,
                             PackageName = PACKAGES[pkg_id]['NAME'],
                             PackageStatus = "RUNNING"
