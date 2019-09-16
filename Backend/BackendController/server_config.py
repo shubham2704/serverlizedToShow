@@ -23,6 +23,7 @@ STACK_DIST = {
 PACKAGES = {
     1:{
         'NAME' : 'APACHE WEB SERVER',
+        'SERVICE_VIEW' : True,
         'NAV_NAME' : 'DOMAIN',
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
@@ -67,6 +68,7 @@ PACKAGES = {
         2:{
         'NAME' : 'MySQL',
         'NAV_NAME' : 'Database',
+        'SERVICE_VIEW' : True,
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
         'VERSION':'2.2',
@@ -113,6 +115,7 @@ PACKAGES = {
         3:{
         'NAME' : 'PHP 7.3',
         'NAV_NAME' : 'PHP',
+        'SERVICE_VIEW' : False,
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
         'VERSION':'7.5',
@@ -128,6 +131,32 @@ PACKAGES = {
         
         4:{
         'NAME':'PhpMyAdmin',
+        'NAV_NAME' : 'PHP',
+        'SERVICE_VIEW' : False,
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'',
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'phpmyadmin_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
+        },
+        'CONTROL_PANEL' : {
+            'phpMyAdmin':{
+                        "ICON" : {
+                             "URL":('fa fa-external-link', "Backend.lamp.views.add", False)
+                         },
+                        "Open phpMyAdmin" : {
+                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
+                         },
+              }
+        
+        }
+        },
+        5:{
+        'NAME':'Lets Encrypt SSL',
+        'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',

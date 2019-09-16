@@ -8,7 +8,7 @@ from ..signup.models import user
 from ..BackendController.tasks.install_stack import installStack
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
-from .models import list as server_list, projects
+from .models import list as server_list, projects, Pkg_inst_data
 import json
 
 def package_manager(request, server_id):
@@ -21,10 +21,20 @@ def package_manager(request, server_id):
         try:
             getserver = server_list.objects.get(id=server_id)
             params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            getinstalled_pkg = Pkg_inst_data.objects.filter(user=user, server=getserver, ViewPKGOption = True)
+            params['inst_pkg'] = getinstalled_pkg
+            params['server'] = getserver
+            json_pkg = json.loads(getserver.JSON_PKG_LST)
+            newdic = {}
+            for key, pkg in PACKAGES.items():
+
+                if key in json_pkg:
+                    pass
+                else:
+                    newdic[key] = pkg
+
             
-
-
-
+            params['avail'] = newdic
         except Exception as e:
             print(e)
             

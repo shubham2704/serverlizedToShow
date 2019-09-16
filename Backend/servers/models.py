@@ -33,6 +33,7 @@ class Pkg_inst_data(models.Model):
     server = models.ForeignKey(list, on_delete=models.CASCADE)
     user = models.ForeignKey(user, on_delete=models.CASCADE)
     PackageId = models.IntegerField()
+    ViewPKGOption = models.BooleanField(default=True)
     PackageName = models.CharField(max_length=250,default="")
     PackageStatus = models.CharField(max_length=250,default="")
     date = models.DateTimeField(auto_now_add=True)

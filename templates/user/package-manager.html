@@ -51,20 +51,13 @@
                 <table  style="margin-bottom: 0rem;" class="table">
                     
                     <tbody>
+                        {% for key, avail in avail.items %}
                       <tr>
-                        <th scope="row">Apache Web Server</th>
-                       <td><button class="btn btn-success btn-sm">Install</button></td>
+                        <th scope="row">{{avail.NAME}}</th>
+                       <td><a class="btn btn-success btn-sm" href="/wpanel/{{server.id}}/package/details/{{key}}" type="button">View Details</a></td>
                       </tr>
-
-                      <tr>
-                        <th scope="row">Postgress SQL</th>
-                       <td><button class="btn btn-success btn-sm">Install</button></td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">LestEncrypt SSL</th>
-                       <td><button class="btn btn-success btn-sm">Install</button></td>
-                      </tr>
+                      {% endfor %}
+                     
                       
                      
                     </tbody>
@@ -78,18 +71,28 @@
           <div class="col-sm-6">
             <div class="card " style="margin-bottom: 0px;">
                 <div class="card-header bg-secondary text-white">
-                  <b>INSTALLED PACKAGES </b>
+                  <b>SERVICES STATUS</b>
                 </div>
                 <table  style="margin-bottom: 0rem;" class="table">
                     
                     <tbody>
                         <tbody>
+                          {% for inst_pkg in inst_pkg %}
                             <tr>
-                                <td>Apache Web Server</td>
-                              <td class=" text-success">RUNNING</td>
-                             <td><button class="btn btn-danger btn-sm">STOP </button> <button class="btn btn-warning btn-sm">RESTART </button></td>
+                            <td>{{inst_pkg.PackageName}}</td>
+                            {% if inst_pkg.PackageStatus == "RUNNING" %}
+                            <td class=" text-success">RUNNING</td>
+                            <td><button class="btn btn-danger btn-sm">STOP </button> <button class="btn btn-warning btn-sm">RESTART </button></td>
+                           
+                            {% endif %}
+
+                            {% if inst_pkg.PackageStatus == "STOP" %}
+                            <td class=" text-danger">STOP</td>
+                            <td> <button class="btn btn-warning btn-sm">RESTART </button></td>
+                           
+                            {% endif %}
                             </tr>
-      
+                          {% endfor %}
                            
                             
                            
