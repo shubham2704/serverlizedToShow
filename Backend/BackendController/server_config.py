@@ -153,7 +153,7 @@ PACKAGES = {
 
         5:{
         'NAME':'HAProxy',
-        'NAV_NAME' : '',
+        'NAV_NAME' : 'HAPoxy',
         'APP_NAME' : 'loadBalancer',
         'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'VERSION':'1.8',
