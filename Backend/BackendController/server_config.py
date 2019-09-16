@@ -11,10 +11,10 @@ STACK_DIST = {
         'PACKAGES_COUNT': 3
     },2:{
         'NAME' : 'Load Balancer',
-        'DESCRIPTION' : '',
+        'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
-        'PACKAGES':(),
-        'PACKAGES_COUNT': 2
+        'PACKAGES':(5),
+        'PACKAGES_COUNT': 1
     }
     
 }
@@ -178,6 +178,22 @@ PACKAGES = {
               }
         
         }
+        },
+
+        5:{
+        'NAME':'HAProxy',
+        'NAV_NAME' : '',
+        'APP_NAME' : 'loadBalancer',
+        'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
+        'VERSION':'1.8',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'haproxy_ubunt.sh')]
+        },
+
+        'CONTROL_PANEL' : {}
         }
 
     }
