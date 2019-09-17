@@ -14,6 +14,7 @@ class list(models.Model):
     distribution_id = models.IntegerField()
     stack_id = models.IntegerField()
     stack_name = models.CharField(max_length=55,default="")
+    superuser = models.CharField(max_length=55,default="")
     ServerType = models.CharField(
         max_length=25,
         choices=SERVER_TYPES,default='MASTER')
@@ -24,4 +25,16 @@ class list(models.Model):
     Charges = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
     date = models.DateTimeField(auto_now_add=True)
     running_status = models.CharField(max_length=45)
+    password = models.CharField(max_length=250,default="")
+    parent_server = models.CharField(max_length=250,default="")
 
+class Pkg_inst_data(models.Model):
+   
+    server = models.ForeignKey(list, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    PackageId = models.IntegerField()
+    ViewPKGOption = models.BooleanField(default=True)
+    PackageName = models.CharField(max_length=250,default="")
+    PackageStatus = models.CharField(max_length=250,default="")
+    date = models.DateTimeField(auto_now_add=True)
+    

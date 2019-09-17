@@ -1,0 +1,207 @@
+<style>
+    .menu{
+        background-color:rgba(158, 158, 158, 0.1);
+        padding:10px;
+        margin-top: 0px;
+    }
+
+    .menu-item{
+        padding:20px;
+    }
+    
+
+    .bs-example{
+        margin: 20px;
+    }
+    @media screen and (min-width: 768px) {
+      .dropdown:hover .dropdown-menu, .btn-group:hover .dropdown-menu{
+            display: block;
+        }
+        .dropdown-menu{
+            margin-top: 0;
+        }
+        .dropdown-toggle{
+            margin-bottom: 2px;
+        }
+        .navbar .dropdown-toggle, .nav-tabs .dropdown-toggle{
+            margin-bottom: 0;
+        }
+    }
+
+
+    ul{
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+      }
+      
+      ul.dropdown{ 
+        position: relative; 
+        width: 100%; 
+      }
+      
+      ul.dropdown li{ 
+        font-weight: bold; 
+        float: left; 
+        width: 180px; 
+        position: relative;
+        
+      }
+      
+      ul.dropdown a:hover{ 
+        color: #000; 
+        background: #ecf0f1;
+      }
+      
+      ul.dropdown li a { 
+        display: block; 
+        padding: 20px 8px;
+        color: #34495e; 
+        position: relative; 
+        z-index: 2000; 
+        text-align: center;
+        text-decoration: none;
+        font-weight: 300;
+      }
+      
+      ul.dropdown li a:hover,
+      ul.dropdown li a.hover{ 
+        background: #3498db;
+        position: relative;
+        color: #fff;
+      }
+      
+      
+      ul.dropdown ul{ 
+       display: none;
+       position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 180px; 
+        z-index: 1000;
+      }
+      
+      ul.dropdown ul li { 
+        font-weight: normal; 
+        background: #f6f6f6; 
+        color: #000; 
+        border-bottom: 1px solid #ccc; 
+      }
+      
+      ul.dropdown ul li a{ 
+        display: block; 
+        color: #34495e !important;
+        background: #eee !important;
+      } 
+      
+      ul.dropdown ul li a:hover{
+        display: block; 
+        background: #3498db !important;
+        color: #fff !important;
+      } 
+      
+      .drop > a{
+        position: relative;
+      }
+      
+      .drop > a:after{
+        content:"";
+        position: absolute;
+        right: 10px;
+        top: 40%;
+        border-left: 5px solid transparent;
+        border-top: 5px solid #333;
+        border-right: 5px solid transparent;
+        z-index: 999;
+      }
+      
+      .drop > a:hover:after{
+        content:"";
+         border-left: 5px solid transparent;
+        border-top: 5px solid #fff;
+        border-right: 5px solid transparent;
+      }
+      
+      
+</style>
+
+
+<div class="menu" id="menu">
+
+    
+<div class="row col-md-12 text-center">
+
+        <div  class="col-md-2 text-center menu-item">
+                            
+                        
+             <a href="#" style="text-decoration: none;color:black">
+                    <div class="icon" style="margin-bottom:10px;">
+                         <i class="fa fa-home fa-2x"></i>
+                     </div>
+                     <strong>Server Home</strong>
+             
+                    </a>
+                             </div>
+       
+      
+      {% for key, menu in menu.items %}
+        <div  class="col-md-2  menu-item">
+         <ul class="dropdown ">
+        <li class="drop text-center">
+            <div class="icon text-center" style="margin-bottom:10px;">
+                <i class="{{menu.ICON.URL.0}} fa-2x"></i>
+            </div>
+            <strong>{{key}}</strong>
+            <ul class="sub_menu" style="margin-top: 10px;">
+                    {% for key, menu in menu.items %}
+                    {% if menu.URL.2 == True %}
+                    <li><a href="/{{menu.URL.0}}">{{key}}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                        
+            </ul>
+        </li>
+        
+        </ul>
+
+        </div>
+
+        {% endfor %}
+       
+
+                                <div  class="col-md-2 text-center menu-item">
+                            
+                        
+                                        <a href="/wpanel/{{server.id}}/package" style="text-decoration: none;color:black">
+                                               <div class="icon" style="margin-bottom:10px;">
+                                                    <i class="fa fa-filter fa-2x"></i>
+                                                </div>
+                                                <strong>Package Manager</strong>
+                                        
+                                               </a>
+                                                        </div>
+
+                                                        <div  class="col-md-2 text-center menu-item">
+                            
+                        
+                                                          <a href="/wpanel/{{server.id}}/terminal" style="text-decoration: none;color:black">
+                                                                 <div class="icon" style="margin-bottom:10px;">
+                                                                      <i class="fa fa-terminal fa-2x"></i>
+                                                                  </div>
+                                                                  <strong>Terminal</strong>
+                                                          
+                                                                 </a>
+                                                                          </div>
+                                                        
+</div>
+
+
+</div>
+
+
+
+<script>
+        $(document).ready(function(){
+            
+        });		
+</script>

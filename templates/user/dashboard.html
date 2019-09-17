@@ -15,6 +15,7 @@
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <style>
@@ -64,8 +65,8 @@
                             <div class="col-md-9 col-xs-4 col-sm-6">
                             <b><p style="margin-bottom: 6px;"></p>Managed Server</b></div>
                             <div class="col-md-3 col-xs-8  col-sm-6 text-right ">
-                            <button type="button" class="align-middle btn btn-labeled btn-primary btn-sm">
-                                        <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</button>
+                            <a type="button" href="/wpanel/deploy" class="align-middle btn btn-labeled btn-primary btn-sm">
+                                        <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</a>
                                     </div>
                         </div></div>
                         <div class="">
@@ -93,14 +94,17 @@
                                                            
                                                           </div>
                                             </td>
-                                            <td class="align-middle"><strong>Rs {{servers.Charges}}</strong></td>
+                                            <td class="align-middle"><strong>	&#8377; {{servers.Charges}}</strong></td>
                                             <td class="align-middle"><strong>{{servers.date}}</strong></td>
                                             <td class="align-middle"><span class="badge badge-primary">{{servers.server_status}}</span></td>
                                             <td class="align-middle">
-                                                <button type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
-                                                <a type="button" href="/wpanel/manage/{{servers.id}}" class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
-                                                <a href="/wpanel/delete/{{servers.id}}" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
-                                            </td>
+                                                <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/delete/{{servers.id}}" {% endif %}  type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
+                                            
+                                              </td>
                                           </tr>
                     {% endfor %}
                                         
@@ -122,11 +126,100 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
     <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
-    <script>$('.inlinesparkline').sparkline(); </script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script>
+      
+      $('.inlinesparkline').sparkline(); 
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          console.log(json)
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+      </script>
   </body>
 </html>
