@@ -6,7 +6,7 @@ import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage
+from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage, InstallServerPackage
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES_DETAILS, PACKAGES
 from .models import list as server_list, projects, Pkg_inst_data
@@ -24,6 +24,48 @@ def pkg_details(request, pkg_id):
             params['package'] = PACKAGES_DETAILS[pkg_id]
 
         return render(request, "user/package_details.html", params)
+
+
+def pkg_details_server(request,server_id, pkg_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['pkg_id'] = pkg_id
+        if pkg_id in PACKAGES_DETAILS:
+
+            params['package'] = PACKAGES_DETAILS[pkg_id]
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+
+        return render(request, "user/package_details_server.html", params)
+
+
+
+def install_package(request,server_id, pkg_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['status'] = "error"
+        if pkg_id in PACKAGES_DETAILS:
+            getserver = server_list.objects.get(id=server_id)
+            get_installed_pkg_lst = json.loads(getserver.JSON_PKG_LST)
+
+            check = pkg_id in get_installed_pkg_lst
+
+            if check == False:
+                InstallServerPackage.delay(server_id, pkg_id)
+                params['status'] = "ok"
+
+
+
+
+            
+
+        return JsonResponse(params)
+
 
 
 
