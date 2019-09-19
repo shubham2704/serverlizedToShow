@@ -36,7 +36,7 @@ PACKAGES = {
             1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
-            'WEBSITE':{
+            'Website':{
                         "ICON" : {
                              "URL":('fa fa-globe', "", False)
                          },
@@ -201,7 +201,7 @@ PACKAGES = {
                              "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
                          },
                         "Create Certificate" : {
-                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
+                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True)
                          },
               }
         

@@ -46,3 +46,12 @@ class ssl(models.Model):
     status = models.CharField(max_length=25)
     expiry = models.DateTimeField(auto_now_add=True)
     date = models.DateTimeField(auto_now_add=True)
+
+class lets_encrypt(models.Model):
+    
+    server = models.ForeignKey(server_id, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    domain = models.ForeignKey(domain, on_delete=models.CASCADE)
+    status = models.CharField(max_length=45)
+    date = models.DateTimeField(auto_now_add=True)
+

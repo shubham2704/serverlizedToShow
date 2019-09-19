@@ -5,17 +5,65 @@ import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete
+from ..BackendController.tasks.install_stack import ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete, ConfigLetsEncrypt
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
 from ..servers.models import list as server_list, projects
 import json
-from .models import domain, mysql_user, mysql_database, ssl
+from .models import domain, mysql_user, mysql_database, ssl as tcp_ssl, lets_encrypt
 import tldextract
 
 
 # Create your views here.
 PKG_ID = 1
+
+def letsencrypt(request, manage_id):
+    login = CheckLogin(request)
+    print(login)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['menu'] = {}
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            params['server'] = getserver
+            params['ssls'] = lets_encrypt.objects.filter(server=getserver, user=user)
+            params['domains'] = domain.objects.filter(server=getserver, user=user)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
+            if request.method == "POST":
+                domain_id = request.POST['domain_id']
+                domain_got = domain.objects.get(id = domain_id)
+                count_l = lets_encrypt.objects.filter(domain = domain_got).count()
+                count_d = tcp_ssl.objects.filter(domain = domain_got).count()
+                
+                if count_l == 0 and count_d == 0:
+
+                    obj, insert = lets_encrypt.objects.get_or_create(
+                        server = getserver,
+                        user = user,
+                        domain = domain_got,
+                        status = "Installing"
+                    )
+
+                    if insert:
+                        ConfigLetsEncrypt.delay(obj.id)
+                        messages.success(request, "Let's Encrypt will be installed soon.")
+
+                else:
+                    messages.error(request, "It seem you have already a SSL for selected domain.", extra_tags="danger")
+            
+        except Exception as e:
+            print(e)
+            
+
+        
+        return render(request, "user/ssl-letsencrypt.html", params)
+
+    else:
+        return redirect("/login")
+
 
 def ssl(request, manage_id):
     login = CheckLogin(request)
@@ -30,8 +78,8 @@ def ssl(request, manage_id):
         try:
             getserver = server_list.objects.get(id=manage_id)
             params['server'] = getserver
-            params['ssls'] = ssl.objects.filter(server=getserver, user=user)
-            params['domains'] = ssl.objects.filter(server=getserver, user=user)
+            params['ssls'] = tcp_ssl.objects.filter(server=getserver, user=user)
+            params['domains'] = tcp_ssl.objects.filter(server=getserver, user=user)
             params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
             
 
