@@ -10,12 +10,42 @@ from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
 from ..servers.models import list as server_list, projects
 import json
-from .models import domain, mysql_user, mysql_database
+from .models import domain, mysql_user, mysql_database, ssl
 import tldextract
 
 
 # Create your views here.
 PKG_ID = 1
+
+def ssl(request, manage_id):
+    login = CheckLogin(request)
+    
+    print(login)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['menu'] = {}
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            params['server'] = getserver
+            params['ssls'] = ssl.objects.filter(server=getserver, user=user)
+            params['domains'] = ssl.objects.filter(server=getserver, user=user)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
+            
+
+        
+       
+        except Exception as e:
+            pass
+
+
+        return render(request, "user/ssl.html", params)
+
+    else:
+        return redirect("/login")
+
 
 def apachelog(request, manage_id):
     login = CheckLogin(request)
