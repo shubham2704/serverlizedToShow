@@ -35,7 +35,7 @@ def ConfigLetsEncrypt(insert_id = 0):
         if conn == 200:
 
 
-            GetConfigCommand = "certbot --webroot-path /var/www/"+ domain_get.folder +" --authenticator webroot --installer apache --expand --non-interactive --agree-tos --email="+ inse_id.user.email +" --domains "+ a +" --redirect"
+            GetConfigCommand = "certbot --webroot-path /var/www/"+ domain_get.folder +" --authenticator webroot --installer apache --expand --non-interactive --agree-tos --email="+ inse_id.user.email +" --domains "+ a
             
             print(GetConfigCommand)
             stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetConfigCommand)
@@ -60,6 +60,7 @@ def ConfigLetsEncrypt(insert_id = 0):
         print(e)
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
+
 
 
 
@@ -288,7 +289,7 @@ def DeleteLampDomain(insert_id = 0):
         t = paramiko.Transport(domain_get.server.server_ip, 22)
         t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
         sftp = paramiko.SFTPClient.from_transport(t)
-        GetPKG = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
+        GetPKG = PACKAGES[1]['CONTROL_PANEL']['Website']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
         file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
         
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
@@ -403,7 +404,7 @@ def ConfigureLampDomain(insert_id = 0):
         t = paramiko.Transport(domain_get.server.server_ip, 22)
         t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
         sftp = paramiko.SFTPClient.from_transport(t)
-        GetPKG = PACKAGES[1]['CONTROL_PANEL']['WEBSITE']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
+        GetPKG = PACKAGES[1]['CONTROL_PANEL']['Website']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
         file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
         
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
@@ -495,6 +496,18 @@ def installStack(insert_id = 0):
                             PackageName = PACKAGES[pkg_id]['NAME'],
                             PackageStatus = "RUNNING"
                         )
+                        response = []
+                            
+                        for lin in stdderr:
+                            response.append(str(lin))
+
+                        server_output.objects.create(
+                            server = get_server,
+                            user = get_server.user_id,
+                            PackageId = 6,
+                            command = "Install Stack Package - " + PACKAGES[pkg_id]['NAME'],
+                            output = json.dumps(response)
+                        )
 
                         sendNotification(get_server.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is succesfully installed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
 
@@ -531,3 +544,115 @@ def installStack(insert_id = 0):
             get_server.save()
             sendNotification(get_server.user_id.id, 'toast', 'error', 'Error Occured', 'Error was occured while installing Stack on ' + get_server.server_name + '  (' + get_server.server_ip + '), Please contact use for asistance.')
         print(e)
+
+
+@task(name="Renew Lets Encrypt")
+
+def RenweLetsEncrypt(insert_id = 0):
+      try:
+        inse_id = lets_encrypt.objects.get(id = insert_id)
+        get_server = inse_id.server
+        domain_get = inse_id.domain
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        
+        if domain_get.subdomain != '':
+            a = domain_get.subdomain + "." + domain_get.domain_name
+        else:
+            a = domain_get.domain_name
+
+        #conn = requests.get("https://"+a)
+        #print(conn.status_code)
+        conn = 200
+        if conn == 200:
+
+            
+            GetConfigCommand = "certbot renew --cert-name "+ a +" --dry-run"
+            
+            print(GetConfigCommand)
+            stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetConfigCommand)
+            print ("pwd: ", stddout.readlines())
+            response = []
+                            
+            for lin in stdderr:
+                response.append(str(lin))
+
+            server_output.objects.create(
+                server = get_server,
+                user = get_server.user_id,
+                PackageId = 6,
+                command = "Renew Lets Encrypt - " + a,
+                output = json.dumps(response)
+            )
+            sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Renewed" , 'Lets encrypt is succesfully renewed for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+            inse_id.status = "Configured"
+            inse_id.save()
+
+      except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not renewed for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        #inse_id.delete()
+
+
+@task(name="Delete Lets Encrypt")
+
+def DeleteLetsEncrypt(insert_id = 0):
+      try:
+        inse_id = lets_encrypt.objects.get(id = insert_id)
+        get_server = inse_id.server
+        domain_get = inse_id.domain
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        
+        if domain_get.subdomain != '':
+            a = domain_get.subdomain + "." + domain_get.domain_name
+        else:
+            a = domain_get.domain_name
+
+        #conn = requests.get("https://"+a)
+        #print(conn.status_code)
+        conn = 200
+        if conn == 200:
+
+            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.stack_id][1]
+            file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+            sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+            client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+            stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + " " + a)
+            print ("pwd: ", stddout.readlines())
+            response = []
+                            
+            for lin in stdderr:
+                response.append(str(lin))
+
+            server_output.objects.create(
+                server = get_server,
+                user = get_server.user_id,
+                PackageId = 6,
+                command = "Delete Lets Encrypt - " + a,
+                output = json.dumps(response)
+            )
+            sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Deleted" , 'Lets encrypt is succesfully Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+            #inse_id.status = "Configured"
+            inse_id.delete()
+
+      except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        
+
+
+
+
+
+
+    

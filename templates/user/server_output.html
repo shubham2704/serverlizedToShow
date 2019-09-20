@@ -73,58 +73,26 @@
                 {% endfor %}
              {% endif %}
 
-
-            <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="">
-                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
-                      </h4>
-                    </h2>
-                  </div>
-              
-                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/letsencrypt">
-                            {%csrf_token%}
-                            <div class="form-group">
-                              <label for="exampleInputEmail1">Select Domain</label>
-                              <select name="domain_id" class="form-control">
-                                  {% for domain in domains %}
-                                  <option value="{{domain.id}}">{{domain.subdomain}} {{domain.domain_name}}</option>
-                                  {% endfor %}
-                              </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Generate SSL</button>
-                          
-                        </form>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-              <br>
               <div class="card">
                 <div class="card-header">
-                  <b>SSL Certificates</b>
+                  <b>Server Output </b>
                 </div>
                 <table style="margin-bottom: 0rem;" class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Domain</th>
-                        <th>Expiry</th>
-                        <th>Status</th>
-                       
+                        <th>Comment</th>
+                        <th>Timestamp</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for ssl in ssls %}
+                      {% for output in outputs %}
                       <tr>
-                        <td class="align-middle"><a href="">{{ssl.domain.subdomain}}.{{ssl.domain.domain_name}}  </a> <span class="badge badge-primary">{{ssl.status}} </span> </td>
-                        <td class="align-middle">{{ssl.expiry}}</td>
-                        <td><button onclick="delete_ssl({{ssl.id}})" type="button" class="btn btn-danger btn-sm">Remove</button> <button onclick="renew({{ssl.id}})" type="button" class="btn btn-success btn-sm">Renew</button></td>
+                        <td class="align-middle"><a href="/wpanel/{{server.id}}/output/{{output.id}}">{{output.command}} </a>
+                        <br>
+                        <small>{{output.output | truncatechars:100}}</small>
+                        </td>
+                        <td class="align-middle">{{output.date}}</td>
+                       
                       </tr>
                       {% endfor %}
                      
@@ -172,51 +140,12 @@
     <script>
 
 
-      function delete_ssl(e){
+      function delete_domain(e){
         $.confirm({
           message: 'Are you sure? this action is unchangeable.',
           onOk: function() {
             
-            
-  $.ajax({url: "/wpanel/{{server.id}}/letsencrypt/" + e + "/delete", success: function(result){
-    if(result.status == "ok"){
-      toastr.success("SSL certificate will be deleted soon.", "Request Sent",{
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": true,
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      });
-    }else{
-      toastr.error("Unable to request restart", "Error Occured",{
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": true,
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      });
-    }
-  }});
+            window.location="/wpanel/{{server.id}}/domain/delete/" + e;
             
           }
         });

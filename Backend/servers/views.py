@@ -9,9 +9,50 @@ from ..signup.models import user
 from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage, InstallServerPackage
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES_DETAILS, PACKAGES
-from .models import list as server_list, projects, Pkg_inst_data
+from .models import list as server_list, projects, Pkg_inst_data, output as ser_output
 import json
 
+def server_output(request, server_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['outputs'] = ser_output.objects.filter(user=user, server=getserver)
+
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/server_output.html", params)
+    else:
+        return redirect("/login")
+
+
+def server_output_view(request, server_id, output_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['output'] = ser_output.objects.get(id=output_id)
+            params['output_js'] = json.loads(params['output'].output)
+
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/server_output_view.html", params)
+    else:
+        return redirect("/login")
 
 def pkg_details(request, pkg_id):
     login = CheckLogin(request)
@@ -194,6 +235,7 @@ def manage_server(request, server_id):
 def deploy(request):
     
     login = CheckLogin(request)
+    #installStack(27)
     if login == True:
         params = {}
         user = getUser(request)
@@ -298,3 +340,4 @@ def panel(request):
         return render(request, "user/dashboard.html", params)
     else:
         return redirect("/login")
+

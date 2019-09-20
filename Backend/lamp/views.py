@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.core.signing import Signer
 from django.contrib import messages
 import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete, ConfigLetsEncrypt
+from ..BackendController.tasks.install_stack import RenweLetsEncrypt, ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete, ConfigLetsEncrypt, DeleteLetsEncrypt
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
 from ..servers.models import list as server_list, projects
@@ -16,6 +17,53 @@ import tldextract
 
 # Create your views here.
 PKG_ID = 1
+
+def letsencrypt_renew(request, manage_id, insert_id):
+    login = CheckLogin(request)
+    print(login)
+    if login == True:
+        params = {}
+        params['status'] = "Error"
+
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            getinsert_id = lets_encrypt.objects.get(id=insert_id)
+            RenweLetsEncrypt.delay(insert_id)
+            params['status'] = "ok"
+
+        except Exception as e:
+            print(e)
+            
+        return JsonResponse(params)
+
+    else:
+        return redirect("/login")
+
+
+
+def letsencrypt_delete(request, manage_id, insert_id):
+    login = CheckLogin(request)
+    print(login)
+    if login == True:
+        params = {}
+        params['status'] = "Error"
+
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            getinsert_id = lets_encrypt.objects.get(id=insert_id)
+            DeleteLetsEncrypt.delay(insert_id)
+            params['status'] = "ok"
+
+        except Exception as e:
+            print(e)
+            
+        return JsonResponse(params)
+
+    else:
+        return redirect("/login")
+
 
 def letsencrypt(request, manage_id):
     login = CheckLogin(request)

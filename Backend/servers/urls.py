@@ -11,6 +11,8 @@ urlpatterns = [
     path('wpanel/package/<int:pkg_id>', views.pkg_details, name='Package Details, Code => /Backend/servers/'),
     path('wpanel/<int:server_id>/package/<int:pkg_id>', views.pkg_details_server, name='Package Details, Code => /Backend/servers/'),
     path('wpanel/<int:server_id>/package/<int:pkg_id>/install', views.install_package, name='Install Package in Server, Code => /Backend/servers/'),
+    path('wpanel/<int:server_id>/output/', views.server_output, name='Server Output, Code => /Backend/servers/'),
+    path('wpanel/<int:server_id>/output/<int:output_id>', views.server_output_view, name='Server Output View, Code => /Backend/servers/'),
 ]
 
 control_url = []
