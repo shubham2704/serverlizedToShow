@@ -73,65 +73,26 @@
                 {% endfor %}
              {% endif %}
 
-
-            <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="">
-                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
-                      </h4>
-                    </h2>
-                  </div>
-              
-                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/domain/add">
-                            {%csrf_token%}
-                            <div class="form-group">
-                              <label for="exampleInputEmail1">Domain</label>
-                              <input type="text" name="domain" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example.com">
-                              <small id="emailHelp" class="form-text text-muted">without http(s) & www </small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Directroy</label>
-                                <input type="text" name="folder" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example">
-                                <small id="emailHelp" class="form-text text-muted">Directory will be automatically created. </small>
-                            </div>
-                            
-                            
-                            <button type="submit" class="btn btn-primary">Addon Domain</button>
-                          
-                        </form>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-              <br>
               <div class="card">
                 <div class="card-header">
-                  <b>Hosted Domain </b>
+                  <b>Server Output </b>
                 </div>
                 <table style="margin-bottom: 0rem;" class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Domain</th>
-                        <th>Directory</th>
-                        <th></th>
-                        <th></th>
+                        <th>Comment</th>
+                        <th>Timestamp</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for domain in domains %}
+                      {% for output in outputs %}
                       <tr>
-                        <td class="align-middle"><a href="">{{domain.subdomain}}.{{domain.domain_name}} </a></td>
-                        <td class="align-middle">/var/www/{{domain.folder}}</td>
-                        <td><button onclick="delete_domain({{domain.id}})" type="button" class="btn btn-info btn-sm">Delete</button>  </td>
-                      <td>
-                        <i class="fa fa-certificate"></i>
-                      </td>
+                        <td class="align-middle"><a href="/wpanel/{{server.id}}/output/{{output.id}}">{{output.command}} </a>
+                        <br>
+                        <small>{{output.output | truncatechars:100}}</small>
+                        </td>
+                        <td class="align-middle">{{output.date}}</td>
+                       
                       </tr>
                       {% endfor %}
                      

@@ -6,12 +6,53 @@ import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage
+from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage, InstallServerPackage
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES_DETAILS, PACKAGES
-from .models import list as server_list, projects, Pkg_inst_data
+from .models import list as server_list, projects, Pkg_inst_data, output as ser_output
 import json
 
+def server_output(request, server_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['outputs'] = ser_output.objects.filter(user=user, server=getserver)
+
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/server_output.html", params)
+    else:
+        return redirect("/login")
+
+
+def server_output_view(request, server_id, output_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['output'] = ser_output.objects.get(id=output_id)
+            params['output_js'] = json.loads(params['output'].output)
+
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/server_output_view.html", params)
+    else:
+        return redirect("/login")
 
 def pkg_details(request, pkg_id):
     login = CheckLogin(request)
@@ -24,6 +65,48 @@ def pkg_details(request, pkg_id):
             params['package'] = PACKAGES_DETAILS[pkg_id]
 
         return render(request, "user/package_details.html", params)
+
+
+def pkg_details_server(request,server_id, pkg_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['pkg_id'] = pkg_id
+        if pkg_id in PACKAGES_DETAILS:
+
+            params['package'] = PACKAGES_DETAILS[pkg_id]
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+
+        return render(request, "user/package_details_server.html", params)
+
+
+
+def install_package(request,server_id, pkg_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['status'] = "error"
+        if pkg_id in PACKAGES_DETAILS:
+            getserver = server_list.objects.get(id=server_id)
+            get_installed_pkg_lst = json.loads(getserver.JSON_PKG_LST)
+
+            check = pkg_id in get_installed_pkg_lst
+
+            if check == False:
+                InstallServerPackage.delay(server_id, pkg_id)
+                params['status'] = "ok"
+
+
+
+
+            
+
+        return JsonResponse(params)
+
 
 
 
@@ -152,6 +235,7 @@ def manage_server(request, server_id):
 def deploy(request):
     
     login = CheckLogin(request)
+    #installStack(27)
     if login == True:
         params = {}
         user = getUser(request)
@@ -256,3 +340,4 @@ def panel(request):
         return render(request, "user/dashboard.html", params)
     else:
         return redirect("/login")
+

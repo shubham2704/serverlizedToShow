@@ -1,0 +1,303 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+        body{
+            font-family: 'Hind Madurai', sans-serif;
+        }
+        .starter-template {
+            padding: 3rem 1.5rem;
+            text-align: center;
+          }
+          .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
+         .btn-labeled {padding-top: 0;padding-bottom: 0;}
+         .bg-ser{
+             background-color: #428bca;
+         }
+    </style>
+  </head>
+
+  <body>
+
+    {% include "user/navbar.html" %}
+    
+          <div class=" flex-column flex-md-row align-items-md-center p-5 bg-light">
+              <div class=" row ">
+                <div class=" col-md-8 pt-md-3 pb-md-4">
+                  <h1 class="bd-title mt-0">{{package.NAME}}</h1>
+                  <p class="bd-lead"> {{package.DESCRIPTION}}</p>
+                  <p class=" bd-lead badge badge-primary"> {{package.TAG}} </p>
+                  <p class=" bd-lead badge badge-default"> v{{package.VERSION}} </p>
+                </div>
+                <div class=" text-center col-md-4 pt-md-3 pb-md-4">
+                    <div class="align-middle"> <br><br>  <button onclick="install()" class="btn btn-primary">Install in {{server.server_name}}</button>
+                        <br>
+                    <small>{{server.server_ip}}</small> </div>
+                   
+                </div>
+                
+              </div>
+            </div>
+    <main role="main" class="container">
+        
+            <div class="row">
+
+                    <!-- Post Content Column -->
+                    <div class="col-lg-8">
+              
+                     <br>
+                      <!-- Author -->
+                      <p class="lead">
+                           Interface Screenshots 
+                      </p>
+                      <div id="demo" class="carousel slide" data-ride="carousel">
+
+                            <!-- Indicators -->
+                            <ul class="carousel-indicators">
+                              <li data-target="#demo" data-slide-to="0" class="active"></li>
+                              <li data-target="#demo" data-slide-to="1"></li>
+                              <li data-target="#demo" data-slide-to="2"></li>
+                            </ul>
+                          
+                            <!-- The slideshow -->
+                            <div class="carousel-inner">
+                              <div class="carousel-item active">
+                                <img src="https://itexperttraining.com/wp-content/uploads/2018/12/Identity-With-Windows-Server-2016-M20742.jpg" alt="Los Angeles">
+                              </div>
+                              <div class="carousel-item">
+                                <img src="https://itexperttraining.com/wp-content/uploads/2018/12/Identity-With-Windows-Server-2016-M20742.jpg" alt="Chicago">
+                              </div>
+                              <div class="carousel-item">
+                                <img src="https://itexperttraining.com/wp-content/uploads/2018/12/Identity-With-Windows-Server-2016-M20742.jpg" alt="New York">
+                              </div>
+                            </div>
+                          
+                            <!-- Left and right controls -->
+                            <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                              <span class="carousel-control-prev-icon"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#demo" data-slide="next">
+                              <span class="carousel-control-next-icon"></span>
+                            </a>
+                          
+                          </div>
+              
+              
+                     
+              
+                    {{package.HTML}}
+              
+                    </div>
+              
+                    <!-- Sidebar Widgets Column -->
+                    <div class="col-md-4">
+              
+                      <!-- Search Widget -->
+                 
+              
+                      <!-- Categories Widget -->
+                      <div class="card my-4">
+                            
+                        <h5 class="card-header">Control Treeview</h5>
+                        <div class="card-body">
+                         
+                                    {% for key, v in package.CONTROL_TREE.items %}
+                                      <ul>
+                                            <li><span class="caret">{{key}}</span>
+                                              <ul class="nested">
+                                                    {% for  vs in v %}
+                                                <li>{{vs}}</li>
+                                                
+                                                {% endfor %}
+                                              </ul>
+                                            </li>
+                                          </ul>  
+                                          
+                                    {% endfor %}
+                         <small>You will be provided a Graphical Interface of above options in your server control panel once you installed <b>{{package.NAME}}</b>.</small>
+                        </div>
+                      </div>
+              
+                      <!-- Side Widget -->
+                      <div class="card my-4">
+                        <h5 class="card-header">Bundled with Stack</h5>
+                        <div class="card-body">
+                               
+                                    {% for key in package.BUNDLE %}
+                                      <span class="badge badge-primary">{{key}}</span>
+                                      {% endfor %}
+                                    
+                                    
+                        <br>  <br>
+                                      <small>This package is Bundled with above stack you can directly install them to get <b>{{package.NAME}}</b>.</small>
+                     
+                            </div>
+                      </div>
+              
+                    </div>
+              
+                  </div>
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script>
+
+            function install(){
+
+                $.ajax({url: "/wpanel/{{server.id}}/package/{{pkg_id}}/install", success: function(result){
+                  if(result.status == "ok"){
+                    toastr.success("Package will be Installed soon.", "Request Sent",{
+                      "closeButton": true,
+                      "debug": false,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-bottom-right",
+                      "preventDuplicates": true,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    });
+                  }else{
+                    toastr.error("Unable to request Install request.", "Error Occured",{
+                      "closeButton": true,
+                      "debug": false,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-bottom-right",
+                      "preventDuplicates": true,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    });
+                  }
+                }});
+              
+              }
+      
+      
+      $('.inlinesparkline').sparkline(); 
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          console.log(json)
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+      </script>
+  </body>
+</html>

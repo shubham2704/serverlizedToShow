@@ -26,6 +26,7 @@ PACKAGES = {
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'DOMAIN',
         'APP_NAME' : 'lamp',
+        'DEPENDENCIES' : [],
         'DESCRIPTION':'The Apache HTTP Server, colloquially called Apache, is free and open-source cross-platform web server software, released under the terms of Apache License 2.0. Apache is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation.',
         'VERSION':'2.2',
         'INIT_COMMAND' : {
@@ -35,7 +36,7 @@ PACKAGES = {
             1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
-            'WEBSITE':{
+            'Website':{
                         "ICON" : {
                              "URL":('fa fa-globe', "", False)
                          },
@@ -72,6 +73,15 @@ PACKAGES = {
                                  }
                          }
               },
+              'SSL/TLS':{
+                        "ICON" : {
+                             "URL":('fa fa-certificate', "", False)
+                         },
+                         "Configure SSL" : {
+                             "URL":('wpanel/<int:manage_id>/ssl', "Backend.lamp.views.ssl", True)
+                         },
+              },
+              
               
                
                 }
@@ -84,6 +94,7 @@ PACKAGES = {
         'NAV_NAME' : 'Database',
         'SERVICE_VIEW' : True,
         'APP_NAME' : 'lamp',
+        'DEPENDENCIES' : [],
         'DESCRIPTION':'',
         'VERSION':'2.2',
         'INIT_COMMAND' : {
@@ -132,6 +143,7 @@ PACKAGES = {
         'SERVICE_VIEW' : False,
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
+        'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
@@ -149,6 +161,7 @@ PACKAGES = {
         'SERVICE_VIEW' : False,
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
+        'DEPENDENCIES' : [1,2,3],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
@@ -168,26 +181,37 @@ PACKAGES = {
         
         }
         },
-        5:{
+        6:{
         'NAME':'Lets Encrypt SSL',
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
         'DESCRIPTION':'',
+        'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'phpmyadmin_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
+            1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
-            'phpMyAdmin':{
+            'Lets Encrypt':{
                         "ICON" : {
-                             "URL":('fa fa-external-link', "Backend.lamp.views.add", False)
+                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
                          },
-                        "Open phpMyAdmin" : {
-                             "URL":('wpanel/<int:manage_id>/phpmyadmin', "Backend.lamp.views.phpmyadmin", True)
+                        "Create Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True),
+                             
+                         },
+                         "Delete Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/delete', "Backend.lamp.views.letsencrypt_delete", False),
+                           "COMMAND":{
+                                 1:('SCRIPT', 'deletelets_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "Renew Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/renew', "Backend.lamp.views.letsencrypt_renew", False)
                          },
               }
         
@@ -195,7 +219,7 @@ PACKAGES = {
         },
 
         5:{
-        'NAME':'HAProxy',
+        'NAME':'HaProxy',
         'NAV_NAME' : 'HAPoxy',
         'APP_NAME' : 'loadBalancer',
         'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
@@ -221,10 +245,28 @@ PACKAGES_DETAILS = {
             'APP_NAME' : 'lamp',
             'DESCRIPTION':'The Apache HTTP Server, colloquially called Apache, is free and open-source cross-platform web server software, released under the terms of Apache License 2.0. Apache is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation.',
             'TAG':'Software',
-            'VERSION':'2.2',
+            'VERSION':'v2.2',
             'CONTROL_TREE':{
                 'Website' : ['Addon Domain', 'Delete Domain'],
                 'Monitor' : ['Apache Logs', 'Error Logs']
+                
+            },
+            'HTML':'',
+            'IMG' : [],
+            'BUNDLE' : ['LAMP STACK']
+
+        },
+        6:{
+            'NAME' : 'Lets Encrypt SSL',
+            'SERVICE_VIEW' : True,
+            'NAV_NAME' : 'DOMAIN',
+            'APP_NAME' : 'lamp',
+            'DESCRIPTION':'Lets Encrypt is a non-profit certificate authority run by Internet Security Research Group that provides X.509 certificates for Transport Layer Security encryption at no charge. The certificate is valid for 90 days, during which renewal can take place at any time.',
+            'TAG':'Software',
+            'VERSION':'',
+            'CONTROL_TREE':{
+                'Website' : ['Create Certificate', 'Renew Certificate' ],
+                'Alert' : ['Expiry Notifier']
                 
             },
             'HTML':'',

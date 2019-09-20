@@ -54,7 +54,7 @@
                         {% for key, avail in avail.items %}
                       <tr>
                         <th scope="row">{{avail.NAME}}</th>
-                       <td><a class="btn btn-success btn-sm" href="/wpanel/{{server.id}}/package/details/{{key}}" type="button">View Details</a></td>
+                       <td><a class="btn btn-success btn-sm" href="/wpanel/{{server.id}}/package/{{key}}" type="button">View Details</a></td>
                       </tr>
                       {% endfor %}
                      

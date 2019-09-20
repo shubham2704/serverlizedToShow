@@ -38,3 +38,13 @@ class Pkg_inst_data(models.Model):
     PackageStatus = models.CharField(max_length=250,default="")
     date = models.DateTimeField(auto_now_add=True)
     
+
+class output(models.Model):
+       
+    server = models.ForeignKey(list, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    PackageId = models.IntegerField()
+    command = models.CharField(default="", max_length=250)
+    output = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    
