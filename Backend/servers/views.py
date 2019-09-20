@@ -34,7 +34,25 @@ def server_output(request, server_id):
 
 
 def server_output_view(request, server_id, output_id):
-    pass
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['output'] = ser_output.objects.get(id=output_id)
+            params['output_js'] = json.loads(params['output'].output)
+
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/server_output_view.html", params)
+    else:
+        return redirect("/login")
 
 def pkg_details(request, pkg_id):
     login = CheckLogin(request)

@@ -54,7 +54,7 @@
     <div class="container" style="margin-top: 25px;">
         <div class="row">
              
-          <div class="col-sm-8">
+          <div class="col-sm-12">
                 {% if messages %}
 
 
@@ -73,56 +73,22 @@
                 {% endfor %}
              {% endif %}
 
-              <div class="card">
-                <div class="card-header">
-                  <b>Server Output </b>
+              <div class="card" >
+                <div style="background-color:black;color:white;" class="card-header">
+                  <b>Output :- {{output.command}} #{{output.id}} {{output.date}}  <i class="fa fa-clock-o pull-right"></i> </b>
                 </div>
-                <table style="margin-bottom: 0rem;" class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Comment</th>
-                        <th>Timestamp</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for output in outputs %}
-                      <tr>
-                        <td class="align-middle"><a href="/wpanel/{{server.id}}/output/{{output.id}}">{{output.command}} </a>
-                        <br>
-                        <small>{{output.output | truncatechars:100}}</small>
-                        </td>
-                        <td class="align-middle">{{output.date}}</td>
-                       
-                      </tr>
-                      {% endfor %}
-                     
-                    </tbody>
-                  </table>
+                <div class="card-body" style="background-color:black;color:white;">
+                    {% for out in output_js %}
+                    <div class="row" >
+                        <label for="email2" class="col-md-2">root@{{server.server_ip}} : </label>
+                        <label for="pwd2" class=" col-md-10"> {{out}}</label>
+                         
+                    </div>
+                         <br>
+                    {% endfor %}
+                </div>
               </div>
               <br>
-          </div>
-          
-          <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                  <b>DNS Configuration </b>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
-                  <br> <code>A example.com {{server.server_ip}} </code>
-                  <ul>
-                      <li>Type : <code>A</code></li>
-                      <li>Host : <code>example.com</code></li>
-                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
-                  </ul>
-                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
-                </p>
-                  
-                   
-                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
-                </div>
-              </div>
           </div>
           
         </div>
