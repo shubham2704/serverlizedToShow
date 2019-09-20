@@ -201,7 +201,17 @@ PACKAGES = {
                              "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
                          },
                         "Create Certificate" : {
-                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True)
+                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True),
+                             
+                         },
+                         "Delete Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/delete', "Backend.lamp.views.letsencrypt_delete", False),
+                           "COMMAND":{
+                                 1:('SCRIPT', 'deletelets_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "Renew Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/renew', "Backend.lamp.views.letsencrypt_renew", False)
                          },
               }
         
