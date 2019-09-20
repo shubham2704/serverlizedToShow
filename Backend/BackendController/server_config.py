@@ -13,7 +13,7 @@ STACK_DIST = {
         'NAME' : 'Load Balancer',
         'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
-        'PACKAGES':(6),
+        'PACKAGES':(5),
         'PACKAGES_COUNT': 1
     }
     
@@ -154,7 +154,7 @@ PACKAGES = {
         
         }
         },
-        5:{
+        6:{
         'NAME':'Lets Encrypt SSL',
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
@@ -180,7 +180,7 @@ PACKAGES = {
         }
         },
 
-        6:{
+        5:{
         'NAME':'HAProxy',
         'NAV_NAME' : 'HAPoxy',
         'APP_NAME' : 'loadBalancer',
