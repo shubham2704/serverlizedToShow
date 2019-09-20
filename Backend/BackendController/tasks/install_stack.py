@@ -4,12 +4,63 @@ import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
 from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output
-from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database
+from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt
 from ..contri import sendNotification
 import os
 import ntpath
+import requests
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+@task(name="Configure Lets Encrypt")
+def ConfigLetsEncrypt(insert_id = 0):
+    try:
+        inse_id = lets_encrypt.objects.get(id = insert_id)
+        get_server = inse_id.server
+        domain_get = inse_id.domain
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        
+        if domain_get.subdomain != '':
+            a = domain_get.subdomain + "." + domain_get.domain_name
+        else:
+            a = domain_get.domain_name
+
+        conn = requests.get("http://"+a)
+        print(conn.status_code)
+        conn = 200
+        if conn == 200:
+
+
+            GetConfigCommand = "certbot --webroot-path /var/www/"+ domain_get.folder +" --authenticator webroot --installer apache --expand --non-interactive --agree-tos --email="+ inse_id.user.email +" --domains "+ a +" --redirect"
+            
+            print(GetConfigCommand)
+            stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetConfigCommand)
+            print ("pwd: ", stddout.readlines())
+            response = []
+                            
+            for lin in stdderr:
+                response.append(str(lin))
+
+            server_output.objects.create(
+                server = get_server,
+                user = get_server.user_id,
+                PackageId = 6,
+                command = "Configure Lets Encrypt - " + a,
+                output = json.dumps(response)
+            )
+            sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Configured" , 'Lets encrypt is succesfully configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+            inse_id.status = "Configured"
+            inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
 
 
 @task(name="Package Restart")
@@ -368,6 +419,10 @@ def ConfigureLampDomain(insert_id = 0):
             
         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
         print ("stderr: ", stdderr.readlines())
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', 'welcome.html')
+        #print(file_upload)
+        sftp.put(file_upload, "/var/www/"+ domain_get.folder +"/index.html")
+
         #client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
 
         domain_get.status = "Active"
@@ -476,4 +531,3 @@ def installStack(insert_id = 0):
             get_server.save()
             sendNotification(get_server.user_id.id, 'toast', 'error', 'Error Occured', 'Error was occured while installing Stack on ' + get_server.server_name + '  (' + get_server.server_ip + '), Please contact use for asistance.')
         print(e)
-    
