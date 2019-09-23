@@ -232,6 +232,42 @@ PACKAGES = {
         },
 
         'CONTROL_PANEL' : {}
+        },
+        7:{
+        'NAME':'vsftpd',
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update', 'sudo apt-get upgrade')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh')]
+        },
+        'CONTROL_PANEL' : {
+            'Lets Encrypt':{
+                        "ICON" : {
+                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
+                         },
+                        "Create Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True),
+                             
+                         },
+                         "Delete Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/delete', "Backend.lamp.views.letsencrypt_delete", False),
+                           "COMMAND":{
+                                 1:('SCRIPT', 'deletelets_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "Renew Certificate" : {
+                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/renew', "Backend.lamp.views.letsencrypt_renew", False)
+                         },
+              }
+        
+        }
         }
 
     }
