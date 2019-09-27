@@ -483,7 +483,7 @@ def installStack(insert_id = 0):
                         sendNotification(get_server.user_id.id, 'toast', 'success', 'Started Installing', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is started installing on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
                         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
                         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
+                        #client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
                         print ("stderr: ", stdderr.readlines())
                         print ("pwd: ", stddout.readlines())
                         print ("INSTALLED : " +  ntpath.basename(file_upload))

@@ -326,6 +326,7 @@ def deploy(request):
         return redirect("/login")
 
 def panel(request):
+    
     login = CheckLogin(request)
     if login == True:
         params = {}
