@@ -93,6 +93,7 @@ def install_package(request,server_id, pkg_id):
         if pkg_id in PACKAGES_DETAILS:
             getserver = server_list.objects.get(id=server_id)
             get_installed_pkg_lst = json.loads(getserver.JSON_PKG_LST)
+            
 
             check = pkg_id in get_installed_pkg_lst
 
