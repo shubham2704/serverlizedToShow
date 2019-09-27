@@ -6,17 +6,109 @@ import paramiko
 from django.db.models import Q
 from ..BackendController.contri import randomString, randomNumber
 from ..signup.models import user
-from ..BackendController.tasks.install_stack import RenweLetsEncrypt, ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete, ConfigLetsEncrypt, DeleteLetsEncrypt
+from ..BackendController.tasks.install_stack import RenweLetsEncrypt, ConfigureLampDomain, DeleteLampDomain, MySQLUserAdd, MySQLUserDelete, MySQLDatabaseCreate, MySQLDatabaseDelete, ConfigLetsEncrypt, DeleteLetsEncrypt, CreateFTPAccount, DeleteFTPAccount
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
 from ..servers.models import list as server_list, projects
 import json
-from .models import domain, mysql_user, mysql_database, ssl as tcp_ssl, lets_encrypt
+from .models import domain, mysql_user, mysql_database, ssl as tcp_ssl, lets_encrypt, ftp_account
 import tldextract
 
 
 # Create your views here.
 PKG_ID = 1
+
+def ftp(request, manage_id):
+    login = CheckLogin(request)
+    print(login)
+    
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        params['menu'] = {}
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            params['server'] = getserver
+            params['accounts'] = ftp_account.objects.filter(server=getserver, user=user)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
+            if request.method == "POST":
+                username = request.POST['username']
+                password = request.POST['password']
+                folder = request.POST['folder']
+
+                ck_ftp = ftp_account.objects.filter(username = username).count()
+                    
+                
+                if ck_ftp == 0 :
+
+                    if username!='' and password!='' and folder!='':
+
+                        obj, insert = ftp_account.objects.get_or_create(
+                            server = getserver,
+                            user = user,
+                            username = username,
+                            password = password,
+                            folder = folder,
+                            status = "Configuring"
+                        )
+
+                        if insert:
+                            #ConfigLetsEncrypt.delay(obj.id)
+                            CreateFTPAccount.delay(obj.id)
+                            messages.success(request, "FTP user will be created soon.")
+
+                    else:
+                        messages.error(request, "All fields are mandatory*", extra_tags="danger")
+
+                else:
+                    messages.error(request, "Username only exist on this server.", extra_tags="danger")
+            
+        except Exception as e:
+            print(e)
+            
+
+        
+        return render(request, "user/ftp.html", params)
+
+    else:
+        return redirect("/login")
+
+
+def ftp_delete(request, manage_id, insert_id):
+    login = CheckLogin(request)
+    print(login)
+    
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['status'] = 'error'
+        #params['menu'] = {}
+
+        try:
+            getserver = server_list.objects.get(id=manage_id)
+            #params['server'] = getserver
+            #params['accounts'] = ftp_account.objects.filter(server=getserver, user=user)
+            #params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, manage_id)
+            get_ins = ftp_account.objects.get(id = insert_id)
+            DeleteFTPAccount.delay(insert_id)
+            params['status'] = 'ok'
+            #messages.success(request, "FTP Account will be Deleted soon")
+
+
+        except Exception as e:
+            print(e)
+            
+
+        
+        return JsonResponse(params)
+
+    else:
+        return redirect("/login")
+
+
+
 
 def letsencrypt_renew(request, manage_id, insert_id):
     login = CheckLogin(request)

@@ -2,6 +2,12 @@ SERVER_OS_DISTRIBUTION = {
     1: ['Ubuntu', '18.04 x64', 'sudo', 'bash']
 }
 
+PYTHON_VERSION = {
+    'Python 3.7.4': {
+        1 : ['3.7.4','python3_7_4_ubunt18_x64.sh', '/root/.pyenv/versions/3.7.4', '/root/.pyenv/versions/3.7.4/envs' , '/bin/python3.7']
+    },
+}
+
 STACK_DIST = {
     1:{
         'NAME' : 'LAMP',
@@ -14,6 +20,12 @@ STACK_DIST = {
         'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
         'PACKAGES':(5),
+        'PACKAGES_COUNT': 1
+    },3:{
+        'NAME' : 'Django Automation',
+        'DESCRIPTION' : 'Deploy, Manage and Monitor you django project right from an advanced Control Panel.',
+        'PRICE' : 0.00 ,
+        'PACKAGES':(1, 7, 9, 8),
         'PACKAGES_COUNT': 1
     }
     
@@ -33,58 +45,9 @@ PACKAGES = {
             1:[('sudo apt-get -y update', 'sudo apt-get -y upgrade')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh')]
+            1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
         },
-        'CONTROL_PANEL' : {
-            'Website':{
-                        "ICON" : {
-                             "URL":('fa fa-globe', "", False)
-                         },
-                        "Addon Domain" : {
-                             "URL":('wpanel/<int:manage_id>/domain/add', "Backend.lamp.views.add", True),
-                              "COMMAND":{
-                                 1:('SCRIPT', 'apache_virtual_host_ubuntu_18_04x86.sh')
-                                 }
-                         },
-                         "Edit Domain" : {
-                             "URL":('wpanel/<int:manage_id>/domain/edit/<int:domain_id>', "Backend.lamp.views.edit", False)
-                         },
-                         "Delete Domain" : {
-                             "URL":('wpanel/<int:manage_id>/domain/delete/<int:domain_id>', "Backend.lamp.views.delete", False)
-                         },
-                         
-                         "Restart" : {
-                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/restart', "Backend.servers.views.restart_pkg", False),
-                             "COMMAND":{
-                                 1:('COMMAND', 'service apache2 restart')
-                                 }
-                         },
-                         
-                         "Stop" : {
-                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/stop', "Backend.servers.views.stop_pkg", False),
-                             "COMMAND":{
-                                 1:('COMMAND', 'service apache2 stop')
-                                 }
-                         },
-                         "Apache Logs" : {
-                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True),
-                             "COMMAND":{
-                                 1:('COMMAND', 'sudo tail -50 /var/log/apache2/error.log')
-                                 }
-                         }
-              },
-              'SSL/TLS':{
-                        "ICON" : {
-                             "URL":('fa fa-certificate', "", False)
-                         },
-                         "Configure SSL" : {
-                             "URL":('wpanel/<int:manage_id>/ssl', "Backend.lamp.views.ssl", True)
-                         },
-              },
-              
-              
-               
-                }
+        'CONTROL_PANEL' : { }
 
                 
         },
@@ -151,7 +114,47 @@ PACKAGES = {
         'INSTALLATION_BASH_SCRIPT' : {
             1:[('SCRIPT', 'php_ubunt_18_04_x86.sh')]
         },
-        'CONTROL_PANEL' : {}
+        'CONTROL_PANEL' : {   'Website':{
+                        "ICON" : {
+                             "URL":('fa fa-globe', "", False)
+                         },
+                        "Addon Domain" : {
+                             "URL":('wpanel/<int:manage_id>/domain/add', "Backend.lamp.views.add", True),
+                              "COMMAND":{
+                                 1:('SCRIPT', 'apache_virtual_host_ubuntu_18_04x86.sh')
+                                 }
+                         },
+                         "Edit Domain" : {
+                             "URL":('wpanel/<int:manage_id>/domain/edit/<int:domain_id>', "Backend.lamp.views.edit", False)
+                         },
+                         "Delete Domain" : {
+                             "URL":('wpanel/<int:manage_id>/domain/delete/<int:domain_id>', "Backend.lamp.views.delete", False)
+                         },
+                         
+                         "Restart" : {
+                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/restart', "Backend.servers.views.restart_pkg", False),
+                             "COMMAND":{
+                                 1:('COMMAND', 'service apache2 restart')
+                                 }
+                         },
+                         
+                         "Stop" : {
+                             "URL":('wpanel/<int:manage_id>/package/<int:package_id>/stop', "Backend.servers.views.stop_pkg", False),
+                             "COMMAND":{
+                                 1:('COMMAND', 'service apache2 stop')
+                                 }
+                         },
+                         "Apache Logs" : {
+                             "URL":('wpanel/<int:manage_id>/apache/log', "Backend.lamp.views.apachelog", True),
+                             "COMMAND":{
+                                 1:('COMMAND', 'sudo tail -50 /var/log/apache2/error.log')
+                                 }
+                         }
+              },
+              
+              
+               
+              }
         },
 
         
@@ -246,27 +249,97 @@ PACKAGES = {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh')]
+            1:[('SCRIPT', 'vsftp_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : {
-            'Lets Encrypt':{
+            'FTP Account':{
                         "ICON" : {
-                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
+                             "URL":('fa fa-cloud', "Backend.lamp.views.add", False)
                          },
-                        "Create Certificate" : {
-                             "URL":('wpanel/<int:manage_id>/letsencrypt', "Backend.lamp.views.letsencrypt", True),
+                        "Create FTP Account" : {
+                             "URL":('wpanel/<int:manage_id>/ftp', "Backend.lamp.views.ftp", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
                              
                          },
-                         "Delete Certificate" : {
-                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/delete', "Backend.lamp.views.letsencrypt_delete", False),
-                           "COMMAND":{
-                                 1:('SCRIPT', 'deletelets_ubunt_18_04_x86.sh')
+                         "Delete Account" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
                                  }
                          },
-                         "Renew Certificate" : {
-                             "URL":('wpanel/<int:manage_id>/letsencrypt/<int:insert_id>/renew', "Backend.lamp.views.letsencrypt_renew", False)
-                         },
               }
+        
+        }
+        },8:{
+        'NAME':'Django Controller',
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[]
+        },
+        'CONTROL_PANEL' : {
+            'Django Projects':{
+                        "ICON" : {
+                             "URL":('fa fa-cloud', "Backend.lamp.views.add", False)
+                         },
+                        "Deploy" : {
+                             "URL":('wpanel/<int:manage_id>/ftp', "Backend.lamp.views.ftp", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                             
+                         },
+                         "Server Logs" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+              },
+        
+        }
+        },9:{
+        'NAME':'Virtual Environment',
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'virtual_env_ubuntu_18_x64.sh'),('COMMAND', 'source $HOME/.bashrc') ]
+        },
+        'CONTROL_PANEL' : {
+            'Virtual Environment':{
+                        "ICON" : {
+                             "URL":('fa fa-users', "Backend.lamp.views.add", False)
+                         },
+                        "Create Environment" : {
+                             "URL":('wpanel/<int:manage_id>/virtual-env', "Backend.django_auto.views.virtual_env", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'install_virtual_env.sh')
+                                 }
+                             
+                         },
+                         "Server Logs" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+              },
         
         }
         }
@@ -304,6 +377,23 @@ PACKAGES_DETAILS = {
             'CONTROL_TREE':{
                 'Website' : ['Create Certificate', 'Renew Certificate' ],
                 'Alert' : ['Expiry Notifier']
+                
+            },
+            'HTML':'',
+            'IMG' : [],
+            'BUNDLE' : ['LAMP STACK']
+
+        },
+        7:{
+            'NAME' : 'HaProxy',
+            'SERVICE_VIEW' : True,
+            'NAV_NAME' : 'DOMAIN',
+            'APP_NAME' : 'lamp',
+            'DESCRIPTION':'Lets Encrypt is a non-profit certificate authority run by Internet Security Research Group that provides X.509 certificates for Transport Layer Security encryption at no charge. The certificate is valid for 90 days, during which renewal can take place at any time.',
+            'TAG':'Software',
+            'VERSION':'',
+            'CONTROL_TREE':{
+                'Website' : ['Create FTP User', 'Delete FTP User' ],
                 
             },
             'HTML':'',

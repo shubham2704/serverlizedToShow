@@ -2,31 +2,32 @@
 
 sudo apt-get -y update
 sudo apt install -y apache2-utils
-sudo apt-get install vsftpd libpam-pwdfile
+sudo apt-get install vsftpd
 sudo mv /etc/vsftpd.conf /etc/vsftpd.conf.bak
 echo "
 listen=YES
+# Disable anonymous login
 anonymous_enable=NO
-local_enable=YES
-write_enable=YES
-local_umask=022
-nopriv_user=vsftpd
-virtual_use_local_privs=YES
-guest_enable=YES
-user_sub_token=\$USER
-local_root=/var/www/\$USER
-chroot_local_user=YES
-allow_writeable_chroot=YES
-hide_ids=YES
-guest_username=vsftpd
 
+# Enable the userlist 
+userlist_enable=YES
+
+# Configure the userlist to act as a whitelist (only allow users who are listed there)
+userlist_deny=NO
+
+# Allow the local users to login to the FTP (if they're in the userlist)
+local_enable=YES
+
+# Allow virtual users to use the same privileges as local users
+virtual_use_local_privs=YES
+
+# Setup the virtual users config folder
+user_config_dir=/etc/vsftpd/user_config_dir/
+
+chroot_local_user=YES
+local_umask=022
+write_enable=YES
 " >> /etc/vsftpd.conf
-sudo mkdir /etc/vsftpd
-sudo mv /etc/pam.d/vsftpd /etc/pam.d/vsftpd.bak
-echo "
-auth required pam_pwdfile.so pwdfile /etc/vsftpd/ftpd.passwd
-account required pam_permit.so
-" >> /etc/pam.d/vsftpd
-sudo useradd --home /home/vsftpd --gid nogroup -m --shell /bin/false vsftpd
-echo "" >> /etc/vsftpd/ftpd.passwd
+sudo mkdir -p /etc/vsftpd/user_config_dir/
+
 sudo /etc/init.d/vsftpd restart

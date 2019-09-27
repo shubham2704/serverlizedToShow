@@ -4,13 +4,105 @@ import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
 from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output
-from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt
+from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt, ftp_account
 from ..contri import sendNotification
 import os
 import ntpath
 import requests
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+@task(name="Create FTP Account")
+def CreateFTPAccount(insert_id = 0):
+    try:
+        inse_id = ftp_account.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[7]['CONTROL_PANEL']['FTP Account']['Create FTP Account']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        cmd = " " + inse_id.password + " " + inse_id.username + " " + inse_id.folder + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Create FTP Account - " + inse_id.username,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Created" , 'FTP account is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
+
+@task(name="Delete FTP Account")
+def DeleteFTPAccount(insert_id = 0):
+    try:
+        inse_id = ftp_account.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[7]['CONTROL_PANEL']['FTP Account']['Create FTP Account']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        cmd = " " + inse_id.password + " " + inse_id.username + " " + inse_id.folder + " DELETE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Delete FTP Account - " + inse_id.username,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Deleted" , 'FTP account is succesfully deleted on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.delete()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not deleted, try again, on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+       
+
+
+
+
 
 @task(name="Configure Lets Encrypt")
 def ConfigLetsEncrypt(insert_id = 0):
@@ -623,7 +715,7 @@ def DeleteLetsEncrypt(insert_id = 0):
         conn = 200
         if conn == 200:
 
-            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.stack_id][1]
+            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.distribution_id][1]
             file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
             sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
             client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
