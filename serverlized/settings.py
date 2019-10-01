@@ -99,7 +99,7 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-'ENGINE': 'django.db.backends.maria',
+'ENGINE': 'django.db.backends.mysql',
 'NAME': 'serverlized',
 'USER': 'root',
 'PASSWORD': "",
