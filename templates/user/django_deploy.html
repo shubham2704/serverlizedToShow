@@ -79,33 +79,57 @@
                   <div class="card-header" id="headingOne">
                     <h2 class="">
                       <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
+                        Deploy  Django
                       </h4>
                     </h2>
                   </div>
               
                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/virtual-env">
+                        <form method="POST" action="/wpanel/{{server.id}}/django-deploy">
                             {%csrf_token%}
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Environment Name</label>
-                                <input type="text" name="env" class="form-control">
+                                <label for="exampleInputEmail1">Domain Name</label>
+                                <input type="text" name="domain" class="form-control">
+
+                                
                               </div>
 
+                              
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">WSGI Filename with full Path</label>
+                                <input type="text" name="wsgi" placeholder="project_name/wsgi.py" class="form-control">
+                              </div>
+
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Static Directory</label>
+                                <input type="text" name="static" placeholder="static or directory/subdirectory/static/" class="form-control">
+                              </div>
+
+                              
 
                             <div class="form-group">
-                              <label for="exampleInputEmail1">Select Python Version</label>
-                              <select name="ver" class="form-control">
-                                  {% for key, val in PyPKG.items %}
-                                  <option value="{{key}}">{{key}}</option>
+                              <label for="exampleInputEmail1">Select Environment</label>
+                              <select name="env" class="form-control">
+                                  {% for env in envs %}
+                                  <option value="{{env.id}}">{{env.envirnment_name}} ({{env.python_inter}})</option>
                                   {% endfor %}
                               </select>
+                              <br>
+                              <div class="radio">
+                                <label><input type="radio" name="ver" checked  value="1.11" > Django 1.11</label>
+                              </div>
+                              <div class="radio">
+                                <label><input type="radio" name="ver" value="2.2.5"> Django 2.2.5</label>
+                              </div>
+                              <div class="checkbox">
+                                <label><input type="checkbox" value="yes" name="ftp"> create a project directory  FTP account.</label>
+                              </div>
                             
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Create Environment</button>
-                            
+                            <button type="submit" class="btn btn-primary">Deploy Project</button>
+                           
                            
                         </form>
                         
@@ -122,20 +146,20 @@
                 <table style="margin-bottom: 0rem;" class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Env Name</th>
-                        <th>PATH</th>
-                        <th>Status</th>
+                        <th>Domain</th>
+                        <th>Path</th>
+                        <th></th>
                         <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for env in envs %}
+                      {% for deploy in deploys %}
                       <tr>
-                        <td class="align-middle"><a href="">{{env.envirnment_name}} </a> </td>
-                        <td class="align-middle">{{env.install_dir}}</td>
-                        <td><button onclick="delete_env({{env.id}})" type="button" class="btn btn-danger btn-sm">Remove</button> <a href="/wpanel/{{server.id}}/pyenvironment/{{env.id}}" type="button" class="btn btn-success btn-sm">IDE & Tools</a></td>
+                        <td class="align-middle"><a href="">{{deploy.domain.domain_name}} </a> </td>
+                        <td class="align-middle">{{deploy.domain.folder}}</td>
+                        <td><button onclick="delete_env({{env.id}})" type="button" class="btn btn-danger btn-sm">Remove</button></td>
                         <td class="align-middle">
-                          {% if env.status == "Configured" %}
+                          {% if deploy.status == "Configured" %}
                           <i class="fa fa-check text-success"></i>
                           {% else %}
 
@@ -154,11 +178,15 @@
           <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                  <b>DNS Configuration </b>
+                  <b>Prerequisite / Steps</b>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
+                  <h5 class="card-title">1. Setup Virtual Environment</h5>
+                  <h5 class="card-title">2. Install project lib in Environment</h5>
+                  <h5 class="card-title">3. Install & Create Database Server (if required)</h5>
+                  <h5 class="card-title">4. Deploy Project</h5>
+                  <h5 class="card-title">5. Upload Project Files</h5>
+                  <h5 class="card-title">6. Configure DNS</h5>
                   <br> <code>A example.com {{server.server_ip}} </code>
                   <ul>
                       <li>Type : <code>A</code></li>

@@ -2,15 +2,114 @@ from celery.decorators import task
 from django.conf import settings
 import paramiko
 import json
-from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
+from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES, PYTHON_VERSION_DIC
 from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output
 from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt, ftp_account
+from Backend.django_auto.models import virtual_env, deploy as dj_dep
 from ..contri import sendNotification
 import os
 import ntpath
 import requests
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+
+
+
+@task(name="Deploy Django Project")
+def DeployDjango(insert_id = 0):
+    try:
+        inse_id = dj_dep.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[8]['CONTROL_PANEL']['Django Projects']['Deploy']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        v = PYTHON_VERSION_DIC[inse_id.python_inter][get_server.distribution_id][0]
+        cmd = " " + v  + " " + inse_id.envirnment_name + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Deploy Django Env - " + inse_id.domain.domain_name,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "Django Project Deployed" , 'Django Project is succesfully Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Django Project is not Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
+@task(name="Setup Virtual")
+def SetupVirtualENV(insert_id = 0):
+    try:
+        inse_id = virtual_env.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[9]['CONTROL_PANEL']['Virtual Environment']['SetupEnV']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        v = PYTHON_VERSION_DIC[inse_id.python_inter][get_server.distribution_id][0]
+        cmd = " " + v  + " " + inse_id.envirnment_name + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Setup Virtual Env - " + inse_id.envirnment_name,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "Virtual Env Created" , 'Virtual Env is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Virtual Env is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
 
 @task(name="Create FTP Account")
 def CreateFTPAccount(insert_id = 0):

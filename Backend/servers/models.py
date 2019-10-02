@@ -2,8 +2,6 @@ from django.db import models
 from ..signup.models import user, projects
 # Create your models here.
 
-
-
 class list(models.Model):
     SERVER_TYPES = (
         ('MASTER', 'MASTER'),
