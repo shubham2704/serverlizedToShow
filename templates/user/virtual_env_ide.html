@@ -53,127 +53,29 @@
     
     <div class="container" style="margin-top: 25px;">
         <div class="row">
-             
-          <div class="col-sm-8">
-                {% if messages %}
+         
+<!-- Nav tabs -->
+<ul class="nav nav-tabs col-md-12">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#home">Python IDE</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#menu1">PyPI Installer</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#menu2">Requirements Installer</a>
+    </li>
+  </ul>
+  
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container active" id="home">
 
+    </div>
+    <div class="tab-pane container fade" id="menu1">...</div>
+    <div class="tab-pane container fade" id="menu2">...</div>
+  </div>
 
-                {% for message in messages %}
-        
-                
-                
-                <div class="alert alert-{{message.tags}} alert-dismissible text-dark" role="alert">
-                    <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
-                    <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
-                    <div class="message">{{message}}</div>
-                  </div>
-                 
-        
-            
-                {% endfor %}
-             {% endif %}
-
-
-            <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="">
-                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Addon Domain
-                      </h4>
-                    </h2>
-                  </div>
-              
-                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                        <form method="POST" action="/wpanel/{{server.id}}/virtual-env">
-                            {%csrf_token%}
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Environment Name</label>
-                                <input type="text" name="env" class="form-control">
-                              </div>
-
-
-                            <div class="form-group">
-                              <label for="exampleInputEmail1">Select Python Version</label>
-                              <select name="ver" class="form-control">
-                                  {% for key, val in PyPKG.items %}
-                                  <option value="{{key}}">{{key}}</option>
-                                  {% endfor %}
-                              </select>
-                            
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Create Environment</button>
-                            
-                           
-                        </form>
-                        
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-              <br>
-              <div class="card">
-                <div class="card-header">
-                  <b>My Environments</b>
-                </div>
-                <table style="margin-bottom: 0rem;" class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Env Name</th>
-                        <th>PATH</th>
-                        <th>Status</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for env in envs %}
-                      <tr>
-                        <td class="align-middle"><a href="">{{env.envirnment_name}} </a> </td>
-                        <td class="align-middle">{{env.install_dir}}</td>
-                        <td><button onclick="delete_env({{env.id}})" type="button" class="btn btn-danger btn-sm">Remove</button> <a href="/wpanel/{{server.id}}/pyenvironment/{{env.id}}" type="button" class="btn btn-success btn-sm">IDE & Tools</a></td>
-                        <td class="align-middle">
-                          {% if env.status == "Configured" %}
-                          <i class="fa fa-check text-success"></i>
-                          {% else %}
-
-                          <i class="fa fa-spinner text-primary fa-spin"></i>
-                          {% endif %}
-                        </td>
-                      </tr>
-                      {% endfor %}
-                     
-                    </tbody>
-                  </table>
-              </div>
-              <br>
-          </div>
-          
-          <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                  <b>DNS Configuration </b>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
-                  <br> <code>A example.com {{server.server_ip}} </code>
-                  <ul>
-                      <li>Type : <code>A</code></li>
-                      <li>Host : <code>example.com</code></li>
-                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
-                  </ul>
-                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
-                </p>
-                  
-                   
-                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
-                </div>
-              </div>
-          </div>
-          
         </div>
       </div>
 

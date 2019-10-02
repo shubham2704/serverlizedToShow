@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Backend.signup',
     'Backend.lamp',
     'Backend.servers',
+    'Backend.django_auto',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

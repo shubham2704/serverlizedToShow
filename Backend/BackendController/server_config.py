@@ -2,9 +2,9 @@ SERVER_OS_DISTRIBUTION = {
     1: ['Ubuntu', '18.04 x64', 'sudo', 'bash']
 }
 
-PYTHON_VERSION = {
+PYTHON_VERSION_DIC = {
     'Python 3.7.4': {
-        1 : ['3.7.4','python3_7_4_ubunt18_x64.sh', '/root/.pyenv/versions/3.7.4', '/root/.pyenv/versions/3.7.4/envs' , '/bin/python3.7']
+        1 : ['3.7.4','python3_7_4_ubunt18_x64.sh', '/root/.pyenv/versions/3.7.4', '/root/.pyenv/versions/3.7.4/envs' , '/bin/python3.7', '/lib/python3.7/site-packages']
     },
 }
 
@@ -283,7 +283,7 @@ PACKAGES = {
             1:[],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[]
+            1:[('SCRIPT', 'djnago_ubuntu_18_x64.sh')]
         },
         'CONTROL_PANEL' : {
             'Django Projects':{
@@ -291,9 +291,9 @@ PACKAGES = {
                              "URL":('fa fa-cloud', "Backend.lamp.views.add", False)
                          },
                         "Deploy" : {
-                             "URL":('wpanel/<int:manage_id>/ftp', "Backend.lamp.views.ftp", True),
+                             "URL":('wpanel/<int:manage_id>/django-deploy', "Backend.django_auto.views.deploy", True),
                              "COMMAND":{
-                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 1:('SCRIPT', 'deploy_djnago_ubuntu_18_x64.sh')
                                  }
                              
                          },
@@ -303,6 +303,8 @@ PACKAGES = {
                                  1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
                                  }
                          },
+                         
+                         
               },
         
         }
@@ -326,7 +328,7 @@ PACKAGES = {
                              "URL":('fa fa-users', "Backend.lamp.views.add", False)
                          },
                         "Create Environment" : {
-                             "URL":('wpanel/<int:manage_id>/virtual-env', "Backend.django_auto.views.virtual_env", True),
+                             "URL":('wpanel/<int:manage_id>/virtual-env', "Backend.django_auto.views.virtual_env_view", True),
                              "COMMAND":{
                                  1:('SCRIPT', 'install_virtual_env.sh')
                                  }
@@ -337,6 +339,20 @@ PACKAGES = {
                              "COMMAND":{
                                  1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
                                  }
+                         },
+                         "SetupEnV" : {
+                             "URL":('wpanel/<int:manage_id>/virtual-env', "Backend.django_auto.views.virtual_env_view", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'virtual_env_create_ubuntu_18_x64.sh')
+                                 }
+                             
+                         },
+                         "IDE" : {
+                             "URL":('wpanel/<int:manage_id>/pyenvironment/<int:ide>', "Backend.django_auto.views.virtual_env_ide", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'virtual_env_create_ubuntu_18_x64.sh')
+                                 }
+                             
                          },
               },
         
