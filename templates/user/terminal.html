@@ -1,0 +1,476 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://daneden.github.io/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/static/css/tostr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+ 
+    <style>
+            .window {
+                border-radius: 3px;
+                background: #222;
+                color: #fff;
+                overflow: hidden;
+                position: relative;
+                margin: 0 auto;
+                width: 90%;
+                
+                &:before {
+                  content: ' ';
+                  display: block;
+                  height: 48px;
+                  background: #C6C6C6;
+                }
+                
+                &:after {
+                  content: '. . .';
+                  position: absolute;
+                  left: 12px;
+                  right: 0;
+                  top: -3px;
+                  font-family: "Times New Roman", Times, serif;
+                  font-size: 96px;
+                  color: #fff;
+                  line-height: 0;
+                  letter-spacing: -12px;
+                }
+              }
+              
+               .terminal::-webkit-scrollbar {
+                width: 12px;
+                height: 12px;
+                }
+                
+                ::-webkit-scrollbar-track {
+                width: 2px;
+                border: 1px dashed #22da26;
+                }
+                
+                ::-webkit-scrollbar-thumb {
+                background: #0093FF;
+                }
+                
+                ::-webkit-scrollbar-thumb:hover {
+                background: #007bff;  
+                }
+
+              .terminal {
+                margin: 20px;
+                max-height: 600px;
+                overflow: auto;
+                overflow-x: hidden;
+                font-family: monospace;
+                font-size: 16px;
+                color: #22da26;
+                
+                .command { 
+                  width: 0%;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  animation: write-command 5s both;
+                  
+                  &:before {
+                    content: '$ ';
+                    color: #22da26;
+                  }
+                }
+                
+                .log {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  animation: write-log 5s both;
+                }
+              
+                p:nth-child(2) {
+                  animation-delay: 2s;
+                }
+                
+                p:nth-child(3) {
+                  animation-delay: 8s;
+                }
+              }
+              
+              @keyframes write-command {
+                0% {
+                  width: 0%;
+                }
+                
+                
+                100% {
+                  width: 100%;
+                }
+              }
+              
+              @keyframes write-log {
+                0% {
+                  height: 0;
+                }
+                
+                16% {
+                  height: 0;
+                }
+                
+                17% {
+                  height: 18px;
+                }
+                
+                33% {
+                  height: 18px;
+                }
+                
+                34% {
+                  height: 37px;
+                }
+                
+                51% {
+                  height: 37px;
+                }
+                
+                52% {
+                  height: 55px;
+                }
+                
+                69% {
+                  height: 55px;
+                }
+                
+                70% {
+                  height: 74px;
+                }
+                
+                87% {
+                  height: 74px;
+                }
+                
+                88% {
+                  height: 92px;
+                }
+                
+                88% {
+                  height: 92px;
+                }
+                
+                99% {
+                  height: 92px;
+                }
+                
+                100% {
+                  height: 110px;
+                }
+              }
+    </style>
+  </head>
+
+  <body>
+
+        {% include "user/navbar.html" %}
+<br><br>
+    <main role="main" class="">
+        
+
+            
+
+<div class="window put">
+    <div class="btn-group">
+        <a href="#" onClick="javascript:history.go(-1);" class="btn btn-success">Go Back</a>
+        <a href="/wpanel/"  class="btn btn-secondary">Dashboard</a>
+        <a href="/wpanel/{{server.id}}" class="btn btn-primary">Server Home</a> 
+        <a href="/wpanel/{{server.id}}/output/" class="btn btn-warning ">Server Output</a> 
+        
+
+    </div>
+        <div class="terminal " scrolling="yes">
+           <p class="log">
+            <span id="append-here" >
+             <h2 class="text-center  dis"><i class="align-middle fa fa-spinner fa-spin"></i>
+            </h2>
+            </span>
+          </p>
+          
+        </div>
+        <input id="cmd" style="background-color: black;display:none;" type="text" placeholder="Type Command, Press enter to send" class=" form-control">
+     </div>  
+    
+  
+    </main>
+    <br>
+       <div class="window">
+            <h2 class="ml-5 mt-4 mb-3">Instruction</h2>
+            <ul class="ml-5 mt-4 mb-3">
+                
+                <li>This terminal does not support interective mode. so pass all interective as arg itself example <b class="terminal">apt-get install -y apache2</b> instead of  <b class="terminal">apt-get install apache2</b></li>
+                <li>Always run command with aboulte path to run the command on another dic <b class="terminal">cd /etc/; ls</b> </li>
+                <li>Unsupported interective Commands : </b> <b class="terminal">nano</b> <b class="terminal">ping</b> <b class="terminal">tail</b></li>
+            
+            </ul>
+        </div> 
+    <!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script>
+      
+      $('.inlinesparkline').sparkline(); 
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+
+            $('#cmd').keypress(function (e) {
+                var key = e.which;
+                if(key == 13)  // the enter key code
+                 {
+                    var cmd = $("#cmd").val();
+                    appendtext('<span class="text-warning">'+cmd+'</span>', false);
+                    $("#cmd").val('');
+                    var message = {
+                        type: "command",
+                        command: cmd,
+                    }
+                    $("#cmd").attr('disabled', 'disabled');
+                    server_terminal.send(JSON.stringify(message));
+        
+                    
+                 }
+               
+             });
+
+        function appendtext(txt, dic = false){
+            $('.dis').remove();
+
+            if(dic == false){
+            var wrap = ' <b class="text-success">root@{{server.server_ip}}:</b> ' + txt +'<br>';
+            $('#append-here').append(wrap);
+             
+            }else{
+
+           console.log(txt)
+           $.each( txt, function( key, value ) {
+            appendtext(value, false);
+           });
+        
+        }
+        }
+        var server_terminal = new WebSocket('ws://' + window.location.host + '/terminal-access/{{user.id}}/{{server.id}}');
+          appendtext("<b class='text-blue lead '> Welcome to Serverlized SSH Terminal, Connecting to WebSocket to start SSH Connection!</b>")
+          server_terminal.onopen = e => {
+            console.log('Open ', e);
+            appendtext("WebSocket Connected, SSHing to root@{{server.server_ip}}")
+            
+            
+           
+           }
+
+           server_terminal.onmessage = e => {
+            var js = e['data'];
+            var json = JSON.parse(js);
+            
+            if(json['status'] == "error"){
+                appendtext("<b class='text-danger '>" + json['msg'] + "</b>")
+                toastr.error(json['msg'],{
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                  });
+            }else if(json['status'] == "success"){
+                appendtext(json['msg'])
+                $('#cmd').css('display', 'block');
+                $('#cmd').addClass('animated');
+                $('#cmd').addClass('fadeInUpBig');
+                toastr.success("Connected successfuly you may now can run commands.",{
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+                var message = {
+                  type: "command",
+                  command: "lsb_release -a",
+              }
+              appendtext("<span class='text-warning'> lsb_release -a</span>")
+              server_terminal.send(JSON.stringify(message));
+            }else{
+                $("#cmd").removeAttr('disabled');
+                appendtext(json, true)
+            }
+        
+        }
+
+
+
+        server_terminal.onerror = e => {
+
+            $("#cmd").removeAttr('disabled');
+            appendtext("<b class='text-danger '>Received an error please reconnect with refreshing page</b>", false);
+            toastr.error("Received an error please reconnect with refreshing page",{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+        }
+    
+        server_terminal.onoclose = e => {
+            $("#cmd").removeAttr('disabled');
+            appendtext("<b class='text-danger '>Connection closed please refresh the page to reconnect</b>", false);
+            toastr.error("Connection closed please refresh the page to reconnect",{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+        }
+
+
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+      </script>
+  </body>
+</html>

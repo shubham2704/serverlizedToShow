@@ -1,0 +1,515 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+ 
+  </head>
+
+  <body>
+
+    {% include "user/navbar.html" %}
+    {% include "user/menu.html" %}
+
+    
+    <div class="container" style="margin-top: 25px;">
+        <div class="row">
+             
+          <div class="col-sm-8">
+                {% if messages %}
+
+
+                {% for message in messages %}
+        
+                
+                
+                <div class="alert alert-{{message.tags}} alert-dismissible text-dark" role="alert">
+                    <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
+                    <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                    <div class="message">{{message}}</div>
+                  </div>
+                 
+        
+            
+                {% endfor %}
+             {% endif %}
+
+             {% if already == True %}
+             <div class="alert alert-primary alert-dismissable fade show has-icon"><i class="fa fa-info-circle alert-icon"></i>
+              
+              <div class="d-flex align-items-center justify-content-between">
+                  <div><strong>Already Configured!</strong><br>You already confgured the core confg of HAProxy you can only do minor changes or Add Node server!</div>
+                  <div>
+                      <a href="/wpanel/{{server.id}}/haproxy/web/nodes_server" class="btn btn-sm btn-warning " >Add Node Server</a>
+                  </div>
+              </div>
+          </div>
+          {% endif %}
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h2 class="">
+                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Configure  HAProxy 
+                       </h4>
+                    </h2>
+                  </div>
+              
+                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+
+                        {% if already == True %}
+
+                        <form method="POST" action="/wpanel/{{server.id}}/haproxy_http">
+                          {%csrf_token%}
+                          
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Policy</label>
+                            <select name="algo" class="form-control">
+                               
+                                <option value="Round Robin">Round robin</option>
+                                <option value="Least Connection">Least Connection</option>
+                                <option value="IP Hash">IP Hash</option>
+                               
+                            </select>
+                            <br> 
+                            
+
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input name="health" value="yes" {%  if config_ha.monitor %} checked {% endif %} type="checkbox">
+                                    <span class="input-span"></span>Enable Health Stats</label>
+                            </div>
+                          
+                          </div>
+
+                          <div class="form-group">
+                              <label>Headers (Opiontal)</label>
+                              <textarea name="header" class="form-control" >{{config_ha.header}}</textarea>
+                              <br>
+                              <p style="color:grey">Example : 
+                                  <br>
+
+                                      option forwardfor<br>
+                                      STICK session insert
+                                      http-request set-header X-Forwarded-Port %[dst_port]<br>
+                                      http-request add-header X-Forwarded-Proto https if { ssl_fc }<br>
+                                      option httpchk HEAD / HTTP/1.1\r\nHost:localhost<br>
+                              </p>
+                          </div>
+
+                          <button type="submit"  class="btn btn-primary">Update Config</button>
+                         
+                         
+                      </form>
+
+                        {% else %}
+
+                        <form method="POST" action="/wpanel/{{server.id}}/haproxy_http">
+                          {%csrf_token%}
+                           <div class="form-group">
+                              <label for="exampleInputEmail1">Label </label>
+                              <input type="text" name="label" class="form-control">
+                              <p class="help-block">Enter a Label of this configuration for general purpose and Secondary Load Balancer!</p>
+                              
+                              
+                            </div>
+
+                            <div class="form-group">
+                              <label for="exampleInputEmail1">Node Servers <button type="button" onclick="addnode();" class="btn btn-primary btn-sm">+</button></label>
+                              <p>All node server OS Dist. should be same as Master</p>
+                             
+
+                              <div id="add-node">
+
+
+                              </div>
+
+                            </div>
+
+                            
+                            <div class="form-group">
+                              <label for="exampleInputEmail1">Web Server Packages</label>
+                              <select readonly name="software" class="form-control">
+                                 
+                                  <option value="web">Apache 2.2, vsftp,  PHP 7.3 & utils</option>
+                                 
+                              </select>
+                              <small class="form-text text-muted">After installation you can Addon domains & upload Files to all node server with Replicator in single click.</small>
+                          
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Policy</label>
+                            <select name="algo" class="form-control">
+                               
+                                <option value="Round Robin">Round robin</option>
+                                <option value="Least Connection">Least Connection</option>
+                                <option value="IP Hash">IP Hash</option>
+                               
+                            </select>
+                            <br> 
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input name="layer_7" checked disabled value="yes" type="checkbox">
+                                    <span class="input-span"></span>Enable Layer 7</label>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input name="health" value="yes" type="checkbox">
+                                    <span class="input-span"></span>Enable Health Stats</label>
+                            </div>
+                          
+                          </div>
+
+                          <div class="form-group">
+                              <label>Headers (Opiontal)</label>
+                              <textarea name="header" class="form-control" ></textarea>
+                              <br>
+                              <p style="color:grey">Example : 
+                                  <br>
+
+                                      option forwardfor<br>
+                                      STICK session insert
+                                      http-request set-header X-Forwarded-Port %[dst_port]<br>
+                                      http-request add-header X-Forwarded-Proto https if { ssl_fc }<br>
+                                      option httpchk HEAD / HTTP/1.1\r\nHost:localhost<br>
+                              </p>
+                          </div>
+
+                          <button type="submit" class="btn btn-primary">Configure HAProxy</button>
+                         
+                         
+                      </form>
+
+                        {% endif %}
+                        
+                        
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+             
+          </div>
+          
+          <div class="col-sm-4">
+            {% if already == True %}
+              <a href="/wpanel/{{server.id}}/haproxy/web/nodes_server" class="btn btn-secondary  btn-block mb-4"> Node Servers</a>
+              {% if config_ha.monitor == True %}
+              <div class="ibox ">
+                  <div class="ibox-head">
+                      <div class="ibox-title">MONITOR LOGIN CREDENTIALS</div>
+                  </div>
+                  <div >
+                      <ul class="list-group list-group-divider list-group-full">
+                          <li class="list-group-item flexbox">
+                              <span class="flexbox"><i class="fa fa-globe mr-3 p-3 font-30"></i><a href="http://{{server.server_ip}}:1936/loadbalance?stats">{{server.server_ip}}:1936/loadbalance?stats</a></span>
+                          </li>
+                          <li class="list-group-item flexbox">
+                              <span class="flexbox"><i class="fa fa-user mr-3  p-3 font-30"></i>{% if config_ha.monitor_user == None or config_ha.monitor_user == '' %} <i class="fa fa-spinner fa-spin mr-2"> </i> Waiting for Configuration {% else %} {{config_ha.monitor_user}} {% endif %}</span>
+                          </li>
+
+                          <li class="list-group-item flexbox">
+                              <span class="flexbox"><i class="fa fa-lock mr-3  p-3 font-30"></i>{% if config_ha.monitor_pass == None  or config_ha.monitor_pass == ''%} <i class="fa fa-spinner fa-spin mr-2"> </i> Waiting for Configuration {% else %} {{config_ha.monitor_pass}} {% endif %}</span>
+                          </li>
+                         
+                      </ul>
+                  </div>
+              </div>
+              {% endif %}
+              {% endif %}
+
+              <div class="ibox ">
+                  <div class="ibox-head">
+                      <div class="ibox-title">BEST PRATICES</div>
+                  </div>
+                  <div >
+                      <ul class="list-group list-group-divider list-group-full">
+                          <li class="list-group-item flexbox">
+                              <span class="flexbox"><i class="fa fa-server mr-3 p-3 font-30"></i>Always use Node Private IP</span>
+                          </li>
+                          <li class="list-group-item flexbox">
+                              <span class="flexbox"><i class="fa fa-certificate mr-3  p-3 font-30"></i> Always use SSL </span>
+                          </li>
+
+                         
+                      </ul>
+                  </div>
+              </div>
+
+              {% if already == False %}
+            <div class="card">
+                <div class="card-header">
+                  <b>Prerequisite / Steps</b>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Make sure Layer Se</h5>
+                  <h5 class="card-title">2. Install project lib in Environment</h5>
+                  <h5 class="card-title">3. Install & Create Database Server (if required)</h5>
+                  <h5 class="card-title">4. Deploy Project</h5>
+                  <h5 class="card-title">5. Upload Project Files</h5>
+                  <h5 class="card-title">6. Configure DNS</h5>
+                  <br> <code>A example.com {{server.server_ip}} </code>
+                  <ul>
+                      <li>Type : <code>A</code></li>
+                      <li>Host : <code>example.com</code></li>
+                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
+                  </ul>
+                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
+                </p>
+                  
+                   
+                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
+                </div>
+              </div>
+              {% endif %}
+          </div>
+          
+        </div>
+      </div>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Lightweight-Modal-Dialog-Plugin-For-Bootstrap-Bootstrap-Confirm/bootstrap-confirm.js"></script>
+    <script>
+
+
+      function delete_ssl(e){
+        $.confirm({
+          message: 'Are you sure? this action is unchangeable.',
+          onOk: function() {
+            
+            
+  $.ajax({url: "/wpanel/{{server.id}}/letsencrypt/" + e + "/delete", success: function(result){
+    if(result.status == "ok"){
+      toastr.success("SSL certificate will be deleted soon.", "Request Sent",{
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      });
+    }else{
+      toastr.error("Unable to request restart", "Error Occured",{
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      });
+    }
+  }});
+            
+          }
+        });
+      }
+
+
+      $('.inlinesparkline').sparkline(); 
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          console.log(json)
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+
+      
+var maxHeight = 400;
+
+$(function(){
+
+    $(".dropdown > li").hover(function() {
+    
+         var $container = $(this),
+             $list = $container.find("ul"),
+             $anchor = $container.find("a"),
+             height = $list.height() * 1.1,       // make sure there is enough room at the bottom
+             multiplier = height / maxHeight;     // needs to move faster if list is taller
+        
+        // need to save height here so it can revert on mouseout            
+        $container.data("origHeight", $container.height());
+        
+        // so it can retain it's rollover color all the while the dropdown is open
+        $anchor.addClass("hover");
+        
+        // make sure dropdown appears directly below parent list item    
+        $list
+            .show()
+            .css({
+                paddingTop: $container.data("origHeight")
+            });
+        
+        // don't do any animation if list shorter than max
+        if (multiplier > 1) {
+            $container
+                .css({
+                    height: maxHeight,
+                    overflow: "hidden"
+                })
+                .mousemove(function(e) {
+                    var offset = $container.offset();
+                    var relativeY = ((e.pageY - offset.top) * multiplier) - ($container.data("origHeight") * multiplier);
+                    if (relativeY > $container.data("origHeight")) {
+                        $list.css("top", -relativeY + $container.data("origHeight"));
+                    };
+                });
+        }
+        
+    }, function() {
+    
+        var $el = $(this);
+        
+        // put things back to normal
+        $el
+            .height($(this).data("origHeight"))
+            .find("ul")
+            .css({ top: 0 })
+            .hide()
+            .end()
+            .find("a")
+            .removeClass("hover");
+    
+    });  
+    
+});
+
+
+
+var  i = 0; 
+
+function addnode(){
+
+  var wrap = '<div class="row" style="margin-top:10px;"> <div class="col-md-4"> <input type="text" name="server[' + i + ']" placeholder="Server Hostname #' + (i + 1) + '" class="form-control"> </div><div class="col-md-4"> <input type="text" name="server[' + i + ']" placeholder="Server IP #' +  (i + 1)  + '" class="form-control"> </div><div class="col-md-4"> <input type="text" name="server[' + i + ']" placeholder="Root Password #' +  (i + 1)  + '" class="form-control"> </div></div>';
+
+  $('#add-node').append(wrap);
+  
+  i++;
+
+}
+
+
+
+      </script>
+  </body>
+</html>

@@ -4,13 +4,35 @@ from django.core.signing import Signer
 from django.contrib import messages
 import paramiko
 from django.db.models import Q
-from ..BackendController.contri import randomString, randomNumber
+from ..BackendController.contri import randomString, randomNumber, verfiy_email
 from ..signup.models import user
 from ..BackendController.tasks.install_stack import installStack, RestartPackage, StopPackage, InstallServerPackage
 from ..BackendController.contri import CheckLogin, getUser, rewrite_menu
 from ..BackendController.server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES_DETAILS, PACKAGES
 from .models import list as server_list, projects, Pkg_inst_data, output as ser_output
 import json
+
+
+
+def terminal(request, server_id):
+    login = CheckLogin(request)
+    if login == True:
+        params = {}
+        user = getUser(request)
+        params['user'] = user
+        try:
+            getserver = server_list.objects.get(id=server_id)
+            params['server'] = getserver
+            getPKG = json.loads(getserver.JSON_PKG_LST)
+            params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+           
+        except Exception as e:
+            print(e)
+
+        return render(request, "user/terminal.html", params)
+    else:
+        return redirect("/login")
+
 
 def server_output(request, server_id):
     login = CheckLogin(request)
@@ -219,6 +241,7 @@ def manage_server(request, server_id):
         try:
             getserver = server_list.objects.get(id=server_id)
             params['menu'] = rewrite_menu(getserver.JSON_PKG_LST, server_id)
+            params['server'] = getserver
             
 
 
@@ -329,13 +352,15 @@ def deploy(request):
 def panel(request):
     
     login = CheckLogin(request)
+    #verfiy_email('rs188282@gmail.com');
     if login == True:
         params = {}
         user = getUser(request)
         params['user'] = user
-        print(user.first_name)
-        get_all_servers = server_list.objects.filter(user_id=user, ServerType="MASTER",parent_server='')
+        
+        get_all_servers = server_list.objects.filter(user_id=user, ServerType="MASTER",parent_server=None)
         params['servers'] = get_all_servers
+        print("ds")
         
         params['server_count'] = get_all_servers.count()
         print(params)
