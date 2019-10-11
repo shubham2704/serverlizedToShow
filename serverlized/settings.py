@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Backend.signup',
     'Backend.lamp',
     'Backend.servers',
+    'Backend.loadBalancer',
     'Backend.django_auto',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -156,3 +157,13 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'templates/media')
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.shopyink.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'no-reply@shopyink.com'
+EMAIL_HOST_PASSWORD = 'RNyS##@5'

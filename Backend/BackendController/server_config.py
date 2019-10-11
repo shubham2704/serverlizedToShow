@@ -16,13 +16,19 @@ STACK_DIST = {
         'PACKAGES':(1, 2, 3, 4),
         'PACKAGES_COUNT': 3
     },2:{
-        'NAME' : 'Load Balancer',
+        'NAME' : 'HTTP Load Balancing with HAProxy',
         'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
         'PRICE' : 0.00 ,
-        'PACKAGES':(5),
-        'PACKAGES_COUNT': 1
+        'PACKAGES':(5, 6),
+        'PACKAGES_COUNT': 2
     },3:{
         'NAME' : 'Django Automation',
+        'DESCRIPTION' : 'Deploy, Manage and Monitor you django project right from an advanced Control Panel.',
+        'PRICE' : 0.00 ,
+        'PACKAGES':(1, 7, 9, 8),
+        'PACKAGES_COUNT': 4
+    },4:{
+        'NAME' : 'MySQL Load Balancing with HAProxy ',
         'DESCRIPTION' : 'Deploy, Manage and Monitor you django project right from an advanced Control Panel.',
         'PRICE' : 0.00 ,
         'PACKAGES':(1, 7, 9, 8),
@@ -58,7 +64,7 @@ PACKAGES = {
         'SERVICE_VIEW' : True,
         'APP_NAME' : 'lamp',
         'DEPENDENCIES' : [],
-        'DESCRIPTION':'',
+        'DESCRIPTION':'MySQL is an open-source relational database management system, A community version will be installed.',
         'VERSION':'2.2',
         'INIT_COMMAND' : {
             1:[('sudo apt-get update', 'sudo apt-get upgrade')],
@@ -105,7 +111,7 @@ PACKAGES = {
         'NAV_NAME' : 'PHP',
         'SERVICE_VIEW' : False,
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'The PHP development team announces the immediate availability of PHP 7.3.0. This release marks the third feature update to the PHP 7 series.',
         'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -163,7 +169,7 @@ PACKAGES = {
         'NAV_NAME' : 'PHP',
         'SERVICE_VIEW' : False,
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'phpMyAdmin is a free and open source administration tool for MySQL and MariaDB.',
         'DEPENDENCIES' : [1,2,3],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -184,12 +190,84 @@ PACKAGES = {
         
         }
         },
+     
+        5:{
+        'NAME':'HaProxy',
+        'NAV_NAME' : 'HAPoxy',
+        'APP_NAME' : 'loadBalancer',
+        'SERVICE_VIEW' : False,
+        'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
+        'VERSION':'1.8',
+        'INIT_COMMAND' : {
+            1:[('sudo apt-get update')],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'haproxy_ubunt_18_04_x86.sh')]
+        },
+
+        'CONTROL_PANEL' : { 'HAProxy':{
+                        "ICON" : {
+                             "URL":('fa fa-balance-scale', "Backend.lamp.views.add", False)
+                         },
+                        "Configure HAProxy" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy_http', "Backend.loadBalancer.views.configure", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                             
+                         },
+                         "Delete Account" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+              },
+              'Node Servers':{
+                        "ICON" : {
+                             "URL":('fa fa-server', "Backend.lamp.views.add", False)
+                         },
+                        "Manage Servers" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/web/nodes_server', "Backend.loadBalancer.views.NodeServer", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                             
+                         },
+                         "Delete Account" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+              },
+              'Replicator':{
+                        "ICON" : {
+                             "URL":('fa fa-cloud-upload', "Backend.lamp.views.add", False)
+                         },
+                        "Addon Domains" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/web/domain', "Backend.loadBalancer.views.domains", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                             
+                         },
+                         "Upload Files" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/web/ftp', "Backend.loadBalancer.views.ftp", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+              }
+
+        }
+        },
         6:{
-        'NAME':'Lets Encrypt SSL',
+        'NAME':'Lets Encrypt SSL for Apache',
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'Lets Encrypt is a non-profit certificate authority run by Internet Security Research Group that provides X.509 certificates for Transport Layer Security encryption at no charge.',
         'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -220,28 +298,12 @@ PACKAGES = {
         
         }
         },
-
-        5:{
-        'NAME':'HaProxy',
-        'NAV_NAME' : 'HAPoxy',
-        'APP_NAME' : 'loadBalancer',
-        'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
-        'VERSION':'1.8',
-        'INIT_COMMAND' : {
-            1:[('sudo apt-get update')],
-        },
-        'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'haproxy_ubunt.sh')]
-        },
-
-        'CONTROL_PANEL' : {}
-        },
         7:{
         'NAME':'vsftpd',
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'vsftpd, is an FTP server for Unix-like systems, including Linux. It is licensed under the GNU General Public License. It supports IPv6 and SSL. ',
         'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -268,15 +330,14 @@ PACKAGES = {
                                  1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
                                  }
                          },
-              }
-        
+              },
         }
         },8:{
         'NAME':'Django Controller',
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'Deploy and manage django projects in simple click.',
         'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -313,7 +374,7 @@ PACKAGES = {
         'SERVICE_VIEW' : True,
         'NAV_NAME' : 'PHP',
         'APP_NAME' : 'lamp',
-        'DESCRIPTION':'',
+        'DESCRIPTION':'A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them.',
         'DEPENDENCIES' : [1],
         'VERSION':'7.5',
         'INIT_COMMAND' : {
@@ -357,7 +418,94 @@ PACKAGES = {
               },
         
         }
+        },
+        10:{
+        'NAME':"Let's Encrypt for HAProxy",
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them.',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh.sh') ]
+        },
+        'CONTROL_PANEL' : {
+            "Let's Encrypt SSL":{
+                        "ICON" : {
+                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
+                         },
+                        "HAProxy" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/ssl', "Backend.django_auto.views.virtual_env_view", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'install_virtual_env.sh')
+                                 }
+                             
+                         },
+                         "Domains" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "IDE" : {
+                             "URL":('wpanel/<int:manage_id>/pyenvironment/<int:ide>', "Backend.django_auto.views.virtual_env_ide", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'virtual_env_create_ubuntu_18_x64.sh')
+                                 }
+                             
+                         },
+              },
+        
         }
+        },
+        11:{
+        'NAME':"Backup",
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them.',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh.sh') ]
+        },
+        'CONTROL_PANEL' : {
+            "Let's Encrypt SSL":{
+                        "ICON" : {
+                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
+                         },
+                        "HAProxy" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/ssl', "Backend.django_auto.views.virtual_env_view", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'install_virtual_env.sh')
+                                 }
+                             
+                         },
+                         "Domains" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "IDE" : {
+                             "URL":('wpanel/<int:manage_id>/pyenvironment/<int:ide>', "Backend.django_auto.views.virtual_env_ide", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'virtual_env_create_ubuntu_18_x64.sh')
+                                 }
+                             
+                         },
+              },
+        
+        }
+        }
+
 
     }
 
@@ -415,5 +563,6 @@ PACKAGES_DETAILS = {
             'IMG' : [],
             'BUNDLE' : ['LAMP STACK']
 
-        }
+        },
+        
     }

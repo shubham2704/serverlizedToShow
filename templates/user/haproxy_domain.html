@@ -1,0 +1,330 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+   <link href="/static/css/style.css" rel="stylesheet">
+   <link href="/static/css/tostr.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <style>
+           
+            
+
+             
+    </style>
+  </head>
+
+  <body>
+
+    {% include "user/navbar.html" %}
+    {% include "user/menu.html" %}
+
+    
+    <div class="container" style="margin-top: 25px;">
+        <div class="row">
+             
+          <div class="col-sm-8">
+                {% if messages %}
+
+
+                {% for message in messages %}
+        
+                
+                
+                <div class="alert alert-{{message.tags}} alert-dismissible text-dark" role="alert">
+                    <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span class="mdi mdi-close" aria-hidden="true"></span></button>
+                    <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                    <div class="message">{{message}}</div>
+                  </div>
+                 
+        
+            
+                {% endfor %}
+             {% endif %}
+
+
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h2 class="">
+                      <h4  data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Addon & Replicate Domain Config to All Node Servers
+                      </h4>
+                    </h2>
+                  </div>
+              
+                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <form method="POST" action="/wpanel/{{server.id}}/haproxy/web/domain">
+                            {%csrf_token%}
+                            <div class="form-group">
+                              <label for="exampleInputEmail1">Domain</label>
+                              <input type="text" name="domain" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example.com">
+                              <small id="emailHelp" class="form-text text-muted">without http(s) & www </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Directroy</label>
+                                <input type="text" name="folder" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example">
+                                <small id="emailHelp" class="form-text text-muted">Directory will be automatically created. </small>
+                            </div>
+                            
+                            
+                            <button type="submit" class="btn btn-primary">Addon Domain</button>
+                          
+                        </form>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <br>
+              <div class="card">
+                <div class="card-header">
+                  <b>Hosted Domain </b>
+                </div>
+                <table style="margin-bottom: 0rem;" class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Domain</th>
+                        <th>Directory</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for domain in domains %}
+                      <tr>
+                        <td class="align-middle"><a href="">{{domain.subdomain}}.{{domain.domain_name}} </a></td>
+                        <td class="align-middle">/var/www/{{domain.folder}}</td>
+                        <td><button onclick="delete_domain({{domain.id}})" type="button" class="btn btn-info btn-sm">Delete</button>  </td>
+                      <td class="align-middle">
+                        <i class="fa fa-certificate text-warning"></i>
+                      </td>
+                      </tr>
+                      {% endfor %}
+                     
+                    </tbody>
+                  </table>
+              </div>
+              <br>
+          </div>
+          
+          <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                  <b>DNS Configuration </b>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
+                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
+                  <br> <code>A example.com {{server.server_ip}} </code>
+                  <ul>
+                      <li>Type : <code>A</code></li>
+                      <li>Host : <code>example.com</code></li>
+                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
+                  </ul>
+                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
+                </p>
+                  
+                   
+                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
+                </div>
+              </div>
+          </div>
+          
+        </div>
+      </div>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Lightweight-Modal-Dialog-Plugin-For-Bootstrap-Bootstrap-Confirm/bootstrap-confirm.js"></script>
+    <script>
+
+
+      function delete_domain(e){
+        $.confirm({
+          message: 'Are you sure? this action is unchangeable.',
+          onOk: function() {
+            
+            window.location="/wpanel/{{server.id}}/domain/delete/" + e;
+            
+          }
+        });
+      }
+
+
+      $('.inlinesparkline').sparkline(); 
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          console.log(json)
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+
+      
+var maxHeight = 400;
+
+$(function(){
+
+    $(".dropdown > li").hover(function() {
+    
+         var $container = $(this),
+             $list = $container.find("ul"),
+             $anchor = $container.find("a"),
+             height = $list.height() * 1.1,       // make sure there is enough room at the bottom
+             multiplier = height / maxHeight;     // needs to move faster if list is taller
+        
+        // need to save height here so it can revert on mouseout            
+        $container.data("origHeight", $container.height());
+        
+        // so it can retain it's rollover color all the while the dropdown is open
+        $anchor.addClass("hover");
+        
+        // make sure dropdown appears directly below parent list item    
+        $list
+            .show()
+            .css({
+                paddingTop: $container.data("origHeight")
+            });
+        
+        // don't do any animation if list shorter than max
+        if (multiplier > 1) {
+            $container
+                .css({
+                    height: maxHeight,
+                    overflow: "hidden"
+                })
+                .mousemove(function(e) {
+                    var offset = $container.offset();
+                    var relativeY = ((e.pageY - offset.top) * multiplier) - ($container.data("origHeight") * multiplier);
+                    if (relativeY > $container.data("origHeight")) {
+                        $list.css("top", -relativeY + $container.data("origHeight"));
+                    };
+                });
+        }
+        
+    }, function() {
+    
+        var $el = $(this);
+        
+        // put things back to normal
+        $el
+            .height($(this).data("origHeight"))
+            .find("ul")
+            .css({ top: 0 })
+            .hide()
+            .end()
+            .find("a")
+            .removeClass("hover");
+    
+    });  
+    
+});
+
+
+
+
+
+
+      </script>
+  </body>
+</html>

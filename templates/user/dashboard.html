@@ -16,22 +16,12 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
-
+    <link href="/static/css/tostr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    
     <!-- Custom styles for this template -->
-    <style>
-        body{
-            font-family: 'Hind Madurai', sans-serif;
-        }
-        .starter-template {
-            padding: 3rem 1.5rem;
-            text-align: center;
-          }
-          .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
-         .btn-labeled {padding-top: 0;padding-bottom: 0;}
-         .bg-ser{
-             background-color: #0093FF;
-         }
-    </style>
+ 
+    
   </head>
 
   <body>
@@ -58,14 +48,14 @@
         {% endif %}   
                
          {% if server_count > 0 %}
-          <div class=" ">
+          <div class=" fade-in-up ">
                 <div class="card ">
                         <div class="card-header">
                                 <div class="row">
                             <div class="col-md-9 col-xs-4 col-sm-6">
                             <b><p style="margin-bottom: 6px;"></p>Managed Server</b></div>
                             <div class="col-md-3 col-xs-8  col-sm-6 text-right ">
-                            <a type="button" href="/wpanel/deploy" class="align-middle btn btn-labeled btn-primary btn-sm">
+                               <a type="button" href="/wpanel/deploy" class="align-middle   btn-primary btn-sm">
                                         <span class="btn-label"><i class="fa fa-server"></i></span>Manage Server</a>
                                     </div>
                         </div></div>
@@ -106,6 +96,41 @@
                                             
                                               </td>
                                           </tr>
+                                          <tr width="100%">
+                                            <td class="lead">Node Server of </td></td>
+                                            
+                                          </tr>
+                                          <tr >
+                                              <td style="width:40%;" class="align-middle">
+                                                    <div class=" row">
+                                                             
+                                                            <div class="col-md-8">
+                                                              <h5 class="card-title" style="font-size: 18px;margin-bottom: 5px;">{{servers.server_name}}</h5>
+                                                             <p class="card-text text-info" style="font-size: 14px;">{{servers.stack_name}}
+                                                                   <br> <small class="text-success">{{servers.server_ip}}</small>
+                                                                   
+                                                              </p>
+                                                              
+                                                           </div>
+                                                           <div class="col-md-4"><br>
+                                                                <span class="inlinesparkline"></span>
+                                                                
+                                                             </div>
+                                                           
+                                                          </div>
+                                            </td>
+                                            <td class="align-middle"><strong>	&#8377; {{servers.Charges}}</strong></td>
+                                            <td class="align-middle"><strong>{{servers.date}}</strong></td>
+                                            <td class="align-middle"><span class="badge badge-primary">{{servers.server_status}}</span></td>
+                                            <td class="align-middle">
+                                                <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/delete/{{servers.id}}" {% endif %}  type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
+                                            
+                                              </td>
+                                            </tr>
                     {% endfor %}
                                         
                                               
@@ -178,7 +203,7 @@ function noactive(a){
                 "debug": false,
                 "newestOnTop": false,
                 "progressBar": true,
-                "positionClass": "toast-bottom-right",
+                "positionClass": "toast-top-right",
                 "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "300",
@@ -197,7 +222,7 @@ function noactive(a){
                 "debug": false,
                 "newestOnTop": false,
                 "progressBar": true,
-                "positionClass": "toast-bottom-right",
+                "positionClass": "toast-top-right",
                 "preventDuplicates": true,
                 "onclick": null,
                 "showDuration": "300",
