@@ -298,26 +298,6 @@ PACKAGES = {
         
         }
         },
-<<<<<<< HEAD
-
-        5:{
-        'NAME':'HaProxy',
-        'NAV_NAME' : 'HAPoxy',
-        'SERVICE_VIEW' : True,
-        'APP_NAME' : 'loadBalancer',
-        'DESCRIPTION':'HAProxy is a software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.',
-        'VERSION':'1.8',
-        'INIT_COMMAND' : {
-            1:[('sudo apt-get update')],
-        },
-        'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'haproxy_ubunt_18_04_x86.sh')]
-        },
-
-        'CONTROL_PANEL' : {}
-        },
-=======
->>>>>>> 39dc7436f277c3059a230b50ccd54ba19acc2d31
         7:{
         'NAME':'vsftpd',
         'SERVICE_VIEW' : True,
