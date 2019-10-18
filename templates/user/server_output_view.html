@@ -15,165 +15,33 @@
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://daneden.github.io/animate.css/animate.min.css" rel="stylesheet">
-    <link href="/static/css/tostr.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
-    
-    <!-- Custom styles for this template -->
- 
-    <style>
-            .window {
-                border-radius: 3px;
-                background: #222;
-                color: #fff;
-                overflow: hidden;
-                position: relative;
-                margin: 0 auto;
-                width: 100%;
-                
-                &:before {
-                  content: ' ';
-                  display: block;
-                  height: 48px;
-                  background: #C6C6C6;
-                }
-                
-                &:after {
-                  content: '. . .';
-                  position: absolute;
-                  left: 12px;
-                  right: 0;
-                  top: -3px;
-                  font-family: "Times New Roman", Times, serif;
-                  font-size: 96px;
-                  color: #fff;
-                  line-height: 0;
-                  letter-spacing: -12px;
-                }
-              }
-              
-               .terminal::-webkit-scrollbar {
-                width: 12px;
-                height: 12px;
-                }
-                
-                ::-webkit-scrollbar-track {
-                width: 2px;
-                border: 1px dashed #22da26;
-                }
-                
-                ::-webkit-scrollbar-thumb {
-                background: #0093FF;
-                }
-                
-                ::-webkit-scrollbar-thumb:hover {
-                background: #007bff;  
-                }
+    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
 
-              .terminal {
-                margin: 20px;
-                max-height: 600px;
-                overflow: auto;
-                overflow-x: hidden;
-                font-family: monospace;
-                font-size: 16px;
-                color: #22da26;
-                
-                .command { 
-                  width: 0%;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  animation: write-command 5s both;
-                  
-                  &:before {
-                    content: '$ ';
-                    color: #22da26;
-                  }
-                }
-                
-                .log {
-                  white-space: nowrap;
-                  overflow: hidden;
-                  animation: write-log 5s both;
-                }
-              
-                p:nth-child(2) {
-                  animation-delay: 2s;
-                }
-                
-                p:nth-child(3) {
-                  animation-delay: 8s;
-                }
+    <!-- Custom styles for this template -->
+    <style>
+            body{
+                font-family: 'Hind Madurai', sans-serif;
+            }
+            .starter-template {
+                padding: 3rem 1.5rem;
+                text-align: center;
               }
-              
-              @keyframes write-command {
-                0% {
-                  width: 0%;
-                }
+              .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
+             .btn-labeled {padding-top: 0;padding-bottom: 0;}
+             .bg-ser{
+                 background-color: #428bca;
+             }
+             .alert-warning1{
+                margin-bottom: 0rem;
+                
+                color: white;
+                background-color: #fff3cd;
+                    border-color: #ffeeba;
+                border-radius: 0px;
+                padding: 5px;
                 
                 
-                100% {
-                  width: 100%;
-                }
-              }
-              
-              @keyframes write-log {
-                0% {
-                  height: 0;
-                }
-                
-                16% {
-                  height: 0;
-                }
-                
-                17% {
-                  height: 18px;
-                }
-                
-                33% {
-                  height: 18px;
-                }
-                
-                34% {
-                  height: 37px;
-                }
-                
-                51% {
-                  height: 37px;
-                }
-                
-                52% {
-                  height: 55px;
-                }
-                
-                69% {
-                  height: 55px;
-                }
-                
-                70% {
-                  height: 74px;
-                }
-                
-                87% {
-                  height: 74px;
-                }
-                
-                88% {
-                  height: 92px;
-                }
-                
-                88% {
-                  height: 92px;
-                }
-                
-                99% {
-                  height: 92px;
-                }
-                
-                100% {
-                  height: 110px;
-                }
-              }
+             }
     </style>
   </head>
 
@@ -205,30 +73,21 @@
                 {% endfor %}
              {% endif %}
 
-             <div class="btn-group mb-2 pull-right">
-                <a href="/wpanel/{{server.id}}/terminal" class="btn btn-primary">Open Terminal</a>
-                
-        
-            </div>
-              <div class="window put">
-                
-                  <div style="background-color:black;color:white;" class="card-header">
-                    
-                      <b>{{output.command}} #{{output.id}}  <i class="fa fa-clock-o pull-right"> {{output.date}}</i>  </b>
+              <div class="card" >
+                <div style="background-color:black;color:white;" class="card-header">
+                  <b>{{output.command}} #{{output.id}}  <i class="fa fa-clock-o pull-right"> {{output.date}}</i>  </b>
+                </div>
+                <div class="card-body" style="background-color:black;color:white;">
+                    {% for out in output_js %}
+                    <div class="row" >
+                        <label for="email2" class="col-md-2">root@{{server.server_ip}} : </label>
+                        <label for="pwd2" class=" col-md-10"> {{out}}</label>
+                         
                     </div>
-                    
-                 
-                      <div class="terminal " scrolling="yes">
-                         <p class="log">
-                          <span id="append-here">
-                              {% for out in output_js %}
-                              <b class="text-success">root@{{server.server_ip}}:</b> {{out}}<br> 
-                              {% endfor %}
-           
-               
-                        
-                      </div>
-                   </div>
+                         <br>
+                    {% endfor %}
+                </div>
+              </div>
               <br>
           </div>
           

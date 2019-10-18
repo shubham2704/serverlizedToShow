@@ -20,7 +20,6 @@ def verfiy_email(to):
 
     d = { 'username': 'username' }
     subject, from_email, to = 'Verfiy your Serverlized Email Address', 'no-reply@shopyink.com', to
-    
     html_content = render_to_string(os.path.join(PROJECT_PATH,'templates','email', "welcome.html"), d)
     send_mail(
     subject,
@@ -105,9 +104,3 @@ def randomNumber(length=5):
     return ''.join((random.choice(your_letters) for i in range(length)))
 
 
-def logout(request, redirect = False):
-    if 'user_login' in request.session:
-        request.session.pop('user_login')
-        
-
-    

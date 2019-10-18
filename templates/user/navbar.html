@@ -8,7 +8,7 @@
                 </div>
                 <script>
                     function email_verify(){
-                        toastr.success("Sending verification email to {{user.email}}",{
+                        toastr.success("Account confimation Email sent to rs188282@gmail.com",{
                             "closeButton": true,
                             "debug": false,
                             "newestOnTop": false,
@@ -25,56 +25,19 @@
                             "showMethod": "fadeIn",
                             "hideMethod": "fadeOut"
                           });
-
-                        $.ajax({url: "/wpanel/verify_email" , success: function(result){
-                            console.log(result)
-                            if (result.status == "ok"){
-
-
-                        toastr.success("Verification Email sent to {{user.email}}",{
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": true,
-                            "onclick": null,
-                            "showDuration": "300",
-                            "hideDuration": "1000",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                          });
-                    }else{
-                        toastr.warning("Error occured please try again later.",{
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": true,
-                            "onclick": null,
-                            "showDuration": "300",
-                            "hideDuration": "1000",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                          });  
                     }
-
-                }});
-            }
                 </script>
        {% endif %}
 <nav class="navbar navbar-expand-md navbar-dark bg-ser ">
         <a class="navbar-brand" href="#">Serverlized</a>
-     
+        <div class=" pull-right dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">DNS / Email Account
+            <span class="caret"></span></button>
+               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Domains / DNS </a>
+                <a class="dropdown-item" href="#">Email Accounts</a>
+               </div>
+          </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -86,57 +49,38 @@
                    
                      <ul class="navbar-nav">
                         <li class="dropdown dropdown-notification">
-                            <a onclick="notification()" class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="fa fa-bell rel"> <span class="notify-signal count"></span></i></a>
+                            <a class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="fa fa-bell rel"><span class="notify-signal"></span></i></a>
                             <div class="dropdown-menu dropdown-menu-right ">
                                 <div class="ibox mb-0" style="min-width: 366px;">
                                     <div class="ibox-head">
                                         <div class="ibox-title">NOTIFICATIONS</div>
                                     </div>
                                     <div>
-                                        <ul class="list-group list-group-divider list-group-full here">
-                                                   <li class="text-center mt-5 mb-5">
-                                                    <i class="text-center fa fa-spinner fa-spin"></i>
-                                                    </li>
-                                                   
-                                            
-                                                    
+                                        <ul class="list-group list-group-divider list-group-full">
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-chrome mr-3 font-40"></i>GApache is installed on node server #21 Monitory Now</span>
+                                                <span class=" mr-3">Just Now</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-firefox mr-3 font-40"></i>Mozila Firefox</span>
+                                                <span class= "mr-3">12h ago</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-opera mr-3 font-40"></i>Opera</span>
+                                                <span class="  mr-3">21min ago</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-internet-explorer mr-3 font-40"></i>Internet Explorer</span>
+                                                <span class="  mr-3">34.7%</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-safari mr-3 font-40"></i>Safari</span>
+                                                <span class="text-secondary  mr-3">2w</span>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                            <script>
-                                function noti(a = "a"){
-                                    $.ajax({url: "/wpanel/notification/" + a , success: function(result){
-                                        console.log(result);
-                                        $('.count').html(result['count']);
-                                        if(a == "b"){
-                                            wrap = "";
-                                            $.each(result['notifications'], function( index, value ) {
-                                                console.log( index + ": " + value );
-                                                var color = "white";
-                                                if (value.seen == false){
-                                                    color = "#DCDCDC";
-                                                }
-                                                wrap +='<li style="background-color:'+ color +';" class="list-group-item flexbox"><span class="flexbox"><i class="la la-safari mr-3 font-40"></i>'+value.msg+'</span><span class="text-secondary  mr-3">'+value.time+'</span></li>';
-                                              });
-                                            
-                                            
-                                        
-                                        console.log(wrap);
-                                        $('.here').html(wrap);
-
-                                            }
-                                    }});
-                                    
-                                }
-                                
-                                 setInterval(noti, 15000);
-
-                                 function notification(){
-                                     $('.here').html('<li class="text-center mt-5 mb-5"><i class="text-center fa fa-spinner fa-spin"></i></li>');
-                                     noti('b');
-                                 }
-                            </script>
                         </li>
                       <li class="nav-item dropdown">
                               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -144,9 +88,8 @@
                                 {{user.first_name}} {{user.last_name}}
                               </a>
                               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/wpanel/account#account">My Account</a>
-                                <a class="dropdown-item" href="/wpanel/account#projects">Projects</a>
-                                <a class="dropdown-item" href="/wpanel/account#billing">Billing</a>
+                                <a class="dropdown-item" href="#">My Account</a>
+                                <a class="dropdown-item" href="#">Billing</a>
                                </div>
                             </li>
                                

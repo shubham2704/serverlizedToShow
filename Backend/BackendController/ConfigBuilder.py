@@ -7,7 +7,7 @@ from .contri import randomString, randomNumber
 from ..signup.models import user
 from .contri import CheckLogin, getUser, rewrite_menu
 from ..loadBalancer.models import config as HAPROXY_CONFIG
-from ..servers.models import list as server_list, projects, Pkg_inst_data, output as ser_output, billing
+from ..servers.models import list as server_list, projects, Pkg_inst_data, output as ser_output
 from django.utils.crypto import get_random_string
 from querystring_parser import parser
 import json
@@ -61,7 +61,9 @@ defaults
     health = """"""
     if HAConfig.monitor == True:
         pwd = str(get_random_string(length=8))
-        
+        HAConfig.monitor_user = user.email
+        HAConfig.monitor_pass = pwd
+        HAConfig.save()
         health = """
         
 listen  stats
@@ -78,9 +80,6 @@ listen  stats
     stats uri  /loadbalance?stats
 
         """
-        HAConfig.monitor_user = user.email
-        HAConfig.monitor_pass = pwd
-        HAConfig.save()
     
     main_config = """
         
@@ -128,25 +127,3 @@ listen """ + HAConfig.label + """
 
     
     return file_name
-
-
-
-def biller():
-     bills = billing.objects.filter(status = True)
-     for bill in bills:
-         amount = bill.monthly_amount / 730.001
-         getuser = user.objects.get(id=bill.user.id)
-         getuser.money = getuser.money - amount
-         getuser.monthly_charges = getuser.monthly_charges + amount
-         getuser.save()
-
-def reset_monthy():
-     getuser = user.objects.all()
-     for usr in getuser:
-         getuser.monthly_charges = 0.000000
-         getuser.save()
-
-
-
-
-     

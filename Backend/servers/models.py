@@ -20,7 +20,7 @@ class list(models.Model):
     server_ip = models.CharField(max_length=25)
     project_id = models.ForeignKey(projects, on_delete=models.CASCADE)
     JSON_PKG_LST = models.TextField(default="{}")
-    Charges = models.DecimalField(max_digits=10, decimal_places=6, default=0.000000)
+    Charges = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
     date = models.DateTimeField(auto_now_add=True)
     running_status = models.CharField(max_length=45)
     password = models.CharField(max_length=250,default="")
@@ -48,34 +48,3 @@ class output(models.Model):
     output = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     
-
-
-class server_stats(models.Model):
-       
-    server = models.ForeignKey(list, on_delete=models.CASCADE)
-    json_data = models.TextField()
-    ram_data = models.TextField()
-    cpu_data = models.TextField()
-    storage_data = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-
-
-class billing(models.Model):
-    
-    user = models.ForeignKey(user, on_delete=models.CASCADE)
-    server = models.ForeignKey(list, on_delete=models.CASCADE)
-    message = models.CharField(max_length=75)
-    status = models.BooleanField(default=True)
-    monthly_amount = models.DecimalField(max_digits=10, decimal_places=6, default=0.000000)
-    date = models.DateTimeField(auto_now_add=True)
-
-
-class notifications(models.Model):
-       
-    server = models.ForeignKey(list, on_delete=models.CASCADE, null=True)
-    message = models.TextField()
-    seen = models.BooleanField(default=False)
-    icon = models.CharField(default="", max_length=20)
-    color = models.CharField(default="", max_length=20)
-    date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(user, on_delete=models.CASCADE)

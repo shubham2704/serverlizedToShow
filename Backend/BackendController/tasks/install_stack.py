@@ -3,7 +3,7 @@ from django.conf import settings
 import paramiko
 import json
 from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES, PYTHON_VERSION_DIC
-from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output, notifications
+from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output
 from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt, ftp_account
 from Backend.django_auto.models import virtual_env, deploy as dj_dep
 from Backend.loadBalancer.models import config as HAPoxyModel, domains as HAProxy_Domains, replicate_file
@@ -44,8 +44,6 @@ def DeployDjango(insert_id = 0):
                         
         for lin in stdderr:
             response.append(str(lin))
-        for lin in stddout:
-            response.append(str(lin))
 
         server_output.objects.create(
             server = get_server,
@@ -54,6 +52,8 @@ def DeployDjango(insert_id = 0):
             command = "Deploy Django Env - " + inse_id.domain.domain_name,
             output = json.dumps(response)
         )
+<<<<<<< HEAD
+<<<<<<< HEAD
 
         notifications.objects.create(
             server = get_server,
@@ -63,19 +63,16 @@ def DeployDjango(insert_id = 0):
             color = "success",
             user = get_server.user_id
         )
+=======
+>>>>>>> parent of a6f78bb... latest
+=======
+>>>>>>> parent of a6f78bb... latest
         sendNotification(get_server.user_id.id, 'toast', 'success', "Django Project Deployed" , 'Django Project is succesfully Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
 
     except Exception as e:
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Django Project is not Deployed! Deleted",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
+        print(e)
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Django Project is not Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
 
@@ -109,9 +106,6 @@ def SetupVirtualENV(insert_id = 0):
                         
         for lin in stdderr:
             response.append(str(lin))
-        
-        for lin in stddout:
-            response.append(str(lin))
 
         server_output.objects.create(
             server = get_server,
@@ -120,31 +114,12 @@ def SetupVirtualENV(insert_id = 0):
             command = "Setup Virtual Env - " + inse_id.envirnment_name,
             output = json.dumps(response)
         )
-
-        notifications.objects.create(
-            server = get_server,
-            message = "Django Environment is Setup",
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
-
-
         sendNotification(get_server.user_id.id, 'toast', 'success', "Virtual Env Created" , 'Virtual Env is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
 
     except Exception as e:
         print(e)
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Django Virtual Env is not Created! Deleted",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Virtual Env is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
 
@@ -178,9 +153,6 @@ def CreateFTPAccount(insert_id = 0):
         for lin in stdderr:
             response.append(str(lin))
 
-        for lin in stddout:
-            response.append(str(lin))
-
         server_output.objects.create(
             server = get_server,
             user = get_server.user_id,
@@ -188,17 +160,6 @@ def CreateFTPAccount(insert_id = 0):
             command = "Create FTP Account - " + inse_id.username,
             output = json.dumps(response)
         )
-
-        notifications.objects.create(
-            server = get_server,
-            message = "FTP account Created",
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
-
-
         sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Created" , 'FTP account is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
@@ -206,15 +167,6 @@ def CreateFTPAccount(insert_id = 0):
     except Exception as e:
         print(e)
         traceback.print_exc(limit=1, file=sys.stdout)
-
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, FTP Account not Created! Deleted",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
 
@@ -247,8 +199,6 @@ def DeleteFTPAccount(insert_id = 0):
                         
         for lin in stdderr:
             response.append(str(lin))
-        for lin in stddout:
-            response.append(str(lin))
 
         server_output.objects.create(
             server = get_server,
@@ -257,31 +207,11 @@ def DeleteFTPAccount(insert_id = 0):
             command = "Delete FTP Account - " + inse_id.username,
             output = json.dumps(response)
         )
-
-        notifications.objects.create(
-            server = get_server,
-            message = "FTP account deleted",
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
-
-
         sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Deleted" , 'FTP account is succesfully deleted on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.delete()
 
     except Exception as e:
         print(e)
-
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, FTP Account not Deleted! Try Again",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not deleted, try again, on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
        
 
@@ -322,9 +252,6 @@ def ConfigLetsEncrypt(insert_id = 0):
             for lin in stdderr:
                 response.append(str(lin))
 
-            for lin in stddout:
-                    response.append(str(lin))
-
             server_output.objects.create(
                 server = get_server,
                 user = get_server.user_id,
@@ -332,31 +259,13 @@ def ConfigLetsEncrypt(insert_id = 0):
                 command = "Configure Lets Encrypt - " + a,
                 output = json.dumps(response)
             )
-
-            notifications.objects.create(
-            server = get_server,
-            message = "SSL is Configured - " + a,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-            )
-
-
             sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Configured" , 'Lets encrypt is succesfully configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
             inse_id.status = "Configured"
             inse_id.save()
 
     except Exception as e:
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured! SSL is not Configured - " + a + ", Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'SSL is not configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not configured for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
 
 
@@ -380,25 +289,7 @@ def RestartPackage(package_id = 0, server_id = 0, dic_name = ""):
         get_package.PackageStatus = "RUNNING"
         get_package.save()
 
-        notifications.objects.create(
-            server = get_server,
-            message = "Service Restarted - " + PACKAGES[package_id]['NAME'],
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
-
     except:
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured! Service Restarted - " + PACKAGES[package_id]['NAME'] + " Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
-
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', ''+ PACKAGES[package_id]['NAME'] +' is unable to restart on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
 
 
@@ -421,24 +312,8 @@ def StopPackage(package_id = 0, server_id = 0, dic_name = ""):
         sendNotification(get_server.user_id.id, 'toast', 'success', PACKAGES[package_id]['NAME'] + ' STOPPED', ''+ PACKAGES[package_id]['NAME'] +' is succesfully stopped on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         get_package.PackageStatus = "STOP"
         get_package.save()
-        notifications.objects.create(
-            server = get_server,
-            message = "Service Stopped - " + PACKAGES[package_id]['NAME'],
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
         
     except:
-        notifications.objects.create(
-            server = get_server,
-            message = "Error Occured! Service not Stopped - " + PACKAGES[package_id]['NAME'] + " Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-        )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', ''+ PACKAGES[package_id]['NAME'] +' is unable to stopped on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
 
 
@@ -475,27 +350,11 @@ def MySQLDatabaseDelete(insert_id = 0):
         
         mysql_database_det.delete()
         
-        notifications.objects.create(
-            server = get_server,
-            message = "Database Deleted - " + mysql_database_det.database_name,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-        )
     
     except Exception as e:
          if mysql_database_det.user.id is not None:
             mysql_database_det.status = "Error"
             mysql_database_det.save()
-            notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Database not Deleted - " + mysql_database_det.database_name + ", Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-            )
             sendNotification(mysql_database_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while deleting Database on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + '), Please contact use for asistance.')
          
          print(e)
@@ -533,29 +392,12 @@ def MySQLDatabaseCreate(insert_id = 0):
         sendNotification(mysql_database_det.user.id, 'toast', 'success', 'MySQL Database Created', ''+ mysql_database_det.database_name +' is succesfully created on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + ').')
         mysql_database_det.status = "Configured"
         mysql_database_det.save()
-
-        notifications.objects.create(
-            server = get_server,
-            message = "Database Created - " + mysql_database_det.database_name,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-            )
         
     
     except Exception as e:
          if mysql_database_det.user.id is not None:
             mysql_database_det.status = "Error"
             mysql_database_det.save()
-            notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Database not Created - " + mysql_database_det.database_name + ", Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-            )
             sendNotification(mysql_database_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Creating Database on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + '), Please contact use for asistance.')
          
          print(e)
@@ -589,14 +431,6 @@ def MySQLUserDelete(insert_id = 0):
         cmd = " delete " + mysql_user_det.name + " " + mysql_user_det.password + " " + a
         print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        notifications.objects.create(
-            server = get_server,
-            message = "Database Used is Deleted - " + mysql_user_det.name,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-            )
         
         sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Deleted', ''+ mysql_user_det.name +' is Succesfully Deleted on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
         mysql_user_det.delete()
@@ -606,16 +440,6 @@ def MySQLUserDelete(insert_id = 0):
          if mysql_user_det.user.id is not None:
             mysql_user_det.status = "Error"
             mysql_user_det.save()
-            
-            notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Database Used is Not Deleted - " + mysql_user_det.name + ", Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-            )
-
             sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
          
          print(e)
@@ -651,20 +475,14 @@ def MySQLUserAdd(insert_id = 0):
         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
         mysql_user_det.status = "Configured"
         mysql_user_det.save()
-        notifications.objects.create(
-            server = get_server,
-            message = "Database User is Created - " + mysql_user_det.name,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-            )
         sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Created', ''+ mysql_user_det.name +' is Succesfully Created on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
          
         
     
     except Exception as e:
          if mysql_user_det.user.id is not None:
+<<<<<<< HEAD
+<<<<<<< HEAD
             
             notifications.objects.create(
             server = get_server,
@@ -674,6 +492,12 @@ def MySQLUserAdd(insert_id = 0):
             color = "danger",
             user = get_server.user_id
             )
+=======
+>>>>>>> parent of a6f78bb... latest
+=======
+>>>>>>> parent of a6f78bb... latest
+            mysql_user_det.status = "Error"
+            mysql_user_det.save()
             sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
             mysql_user_det.delete()
             
@@ -717,14 +541,7 @@ def DeleteLampDomain(insert_id = 0):
         client.close()
         sftp.close()
         sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Deleted', '<b> ' + a +'</b> is succesfully deleted in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
-        notifications.objects.create(
-            server = get_server,
-            message = "Domain is Deleted - " + a,
-            seen = False,
-            icon = "check",
-            color = "success",
-            user = get_server.user_id
-            )
+        
         return "Installed"
 
         
@@ -732,15 +549,7 @@ def DeleteLampDomain(insert_id = 0):
          if domain_get.user.id is not None:
             domain_get.status = "Error"
             domain_get.save()
-            notifications.objects.create(
-            server = get_server,
-            message = "Error Occured, Domain is not Deleted - " + a + ", Try Again!",
-            seen = False,
-            icon = "times",
-            color = "danger",
-            user = get_server.user_id
-            )
-            sendNotification(domain_get.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Deleting Domain from ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + '), Please contact use for asistance.')
+            sendNotification(domain_get.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + '), Please contact use for asistance.')
          print(e)
     
 
@@ -790,8 +599,6 @@ def InstallServerPackage(server_id = 0, package_id = 0):
                         
                         for lin in stdderr:
                             response.append(str(lin))
-                        for lin in stddout:
-                            response.append(str(lin))
 
                         server_output.objects.create(
                             server = getserver,
@@ -801,29 +608,12 @@ def InstallServerPackage(server_id = 0, package_id = 0):
                             output = json.dumps(response)
                         )
 
-                        notifications.objects.create(
-                        server = get_server,
-                        message = "Package Installed - " + PACKAGES[package_id]['NAME'],
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                        )
-
                         sendNotification(getserver.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[package_id]['NAME'] +'</b> is succesfully installed on ' + getserver.server_name + '  (' + getserver.server_ip + ').')
 
 
 
     except Exception as e:
         print(e)
-        notifications.objects.create(
-        server = get_server,
-        message = "Package not Installed - " + PACKAGES[package_id]['NAME'],
-        seen = False,
-        icon = "times",
-        color = "danger",
-        user = get_server.user_id
-        )
         sendNotification(getserver.user_id.id, 'toast', 'error', 'Installation Failed', '<b> ' + package_details['NAME'] +'</b> is succesfully installed in ' + getserver.server_name + '  (' + getserver.server_ip + ').')
         
 
@@ -872,14 +662,7 @@ def ConfigureLampDomain(insert_id = 0):
         client.close()
         sftp.close()
         sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Configured', '<b> ' + a +'</b> is succesfully installed in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
-        notifications.objects.create(
-        server = get_server,
-        message = "Domain Added - " + a,
-        seen = False,
-        icon = "check",
-        color = "success",
-        user = get_server.user_id
-        )
+        
         return "Installed"
 
         
@@ -888,14 +671,6 @@ def ConfigureLampDomain(insert_id = 0):
          if domain_get.user.id is not None:
             domain_get.status = "Error"
             domain_get.save()
-            notifications.objects.create(
-        server = get_server,
-        message = "Error Occured, Domain not Added - " + a + ", Try Again!",
-        seen = False,
-        icon = "times",
-        color = "danger",
-        user = get_server.user_id
-        )
             sendNotification(domain_get.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + '), Please contact use for asistance.')
          print(e)
     
@@ -956,9 +731,6 @@ def installStack(insert_id = 0):
                         for lin in stdderr:
                             response.append(str(lin))
 
-                        for lin in stddout:
-                            response.append(str(lin))
-
                         server_output.objects.create(
                             server = get_server,
                             user = get_server.user_id,
@@ -966,15 +738,6 @@ def installStack(insert_id = 0):
                             command = "Install Stack Package - " + PACKAGES[pkg_id]['NAME'],
                             output = json.dumps(response)
                         )
-
-                        notifications.objects.create(
-                        server = get_server,
-                        message = "Stack Package Installed - " +  PACKAGES[pkg_id]['NAME'],
-                        seen = False,
-                        icon = "check",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
 
                         sendNotification(get_server.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is succesfully installed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
 
@@ -990,14 +753,6 @@ def installStack(insert_id = 0):
                             file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', 'welcome.html')
                             #print(file_upload)
                             sftp.put(file_upload, "/var/www/html/index.html")
-
-                        if get_cmd[1] == "monitorscript":
-                            client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/monitor_server.py")
-                            file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', 'monitor_server.py')
-                            #print(file_upload)
-                            sftp.put(file_upload, "/etc/serverlized/monitor_server.py")
-                            client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " chmod +x /etc/serverlized/monitor_server.py")
-                            client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " nohup python3 /etc/serverlized/monitor_server.py "+ str(insert_id) +" &")
 
         get_server.server_status = "Active"
         get_server.running_status = "Running"
@@ -1017,14 +772,6 @@ def installStack(insert_id = 0):
             get_server.server_status = "Error"
             get_server.running_status = "Error"
             get_server.save()
-            notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occured, Stack not Installed",
-                        seen = False,
-                        icon = "times",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
             sendNotification(get_server.user_id.id, 'toast', 'error', 'Error Occured', 'Error was occured while installing Stack on ' + get_server.server_name + '  (' + get_server.server_ip + '), Please contact use for asistance.')
         print(e)
 
@@ -1062,10 +809,6 @@ def RenweLetsEncrypt(insert_id = 0):
                             
             for lin in stdderr:
                 response.append(str(lin))
-            
-            for lin in stddout:
-                response.append(str(lin))
-
 
             server_output.objects.create(
                 server = get_server,
@@ -1076,27 +819,11 @@ def RenweLetsEncrypt(insert_id = 0):
             )
             sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Renewed" , 'Lets encrypt is succesfully renewed for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
             inse_id.status = "Configured"
-            notifications.objects.create(
-                        server = get_server,
-                        message = "SSL is renewed for " + a,
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
             inse_id.save()
 
       except Exception as e:
         print(e)
-        notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occurred, SSL is not renewed for " + a + ", Try Again!",
-                        seen = False,
-                        icon = "times",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Occurred', 'Lets encrypt is not renewed for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not renewed for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         #inse_id.delete()
 
 
@@ -1137,9 +864,6 @@ def DeleteLetsEncrypt(insert_id = 0):
             for lin in stdderr:
                 response.append(str(lin))
 
-            for lin in stddout:
-                response.append(str(lin))    
-
             server_output.objects.create(
                 server = get_server,
                 user = get_server.user_id,
@@ -1150,24 +874,9 @@ def DeleteLetsEncrypt(insert_id = 0):
             sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Deleted" , 'Lets encrypt is succesfully Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
             #inse_id.status = "Configured"
             inse_id.delete()
-            notifications.objects.create(
-                        server = get_server,
-                        message = "SSL is deleted for " + a,
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
 
       except Exception as e:
-        notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occurred, SSL is not deleted for " + a + ", Try Again!",
-                        seen = False,
-                        icon = "times",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
+        print(e)
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         
 
@@ -1203,9 +912,6 @@ def ConfigHAProxyWeb(insert_id):
         for lin in stdderr:
             response.append(str(lin))
 
-        for lin in stddout:
-            response.append(str(lin))    
-
         server_output.objects.create(
             server = get_server,
             user = get_server.user_id,
@@ -1213,30 +919,12 @@ def ConfigHAProxyWeb(insert_id):
             command = "Config HAProxy Env - " + inse_id.label,
             output = json.dumps(response)
         )
-        sendNotification(get_server.user_id.id, 'toast', 'success', "HaProxy Configured" , 'HAProxy is successfully Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        sendNotification(get_server.user_id.id, 'toast', 'success', "HaProxy Configured" , 'HAProxy is succesfully Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
 
-        notifications.objects.create(
-                        server = get_server,
-                        message = "HAProxy is successfully configured",
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
-
-
     except Exception as e:
         print(e)
-        notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occurred, HAProxy is not configured, Try Again!",
-                        seen = False,
-                        icon = "times",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'HAProxy is not Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         inse_id.delete()
 
@@ -1259,26 +947,9 @@ def ConfigHAProxyDomain(insert_id = 0):
         inse_id.status = "Configured"
         inse_id.save()
 
-        notifications.objects.create(
-                        server = get_server,
-                        message = "HAProxy Domains is configured in all node servers",
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
-
     except Exception as e:
         print(e)
         traceback.print_exc(limit=1, file=sys.stdout)
-        notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occurred, HAProxy Domains is not configured , Try Again!",
-                        seen = False,
-                        icon = "times",
-                        color = "danger",
-                        user = get_server.user_id
-                         )
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         #inse_id.delete()
 
@@ -1325,11 +996,8 @@ def ReplicateHAProxyFiles(insert_id = 0):
                                 'file_replication_status' : "Done",
                                 'server' : send_async_request['server']
                             }
-
-                
                 inse_id.connected_domain.domain_insert_withftp_dict = json.dumps(inse_dic)
                 inse_id.connected_domain.save()
-                
                 
 
             
@@ -1342,25 +1010,9 @@ def ReplicateHAProxyFiles(insert_id = 0):
         sendNotification(get_server.user_id.id, 'toast', 'success', "File Replicated" , 'File is Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
-        notifications.objects.create(
-                        server = get_server,
-                        message = "HAProxy Files are replicated to all node servers",
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
 
     except Exception as e:
         print(e)
-        notifications.objects.create(
-                        server = get_server,
-                        message = "Error Occurred, HAProxy Files are not replicated to all node servers, Try Again!",
-                        seen = False,
-                        icon = "check",
-                        color = "success",
-                        user = get_server.user_id
-                         )
         traceback.print_exc(limit=1, file=sys.stdout)
         sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         #inse_id.delete()

@@ -10,10 +10,39 @@
 
     <title>Home - Serverlized</title>
 
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+            body{
+                font-family: 'Hind Madurai', sans-serif;
+            }
+            .starter-template {
+                padding: 3rem 1.5rem;
+                text-align: center;
+              }
+              .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
+             .btn-labeled {padding-top: 0;padding-bottom: 0;}
+             .bg-ser{
+                 background-color: #428bca;
+             }
+             .alert-warning1{
+                margin-bottom: 0rem;
+                
+                color: white;
+                background-color: #fff3cd;
+                    border-color: #ffeeba;
+                border-radius: 0px;
+                padding: 5px;
+                
+                
+             }
+    </style>
   </head>
 
   <body>
@@ -119,7 +148,7 @@
                 </div>
                 <div class="card-body">
                   <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server.
+                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
                   <br> <code>A example.com {{server.server_ip}} </code>
                   <ul>
                       <li>Type : <code>A</code></li>
@@ -130,7 +159,7 @@
                 </p>
                   
                    
-                  
+                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
                 </div>
               </div>
           </div>
