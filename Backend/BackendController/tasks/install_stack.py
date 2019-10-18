@@ -52,7 +52,6 @@ def DeployDjango(insert_id = 0):
             command = "Deploy Django Env - " + inse_id.domain.domain_name,
             output = json.dumps(response)
         )
-<<<<<<< HEAD
 
         notifications.objects.create(
             server = get_server,
@@ -62,8 +61,6 @@ def DeployDjango(insert_id = 0):
             color = "success",
             user = get_server.user_id
         )
-=======
->>>>>>> parent of a6f78bb... latest
         sendNotification(get_server.user_id.id, 'toast', 'success', "Django Project Deployed" , 'Django Project is succesfully Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
@@ -478,7 +475,6 @@ def MySQLUserAdd(insert_id = 0):
     
     except Exception as e:
          if mysql_user_det.user.id is not None:
-<<<<<<< HEAD
             
             notifications.objects.create(
             server = get_server,
@@ -488,10 +484,8 @@ def MySQLUserAdd(insert_id = 0):
             color = "danger",
             user = get_server.user_id
             )
-=======
             mysql_user_det.status = "Error"
             mysql_user_det.save()
->>>>>>> parent of a6f78bb... latest
             sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
             mysql_user_det.delete()
             
