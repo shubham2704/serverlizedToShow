@@ -36,8 +36,146 @@
     </style>
     <!-- Custom styles for this template -->
     <style>
+<<<<<<< HEAD
+        body{
+            font-family: 'Hind Madurai', sans-serif;
+        }
+        .starter-template {
+            padding: 5rem 1.5rem;
+            
+          }
+          .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
+         .btn-labeled {padding-top: 0;padding-bottom: 0;}
+         .bg-ser{
+             background-color: #428bca;
+         }
+
+         body{
+            margin: 0;
+            padding: 0;
+            font-family:Roboto, sans-serif sans-serif;
+            color: rgb(26, 24, 24);
+            background-color: #eee;
+            text-align: left;
+    
+        }
+        
+        h1, h2, h3, h4, h5, h6{
+            font-weight: 200;
+        }
+        
+        h1{
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #428bca;
+            max-width: 40%;
+            margin: 20px auto;
+        }
+        
+        /* CONTAINERS */
+        
+        .container {max-width: 850px; width: 100%; margin: 0 auto;}
+        .four { width: 32.26%; max-width: 32.26%;}
+        
+        
+        /* COLUMNS */
+        
+        .col {
+          display: block;
+          float:left;
+          margin: 1% 0 1% 1.6%;
+        }
+        
+        .col:first-of-type { margin-left: 0; }
+        
+        /* CLEARFIX */
+        
+        .cf:before,
+        .cf:after {
+            content: " ";
+            display: table;
+        }
+        
+        .cf:after {
+            clear: both;
+        }
+        
+        .cf {
+            *zoom: 1;
+        }
+        
+        /* FORM */
+        
+        .form .plan input, .form .payment-plan input, .form .payment-type input{
+            display: none;
+        }
+        
+        .form label{
+            position: relative;
+            background-color: #fff;
+            font-size: 26px;
+            text-align: center;
+            box-decoration-break: 1px solid #428bca;
+            height: 176px;
+            line-height: 150px;
+            display: block;
+            cursor: pointer;
+            border: 3px solid transparent;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        
+        .form .plan input:checked + label, .form .payment-plan input:checked + label, .form .payment-type input:checked + label{
+            border: 1px solid rgb(32, 30, 30);
+            background-color: #aaa;
+            box-shadow: 10px 10px 4px grey;
+            background-image: radial-gradient(#aaa,#428bca);
+  
+        }
+        
+        .form .plan input:checked + label:after, form .payment-plan input:checked + label:after, .form .payment-type input:checked + label:after{
+            content: "\2713";
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 100%;
+            border: 1px solid #333;
+            background-color: #428bca;
+            z-index: 999;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            
+        }
+        
+        .submit{
+            padding: 15px 60px;
+            display: inline-block;
+            border: none;
+            margin: 20px 0;
+            background-color: #2fcc71;
+            color: #fff;
+            border: 2px solid #333;
+            font-size: 18px;
+            -webkit-transition: transform 0.3s ease-in-out;
+            -o-transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .submit:hover{
+            cursor: pointer;
+            transform: rotateX(360deg);
+        }
+
+
+            @import url('https://fonts.googleapis.com/css?family=Fira+Sans:400');
+
+
+=======
         
     
+>>>>>>> 39dc7436f277c3059a230b50ccd54ba19acc2d31
     </style>
   </head>
 
@@ -69,26 +207,27 @@
         
             {% endfor %}
          {% endif %}
+<<<<<<< HEAD
+            <label for="email"><strong>Operating System</strong> </label>
+            <div class="form cf">
+=======
             <label for="email">Operating System </label>
             <div class="form  cf">
+>>>>>>> a6f78bb9ccf68e69d31fa4b8fc0289a61e888de0
                    
                 <section class="plan cf">
                    
                   {% for key, SERVER in SERVER_OS_DISTRIBUTION.items %}
-
                     <input type="radio" name="os" id="sr{{key}}" value="{{key}}"><label class="free-label four col" for="sr{{key}}">
+                      <img src="/static/images/111.png" style="border-radius:50; width: 30%; height: 50%;">
                         {{SERVER.0}} {{SERVER.1}}
                     </label>
                
                 {% endfor %}
                 </section>
-                
-                
-               
-                
-                            </div>
+                    </div>
 
-                    <label for="email">Choose Stack </label>
+                    <label for="email"><strong> Choose Stack</strong> </label>
 
                      
 
