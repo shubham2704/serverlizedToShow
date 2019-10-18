@@ -18,8 +18,6 @@
     <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
     <link href="/static/css/tostr.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
-    <link href="/static/css/alertify.css" rel="stylesheet">
-    <link href="https://raw.githubusercontent.com/daneden/animate.css/master/animate.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
  
@@ -37,7 +35,7 @@
         {% if server_count == 0 %}
 
         <br>
-               <div class=" text-center fade-in-up " >
+               <div class=" text-center" >
                     <img width="33%" src="http://gitlab-org.gitlab.io/gitlab-svgs/dist/illustrations/pipelines_empty.svg">
 
                     <div class="card-body" style="font-size: 10px;">
@@ -86,19 +84,53 @@
                                                            
                                                           </div>
                                             </td>
-                                            <td class="align-middle"><strong>	&#8377; {{servers.Charges | floatformat:2}}</strong></td>
+                                            <td class="align-middle"><strong>	&#8377; {{servers.Charges}}</strong></td>
                                             <td class="align-middle"><strong>{{servers.date}}</strong></td>
                                             <td class="align-middle"><span class="badge badge-primary">{{servers.server_status}}</span></td>
                                             <td class="align-middle">
-                                                <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button"  class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
+                                                <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
                                                 
                                                 <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
                                                 
-                                                <a {% if servers.server_status == "Installing" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="#" onclick="deleteserver({{servers.id}})" {% endif %}   type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/delete/{{servers.id}}" {% endif %}  type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
                                             
                                               </td>
                                           </tr>
-                                          
+                                          <tr width="100%">
+                                            <td class="lead">Node Server of </td></td>
+                                            
+                                          </tr>
+                                          <tr >
+                                              <td style="width:40%;" class="align-middle">
+                                                    <div class=" row">
+                                                             
+                                                            <div class="col-md-8">
+                                                              <h5 class="card-title" style="font-size: 18px;margin-bottom: 5px;">{{servers.server_name}}</h5>
+                                                             <p class="card-text text-info" style="font-size: 14px;">{{servers.stack_name}}
+                                                                   <br> <small class="text-success">{{servers.server_ip}}</small>
+                                                                   
+                                                              </p>
+                                                              
+                                                           </div>
+                                                           <div class="col-md-4"><br>
+                                                                <span class="inlinesparkline"></span>
+                                                                
+                                                             </div>
+                                                           
+                                                          </div>
+                                            </td>
+                                            <td class="align-middle"><strong>	&#8377; {{servers.Charges}}</strong></td>
+                                            <td class="align-middle"><strong>{{servers.date}}</strong></td>
+                                            <td class="align-middle"><span class="badge badge-primary">{{servers.server_status}}</span></td>
+                                            <td class="align-middle">
+                                                <button {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} onclick="restart('{{servers.id}}')"  {% endif %} type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh "></i></button>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/{{servers.id}}" {% endif %} type="button"  class="btn btn-primary btn-sm"><i class="fa fa-dashboard "></i></a>
+                                                
+                                                <a {% if servers.server_status != "Active" %} href="#" onclick="noactive('{{servers.server_status}}')" {% else %} href="/wpanel/delete/{{servers.id}}" {% endif %}  type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></a>
+                                            
+                                              </td>
+                                            </tr>
                     {% endfor %}
                                         
                                               
@@ -122,62 +154,12 @@
     <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
-    <script src="/static/alertify.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
     <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
     <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
     <script>
       
-      function deleteserver(e){
-        alertify.confirm("Are you sure you want to delete the Managring Server(#"+e+")",
-  function(){
-    
-    $.ajax({url: "/wpanel/server/del/" + e, success: function(result){
-       if (result.status == "ok"){
-        toastr.success('Server succsfully deleted!', 'Server Deleted',{
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "toast-bottom-right",
-          "preventDuplicates": true,
-          "onclick": null,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        });
-       }else{
-        toastr.warning('We could not able to delete the server! please conact the support.  ', 'Error in Deletion',{
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "toast-bottom-right",
-          "preventDuplicates": true,
-          "onclick": null,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        });
-       }
-    }});
-    
-  },
-  function(){
-    
-  }).setHeader('Are you Sure? ').set('labels', {ok:'Delete Server', cancel:'Cancel'}); 
-      }
-
+      $('.inlinesparkline').sparkline(); 
 function noactive(a){
   toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
     "closeButton": true,
@@ -203,8 +185,6 @@ function noactive(a){
     </script>
 
     <script>
-
-
         var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
     
         socket.onopen = e => {

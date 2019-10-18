@@ -13,12 +13,11 @@ def login(request):
         return redirect("/wpanel/")
 
     if request.method == "POST":
-        email = request.POST['email'].strip()
+        email = request.POST['email']
         password = request.POST['password']
 
         try:
             validate_email(email)
-            print(email)
             user = usr.objects.get(email=email, status="Active")
             sign = Signer()
             unsign = sign.unsign(user.password)
@@ -28,8 +27,7 @@ def login(request):
                 return redirect("/wpanel/")
             else:
                 messages.warning(request, "Invalid email or password")
-        except Exception as e:
-            print(e)
+        except:
             messages.warning(request, "Invalid email or email does not exist.")
 
     return render(request, "user/login.html")
