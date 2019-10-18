@@ -14,10 +14,20 @@ class user(models.Model):
     phone_otp = models.IntegerField()
     phone_verify = models.BooleanField(default=False)
     status = models.CharField(max_length=75)
-    money = models.DecimalField(max_digits=4, decimal_places=2, default=0.00)
+    money = models.DecimalField(max_digits=10, decimal_places=6, default=0.000000)
+    monthly_charges = models.DecimalField(max_digits=10, decimal_places=6, default=0.000000)
     gstin = models.CharField(max_length=75)
     date = models.DateTimeField(auto_now_add=True)
 
+
+
+class transation(models.Model):
+
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    transation_id = models.CharField(max_length=150)
+    amount = models.DecimalField(max_digits=10, decimal_places=6, default=0.000000)
+    date = models.DateTimeField(auto_now_add=True)
 
 class projects(models.Model):
     

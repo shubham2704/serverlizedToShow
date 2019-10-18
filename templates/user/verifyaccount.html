@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>serverlized</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fontawesome-all.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/iofrm-style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/iofrm-theme13.css">
+</head>
+<body>
+    <div class="form-body">
+       
+        <div class="row">
+            <div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+                        <h1 style="color: aliceblue; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;" class="pull-left">Serverlized</h1>
+                        <h3>Get more things done with Serverlized platform.</h3>
+                        <p>Serverlized is a Platform as a Service and it is free of cost (limited features).<br><br>
+                            It provides an easy and user friendly graphical interface through which a person can manage an unmanaged server.</p>
+                    </div>
+            </div>
+            <div class="form-holder">
+                  
+                <div class="form-content">
+                    <div class="form-items">
+
+                            {% if data == False %}
+                            <div class=" text-center">
+                            <i class="fa fa-times text-danger fa-4x mb-3"></i>
+                        <p class=" text-center">Email is already verified or wrong token! Don't have an account? <a href="/signup">Sign up</a> Now!</p>      
+                        </div>
+                        {% endif %}
+                       
+                      {% if data == True %}
+                        <div class=" text-center">
+                        <i class="fa fa-check text-success fa-4x mb-3"></i>
+                    <p class=" text-center">Your email is succesfully verified, you may <a href="/login">login</a> now.</p>      
+                    </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+
+
+</html>
