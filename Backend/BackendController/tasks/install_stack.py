@@ -56,7 +56,7 @@ def DeployDjango(insert_id = 0):
         )
 
         notifications.objects.create(
-            server = getserver,
+            server = get_server,
             message = "Django Environment Projects is Deployed",
             seen = False,
             icon = "check",
@@ -448,6 +448,7 @@ def StopPackage(package_id = 0, server_id = 0, dic_name = ""):
 def MySQLDatabaseDelete(insert_id = 0):
     try:
         mysql_database_det = mysql_database.objects.get(id=insert_id)
+        get_server = mysql_database_det.server
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
@@ -507,6 +508,7 @@ def MySQLDatabaseCreate(insert_id = 0):
     try:
         mysql_database_det = mysql_database.objects.get(id=insert_id)
         client = paramiko.SSHClient()
+        get_server = mysql_database_det.server
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
         client.connect(mysql_database_det.server.server_ip, username=mysql_database_det.server.superuser, password=mysql_database_det.server.password)
@@ -565,6 +567,7 @@ def MySQLDatabaseCreate(insert_id = 0):
 def MySQLUserDelete(insert_id = 0):
     try:
         mysql_user_det = mysql_user.objects.get(id=insert_id)
+        get_server = mysql_user_det.server
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
@@ -624,6 +627,7 @@ def MySQLUserDelete(insert_id = 0):
 def MySQLUserAdd(insert_id = 0):
     try:
         mysql_user_det = mysql_user.objects.get(id=insert_id)
+        get_server = mysql_user_det.server
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
@@ -661,8 +665,7 @@ def MySQLUserAdd(insert_id = 0):
     
     except Exception as e:
          if mysql_user_det.user.id is not None:
-            mysql_user_det.status = "Error"
-            mysql_user_det.save()
+            
             notifications.objects.create(
             server = get_server,
             message = "Error Occured, Database Use is Not Created - " + mysql_user_det.name + ", Try Again!",
@@ -672,7 +675,8 @@ def MySQLUserAdd(insert_id = 0):
             user = get_server.user_id
             )
             sendNotification(mysql_user_det.user.id, 'toast', 'error', 'Error Occured', 'Error was occured while Configuring Domain on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
-         
+            mysql_user_det.delete()
+            
          print(e)
 
 @task(name="Lamp Domain Delete")
@@ -682,6 +686,7 @@ def DeleteLampDomain(insert_id = 0):
     try:
         domain_get = domain_s.objects.get(id=insert_id)
         client = paramiko.SSHClient()
+        get_server = domain_get.server
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
         client.connect(domain_get.server.server_ip, username=domain_get.server.superuser, password=domain_get.server.password)
@@ -750,7 +755,7 @@ def InstallServerPackage(server_id = 0, package_id = 0):
         get_installed_pkg_lst = json.loads(getserver.JSON_PKG_LST)
         
         package_details = PACKAGES[package_id]
-
+        get_server = getserver
         check = package_id in get_installed_pkg_lst
         print(check)
 
@@ -830,6 +835,7 @@ def ConfigureLampDomain(insert_id = 0):
     
     try:
         domain_get = domain_s.objects.get(id=insert_id)
+        get_server = domain_get.server
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.load_system_host_keys()
