@@ -343,7 +343,7 @@ def NodeServer(request, manage_id):
                                             server_status = "Installing",
                                             server_ip = node[1],
                                             project_id = getserver.project_id,
-                                            JSON_PKG_LST = "[1, 3, 7]",
+                                            JSON_PKG_LST = "[1, 3, 7, 12]",
                                             Charges = 0.00,
                                             running_status = "Running",
                                             password = node[2],

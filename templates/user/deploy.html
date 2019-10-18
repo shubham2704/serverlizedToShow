@@ -17,7 +17,23 @@
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="/static/css/tostr.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
-
+    <link href="/static/css/animate.css" rel="stylesheet">
+    <style>
+      
+.cards-pf .row-cards-pf {
+	padding: 0 20px
+}
+.cards-pf .row-cards-pf:first-child {
+	padding-top: 20px
+}
+.container-cards-pf {
+	margin-top: 20px
+}
+.row-cards-pf {
+	margin-left: -10px;
+	margin-right: -10px
+}
+    </style>
     <!-- Custom styles for this template -->
     <style>
         
@@ -30,6 +46,9 @@
     {% include "user/navbar.html" %}
      <form method="POST">
        {% csrf_token %}
+
+       
+
     <div style="max-width: 1200px;" class="container">
       
             <h1>Manage Server</h1>
@@ -51,7 +70,7 @@
             {% endfor %}
          {% endif %}
             <label for="email">Operating System </label>
-            <div class="form cf">
+            <div class="form  cf">
                    
                 <section class="plan cf">
                    
@@ -78,28 +97,47 @@
                             <p>All Stacks are Managed in SINGLE SERVER, Don't know what to choose? Ask Expert!</p>
                                 <div class="form cf">
                    
-                                    <section class="plan cf">
+                                    <section class="">
+                                 
+                        <div class="row row-cards-pf">
+
+                            {% for key, STACK in STACK.items %}
+
+                            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                <div class="card-pf card-pf-view card-pf-view-select card-pf-view-multi-select">
+                                  <div class="card-pf-body">
+                                    <div class="card-pf-top-element">
+                                      <span class="fa fa-{{STACK.ICON}} card-pf-icon-circle"></span>
+                                    </div>
+                                   
+                                    <h2 class="card-pf-title text-center">
+                                        <a href="#">  {{STACK.NAME}}</a>
+                                      </h2>
+                                      <div class="card-pf-items text-center">
+                                        <div class="card-pf-item">
+                                          <span class="fa fa-server"></span>
+                                          <span class="card-pf-item-text">{{STACK.SERVERS}}</span>
+                                        </div>
                                        
-                                       {% for key, STACK in STACK.items %}
-                                        <input type="radio" name="stack" id="stackid{{key}}" value="{{key}}"><label class="free-label four col" for="stackid{{key}}">
-                                            
-                                                      <div class="" style="margin-top: 15px;line-height: 0px;">
-                                                        <h5 class="card-title">{{STACK.NAME}}</h5>
-                                                        <p style="font-size: 13px;line-height: 1.5;" >{{STACK.DESCRIPTION}}</p>
-                                                        <small style="font-size: 10px;">	&#8377; {{STACK.PRICE}} / MONTH</small>
-                                                        <div>
-                                                        <hr ><small style="font-size: 10px;"><a href="/stack/details/{{key}}" style="color:black">DETAILS</a></small>
-                                                       
-                                                       
-                                                    </div>
-                                                    
+          
+                                         <div class="card-pf-item">
+                                            <span class="fa fa-rupee"></span>
+                                            <span class="card-pf-item-text">{{STACK.PRICE}}</span>
                                           </div>
-                    
-                    
-                                        </label>
-                                        
-                                          {% endfor %} 
-                                    
+          
+          
+                                      </div>
+                                      <p class="card-pf-info text-center">{{STACK.DESCRIPTION | truncatechars:50}}</p>
+                                    </div>
+                                  <div class="card-pf-view-checkbox">
+                                    <input value="{{key}}" name="stack" type="radio">
+                                  </div>
+                                </div>
+                                    </div>
+
+                     {% endfor %}
+                          </div>
+
                                     </section>
                                     
                                
@@ -157,6 +195,37 @@
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
     <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
-    <script>$('.inlinesparkline').sparkline(); </script>
+    <script>$('.inlinesparkline').sparkline(); 
+        $(function() {
+          // matchHeight the contents of each .card-pf and then the .card-pf itself
+          $(".row-cards-pf > [class*='col'] > .card-pf > .card-pf-body").matchHeight();
+        });
+        $(document).ready(function() {
+          
+          // Card Multi Select
+          $('input[type=radio]').click(function() {
+            
+            if ($(this).parent().parent().hasClass('active'))
+            { $(this).parent().parent().removeClass('active'); }
+            else
+            { $(this).parent().parent().addClass('active'); }
+          });
+          // allow users to select multiple cards with shift key
+          $('#card-container').on('click', '.card-pf-view-checkbox>input', function(event) {
+            var $cardsContainer = $('.container-cards-pf');
+            var prevIndex = $cardsContainer.data('prevIndex');
+            var $cards = $cardsContainer.find('.card-pf');
+            var $currentCard = $(this).closest('.card-pf');
+            if(event.shiftKey && prevIndex > -1 && this.checked) {
+              var currentIndex = $cards.index($currentCard);
+              var $selectScope = currentIndex - prevIndex > 0
+                ? $currentCard.parent().prevAll().not($cards.eq(prevIndex).parent().prevAll().addBack())
+                : $cards.eq(prevIndex).parent().prevAll().not($currentCard.parent().prevAll().addBack());
+              $selectScope.children().addClass('active').find('.card-pf-view-checkbox').children('input').prop('checked', true);
+            }
+            $cardsContainer.data('prevIndex', this.checked ? $cards.index($currentCard) : -1);
+          });
+        });
+    </script>
   </body>
 </html>
