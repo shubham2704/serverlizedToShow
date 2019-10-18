@@ -10,13 +10,12 @@
 
     <title>Home - Serverlized</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
     <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
-
+    <link href="/static/css/style.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <style>
         body{
@@ -53,8 +52,9 @@
                     <tbody>
                         {% for key, avail in avail.items %}
                       <tr>
-                        <th scope="row">{{avail.NAME}}</th>
-                       <td><a class="btn btn-success btn-sm" href="/wpanel/{{server.id}}/package/{{key}}" type="button">View Details</a></td>
+                        <td class="align-middle" scope="row"><b>{{avail.NAME}}</b></td>
+                        <td class="align-middle" scope="row"><small>{{avail.DESCRIPTION | truncatechars:100}}</small></td>
+                       <td class="align-middle"><a class="btn btn-success btn-sm" href="/wpanel/{{server.id}}/package/{{key}}" type="button">View Details</a></td>
                       </tr>
                       {% endfor %}
                      
@@ -81,14 +81,14 @@
                             <tr>
                             <td>{{inst_pkg.PackageName}}</td>
                             {% if inst_pkg.PackageStatus == "RUNNING" %}
-                            <td class=" text-success">RUNNING</td>
-                            <td><button  onclick="stop({{inst_pkg.id}})" class="btn btn-danger btn-sm">STOP </button> <button  onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm">RESTART </button></td>
+                            <td class=" text-success"><i class="fa fa-check"></i> </td>
+                            <td><button  onclick="stop({{inst_pkg.id}})" class="btn btn-danger btn-sm">STOP </button> <button  onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm"><i class="fa fa-refresh"></i> </button></td>
                            
                             {% endif %}
 
                             {% if inst_pkg.PackageStatus == "STOP" %}
-                            <td class=" text-danger">STOP</td>
-                            <td> <button onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm">RESTART </button></td>
+                            <td class=" text-danger"><i class="fa fa-stop" style="font-size:24px"></i> </td>
+                            <td> <button onclick="restart({{inst_pkg.id}})" class="btn btn-warning btn-sm"><i class="fa fa-refresh"></i> </button></td>
                            
                             {% endif %}
                             </tr>

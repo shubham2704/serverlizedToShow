@@ -2,16 +2,42 @@ from django.core.signing import Signer
 from ..signup.models import user as usr
 import random
 import string
+from django.core.mail import send_mail
+from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .server_config import STACK_DIST,SERVER_OS_DISTRIBUTION, PACKAGES
-import json
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+import json, os
+
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+
+def verfiy_email(to):
+    #plaintext = get_template(os.path.join(PROJECT_PATH,'templates','email', "welcome.txt"))
+    #htmly     = get_template(os.path.join(PROJECT_PATH,'templates','email', "welcome.html"))
+
+    d = { 'username': 'username' }
+    subject, from_email, to = 'Verfiy your Serverlized Email Address', 'no-reply@shopyink.com', to
+    html_content = render_to_string(os.path.join(PROJECT_PATH,'templates','email', "welcome.html"), d)
+    send_mail(
+    subject,
+    'You are one step away to verify you account',
+    from_email,
+    [to],
+    fail_silently=False,
+    html_message=html_content
+    )
+
+    return True
 
 
 def rewrite_menu(menu_fir, server_id):
     d = {}
     for package in json.loads(menu_fir):
                 control_panel = PACKAGES[package]['CONTROL_PANEL']
+                
                 #d.update(control_panel)
                 for key, val in control_panel.items():
                     d[key] = {}

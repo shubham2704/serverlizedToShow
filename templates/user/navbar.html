@@ -1,14 +1,43 @@
 {% if user.email_verify == False %}
       <div >
             
-            <div class="alert alert-warning1 text-dark " role="alert">
-                Your email is not verfied please you email address to unlock all server managment options <button onclick="email_verify()" class="btn btn-sm"> resend verification email </button>.
+            <div class="alert alert-warning1 text-dark text-center " role="alert">
+                Your email is not verfied please verify it to avoid account deactivation, <button onclick="email_verify()" class="btn btn-sm"> resend verification email </button>.
                
                   </div>
                 </div>
+                <script>
+                    function email_verify(){
+                        toastr.success("Account confimation Email sent to rs188282@gmail.com",{
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": true,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                          });
+                    }
+                </script>
        {% endif %}
 <nav class="navbar navbar-expand-md navbar-dark bg-ser ">
         <a class="navbar-brand" href="#">Serverlized</a>
+        <div class=" pull-right dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">DNS / Email Account
+            <span class="caret"></span></button>
+               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Domains / DNS </a>
+                <a class="dropdown-item" href="#">Email Accounts</a>
+               </div>
+          </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -16,8 +45,43 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
               <ul class="navbar-nav mr-auto">
                    </ul>
+
+                   
                      <ul class="navbar-nav">
-                     
+                        <li class="dropdown dropdown-notification">
+                            <a class="nav-link dropdown-toggle toolbar-icon" data-toggle="dropdown" href="javascript:;"><i class="fa fa-bell rel"><span class="notify-signal"></span></i></a>
+                            <div class="dropdown-menu dropdown-menu-right ">
+                                <div class="ibox mb-0" style="min-width: 366px;">
+                                    <div class="ibox-head">
+                                        <div class="ibox-title">NOTIFICATIONS</div>
+                                    </div>
+                                    <div>
+                                        <ul class="list-group list-group-divider list-group-full">
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-chrome mr-3 font-40"></i>GApache is installed on node server #21 Monitory Now</span>
+                                                <span class=" mr-3">Just Now</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-firefox mr-3 font-40"></i>Mozila Firefox</span>
+                                                <span class= "mr-3">12h ago</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-opera mr-3 font-40"></i>Opera</span>
+                                                <span class="  mr-3">21min ago</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-internet-explorer mr-3 font-40"></i>Internet Explorer</span>
+                                                <span class="  mr-3">34.7%</span>
+                                            </li>
+                                            <li class="list-group-item flexbox">
+                                                <span class="flexbox"><i class="la la-safari mr-3 font-40"></i>Safari</span>
+                                                <span class="text-secondary  mr-3">2w</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                       <li class="nav-item dropdown">
                               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                
@@ -30,6 +94,8 @@
                             </li>
                                
                     </ul>
+
+                    
        
         </div>
        

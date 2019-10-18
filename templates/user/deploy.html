@@ -15,9 +15,12 @@
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/tostr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <style>
+<<<<<<< HEAD
         body{
             font-family: 'Hind Madurai', sans-serif;
         }
@@ -153,6 +156,10 @@
             @import url('https://fonts.googleapis.com/css?family=Fira+Sans:400');
 
 
+=======
+        
+    
+>>>>>>> 39dc7436f277c3059a230b50ccd54ba19acc2d31
     </style>
   </head>
 
@@ -161,7 +168,7 @@
     {% include "user/navbar.html" %}
      <form method="POST">
        {% csrf_token %}
-    <div style="max-width: 1200px;" class="container starter-template">
+    <div style="max-width: 1200px;" class="container">
       
             <h1>Manage Server</h1>
             {% if messages %}

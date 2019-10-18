@@ -2,15 +2,207 @@ from celery.decorators import task
 from django.conf import settings
 import paramiko
 import json
-from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES
+from ..server_config import SERVER_OS_DISTRIBUTION, STACK_DIST, PACKAGES, PYTHON_VERSION_DIC
 from Backend.servers.models import list as server_list, Pkg_inst_data, output as server_output
-from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt
+from Backend.lamp.models import domain as domain_s, mysql_user, mysql_database, ssl, lets_encrypt, ftp_account
+from Backend.django_auto.models import virtual_env, deploy as dj_dep
+from Backend.loadBalancer.models import config as HAPoxyModel, domains as HAProxy_Domains, replicate_file
 from ..contri import sendNotification
-import os
-import ntpath
-import requests
+from ..ConfigBuilder import HAProxy as HAProxyBuilder
+import os, traceback, ntpath, requests, sys
 
 PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+
+
+
+@task(name="Deploy Django Project")
+def DeployDjango(insert_id = 0):
+    try:
+        inse_id = dj_dep.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[8]['CONTROL_PANEL']['Django Projects']['Deploy']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        v = PYTHON_VERSION_DIC[inse_id.python_inter][get_server.distribution_id][0]
+        cmd = " " + v  + " " + inse_id.envirnment_name + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Deploy Django Env - " + inse_id.domain.domain_name,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "Django Project Deployed" , 'Django Project is succesfully Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Django Project is not Deployed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
+@task(name="Setup Virtual")
+def SetupVirtualENV(insert_id = 0):
+    try:
+        inse_id = virtual_env.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[9]['CONTROL_PANEL']['Virtual Environment']['SetupEnV']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        v = PYTHON_VERSION_DIC[inse_id.python_inter][get_server.distribution_id][0]
+        cmd = " " + v  + " " + inse_id.envirnment_name + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Setup Virtual Env - " + inse_id.envirnment_name,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "Virtual Env Created" , 'Virtual Env is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Virtual Env is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
+
+@task(name="Create FTP Account")
+def CreateFTPAccount(insert_id = 0):
+    try:
+        inse_id = ftp_account.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[7]['CONTROL_PANEL']['FTP Account']['Create FTP Account']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        cmd = " " + inse_id.password + " " + inse_id.username + " " + inse_id.folder + " CREATE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Create FTP Account - " + inse_id.username,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Created" , 'FTP account is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        traceback.print_exc(limit=1, file=sys.stdout)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+
+
+
+@task(name="Delete FTP Account")
+def DeleteFTPAccount(insert_id = 0):
+    try:
+        inse_id = ftp_account.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+
+        GetPKG = PACKAGES[7]['CONTROL_PANEL']['FTP Account']['Create FTP Account']['COMMAND'][get_server.distribution_id][1]
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
+        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
+        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
+        cmd = " " + inse_id.password + " " + inse_id.username + " " + inse_id.folder + " DELETE"
+        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Delete FTP Account - " + inse_id.username,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Deleted" , 'FTP account is succesfully deleted on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.delete()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not deleted, try again, on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+       
+
+
+
+
 
 @task(name="Configure Lets Encrypt")
 def ConfigLetsEncrypt(insert_id = 0):
@@ -404,7 +596,7 @@ def ConfigureLampDomain(insert_id = 0):
         t = paramiko.Transport(domain_get.server.server_ip, 22)
         t.connect(username=domain_get.server.superuser,password=domain_get.server.password)
         sftp = paramiko.SFTPClient.from_transport(t)
-        GetPKG = PACKAGES[1]['CONTROL_PANEL']['Website']['Addon Domain']['COMMAND'][domain_get.server.stack_id][1]
+        GetPKG = PACKAGES[3]['CONTROL_PANEL']['Website']['Addon Domain']['COMMAND'][domain_get.server.distribution_id][1]
         file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
         
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
@@ -438,6 +630,7 @@ def ConfigureLampDomain(insert_id = 0):
 
         
     except Exception as e:
+         traceback.print_exc(limit=1, file=sys.stdout)
          if domain_get.user.id is not None:
             domain_get.status = "Error"
             domain_get.save()
@@ -483,7 +676,7 @@ def installStack(insert_id = 0):
                         sendNotification(get_server.user_id.id, 'toast', 'success', 'Started Installing', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is started installing on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
                         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
                         stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
+                        #client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
                         print ("stderr: ", stdderr.readlines())
                         print ("pwd: ", stddout.readlines())
                         print ("INSTALLED : " +  ntpath.basename(file_upload))
@@ -623,7 +816,7 @@ def DeleteLetsEncrypt(insert_id = 0):
         conn = 200
         if conn == 200:
 
-            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.stack_id][1]
+            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.distribution_id][1]
             file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
             sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
             client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
@@ -653,6 +846,136 @@ def DeleteLetsEncrypt(insert_id = 0):
 
 
 
+@task(name="Configure HAProxy Web")
+
+def ConfigHAProxyWeb(insert_id):
+    try:
+        inse_id = HAPoxyModel.objects.get(id = insert_id)
+        get_server = inse_id.server
+        os_id = get_server.distribution_id
+        ROOT_COMMAND = SERVER_OS_DISTRIBUTION[os_id][2]
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.load_system_host_keys()
+        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
+        t = paramiko.Transport(get_server.server_ip, 22)
+        t.connect(username=get_server.superuser,password=get_server.password)
+        sftp = paramiko.SFTPClient.from_transport(t)
+        print(""+ ROOT_COMMAND +" rm /etc/haproxy/haproxy.cfg")
+        stdidn,stddout,stdderr=client.exec_command(""+ ROOT_COMMAND +" rm /etc/haproxy/haproxy.cfg")
+        filename = HAProxyBuilder(inse_id.id)
+        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'write_files', filename)
+       
+        sftp.put(file_upload, "/etc/haproxy/haproxy.cfg")
+        print(""+ ROOT_COMMAND +" service haproxy restart")
+        stdidn,stddout,stdderr=client.exec_command(""+ ROOT_COMMAND +" service haproxy restart")
+        
+        response = []
+                        
+        for lin in stdderr:
+            response.append(str(lin))
+
+        server_output.objects.create(
+            server = get_server,
+            user = get_server.user_id,
+            PackageId = 6,
+            command = "Config HAProxy Env - " + inse_id.label,
+            output = json.dumps(response)
+        )
+        sendNotification(get_server.user_id.id, 'toast', 'success', "HaProxy Configured" , 'HAProxy is succesfully Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'HAProxy is not Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        inse_id.delete()
+
+@task(name="Configure HAProxy Domains")
+def ConfigHAProxyDomain(insert_id = 0):
+    try:
+        inse_id = HAProxy_Domains.objects.get(id = insert_id)
+        get_server = inse_id.server
+        json_ld = json.loads(inse_id.domain_insert_withftp_dict)
+        
+        for key, send_async_request in json_ld.items():
+            
+            print(json_ld)
+
+            ConfigureLampDomain(send_async_request['domain'])
+            CreateFTPAccount(send_async_request['ftp'])
 
 
-    
+        sendNotification(get_server.user_id.id, 'toast', 'success', "Domains Replicated" , 'Domains is Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        traceback.print_exc(limit=1, file=sys.stdout)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        #inse_id.delete()
+
+
+@task(name="Replicate Files")
+def ReplicateHAProxyFiles(insert_id = 0):
+    try:
+        inse_id = replicate_file.objects.get(id = insert_id)
+        get_server = inse_id.server
+        filename_uploaded = inse_id.file_name
+        os_id = get_server.distribution_id
+        json_ld = json.loads(inse_id.connected_domain.domain_insert_withftp_dict)
+        ROOT_COMMAND = SERVER_OS_DISTRIBUTION[os_id][2]
+       
+        inse_dic = {}
+        for key, send_async_request in json_ld.items():
+            server_id = send_async_request['server']
+            getnode = server_list.objects.get(id = server_id)
+            ftp = send_async_request['ftp']
+            status = send_async_request['file_replication_status']
+
+            if status == "Not Done":
+            
+                getftp = ftp_account.objects.get(id = ftp)
+                
+                upload_path = "/var/www/" + getftp.folder + '/uploaded_serverlized_file.zip'
+                client = paramiko.SSHClient()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                client.load_system_host_keys()
+                client.connect(getnode.server_ip, username=getnode.superuser, password=getnode.password)
+                t = paramiko.Transport(getnode.server_ip, 22)
+                t.connect(username=getnode.superuser,password=getnode.password)
+                sftp = paramiko.SFTPClient.from_transport(t)
+                file_ip = os.path.join(PROJECT_PATH,'templates','media', filename_uploaded)
+                
+                st = sftp.put(file_ip, upload_path)
+                print(" cd /var/www/" + getftp.folder + '; unzip uploaded_serverlized_file.zip; rm -R uploaded_serverlized_file.zip')
+                stdidn,stddout,stdderr=client.exec_command("cd /var/www/" + getftp.folder + '; unzip uploaded_serverlized_file.zip; rm -R uploaded_serverlized_file.zip')
+                sendNotification(get_server.user_id.id, 'toast', 'success', "File Replicated in a Server" , 'File is Replicated to node servers ' + getnode.server_name + '  (' + getnode.server_ip + ').')
+                
+                inse_dic[key] = {
+                                'domain': send_async_request['domain'],
+                                'ftp' :send_async_request['ftp'],
+                                'file_replication_status' : "Done",
+                                'server' : send_async_request['server']
+                            }
+                inse_id.connected_domain.domain_insert_withftp_dict = json.dumps(inse_dic)
+                inse_id.connected_domain.save()
+                
+
+            
+            print(st)
+
+            #ConfigureLampDomain(send_async_request['domain'])
+            #CreateFTPAccount(send_async_request['ftp'])
+
+
+        sendNotification(get_server.user_id.id, 'toast', 'success', "File Replicated" , 'File is Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        inse_id.status = "Configured"
+        inse_id.save()
+
+    except Exception as e:
+        print(e)
+        traceback.print_exc(limit=1, file=sys.stdout)
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        #inse_id.delete()

@@ -55,3 +55,13 @@ class lets_encrypt(models.Model):
     status = models.CharField(max_length=45)
     date = models.DateTimeField(auto_now_add=True)
 
+class ftp_account(models.Model):
+    
+    server = models.ForeignKey(server_id, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    username = models.CharField(max_length=45)
+    password = models.CharField(max_length=100)
+    folder = models.CharField(max_length=100)
+    status = models.CharField(max_length=45)
+    date = models.DateTimeField(auto_now_add=True)
+

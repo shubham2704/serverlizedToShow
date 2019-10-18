@@ -2,8 +2,6 @@ from django.db import models
 from ..signup.models import user, projects
 # Create your models here.
 
-
-
 class list(models.Model):
     SERVER_TYPES = (
         ('MASTER', 'MASTER'),
@@ -26,7 +24,9 @@ class list(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     running_status = models.CharField(max_length=45)
     password = models.CharField(max_length=250,default="")
-    parent_server = models.CharField(max_length=250,default="")
+    hostname = models.CharField(max_length=250,default="")
+    parent_server = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+
 
 class Pkg_inst_data(models.Model):
    
