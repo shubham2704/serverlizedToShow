@@ -9,40 +9,10 @@
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
 
     <title>Home - Serverlized</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
-    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
-    <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <style>
-            body{
-                font-family: 'Hind Madurai', sans-serif;
-            }
-            .starter-template {
-                padding: 3rem 1.5rem;
-                text-align: center;
-              }
-              .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
-             .btn-labeled {padding-top: 0;padding-bottom: 0;}
-             .bg-ser{
-                 background-color: #428bca;
-             }
-             .alert-warning1{
-                margin-bottom: 0rem;
-                
-                color: white;
-                background-color: #fff3cd;
-                    border-color: #ffeeba;
-                border-radius: 0px;
-                padding: 5px;
-                
-                
-             }
-    </style>
+    <link href="/static/css/style.css" rel="stylesheet">
   </head>
 
   <body>
@@ -91,13 +61,11 @@
                             <div class="form-group">
                               <label for="exampleInputEmail1">User Name</label>
                               <input type="text" name="user" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example.com">
-                              <small id="emailHelp" class="form-text text-muted">ALL PRIVILEGES will be given to user.</small>
+                              <small id="emailHelp" class="form-text text-muted mt-2">ALL PRIVILEGES will be given to user.</small>
                             </div>
 
                             <div class="form-group">
-                                    <div class="checkbox">
-                                            <label><input name="remote" type="checkbox" value="remote"> Remote access <small>(once Remote Access is set it cannot be changed)</small></label>
-                                    </div></div>
+                                    </div>
 
                             <div class="form-group">
                                     <label for="exampleInputEmail1">User Password</label>
@@ -145,22 +113,19 @@
           <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                  <b>DNS Configuration </b>
+                  <b>About MySQL </b>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title">Point your Domain Name to the Server to make it working.</h5>
-                  <p class="card-text">Add your Server IP with domain name to your existing DNS Server or Use Our DNS Server
-                  <br> <code>A example.com {{server.server_ip}} </code>
-                  <ul>
-                      <li>Type : <code>A</code></li>
-                      <li>Host : <code>example.com</code></li>
-                      <li>IP/Points to : <code>Your Server IP ({{server.server_ip}})</code></li>
+               
+                  <p class="card-text">MySQL is an open-source relational database management system. Its name is a combination of "My", the name of co-founder Michael Widenius's daughter, and "SQL", the abbreviation for Structured Query Language.
+                  <br><br>
+                  How to Create User?
+                  <ul style="list-style: circle;" class="col-md-12">
+                      <li>Enter username</li>
+                      <li>Enter password for that perticular user.</li>
                   </ul>
-                  <br>   <small class="help-block">A Records are the most basic type of DNS record and are used to point a domain or subdomain to an IP address.</small>
                 </p>
                   
-                   
-                  <a href="#" class="btn btn-primary">Serverlized DNS</a><br>
                 </div>
               </div>
           </div>

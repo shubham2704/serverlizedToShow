@@ -11,25 +11,54 @@ PYTHON_VERSION_DIC = {
 STACK_DIST = {
     1:{
         'NAME' : 'LAMP',
-        'DESCRIPTION' : 'A LAMP Stack is a set of software that can be used to create and host websites and web applications.',
-        'PRICE' : 0.00 ,
-        'PACKAGES':(1, 2, 3, 4),
+        'ICON' : 'paper-plane',
+        'SERVERS' : 'SINGLE',
+        'DESCRIPTION' : 'Linux, Apache, MySQL, PhpMyAdmin & PHP 7.3 ',
+        'PRICE' : 30.00 ,
+        'PACKAGES':(12, 1, 2, 3, 4),
         'PACKAGES_COUNT': 3
     },2:{
-        'NAME' : 'HTTP Load Balancing with HAProxy',
-        'DESCRIPTION' : 'A Load Balancer stack is a set of software that can be used for TCP and HTTP-based applications that spreads requests across multiple servers.',
-        'PRICE' : 0.00 ,
-        'PACKAGES':(5, 6),
+        'NAME' : 'HTTP Load Balancing',
+        'ICON' : 'sliders',
+        'SERVERS' : 'MULTIPLE',
+        'DESCRIPTION' : 'HAProxy with Apache & PHP 7.3 on Node Server',
+        'PRICE' : 100.00 ,
+        'PACKAGES':(12, 5),
         'PACKAGES_COUNT': 2
-    },3:{
-        'NAME' : 'Django Automation',
-        'DESCRIPTION' : 'Deploy, Manage and Monitor you django project right from an advanced Control Panel.',
+    },
+    #3:{
+    #    'NAME' : 'Django Automation ',
+    #    'ICON' : 'cogs',
+     #   'TAG' : 'Beta',= 
+     #   'SERVERS' : 'SINGLE',
+       # 'DESCRIPTION' : 'Deploy, Manage and Monitor your Django Website.',
+        #'PRICE' : 0.00 ,
+        #'PACKAGES':(1, 7, 9, 8),
+        #'PACKAGES_COUNT': 4
+    #},
+    #4:{
+    #    'NAME' : 'MySQL Load Balancing',
+    #    'ICON' : 'clipboard',
+    #    'SERVERS' : 'MULTIPLE',
+     #   'DESCRIPTION' : 'HAProxy with Master-Master MySQL on Node Server ',
+     #   'PRICE' : 0.00 ,
+    #    'PACKAGES':(1, 7, 9, 8),
+     #   'PACKAGES_COUNT': 1
+    #},
+    6:{
+        'NAME' : 'Apache Server',
+        'ICON' : 'globe',
+        'SERVERS' : 'SINGLE',
+        'DESCRIPTION' : 'Setup server as Send-Ony SMTP Mail Server',
         'PRICE' : 0.00 ,
         'PACKAGES':(1, 7, 9, 8),
-        'PACKAGES_COUNT': 4
-    },4:{
-        'NAME' : 'MySQL Load Balancing with HAProxy ',
-        'DESCRIPTION' : 'Deploy, Manage and Monitor you django project right from an advanced Control Panel.',
+        'PACKAGES_COUNT': 1
+    }
+    ,7:{
+        'NAME' : 'MySQL',
+        'ICON' : 'database',
+        'SERVERS' : 'SINGLE',
+        'DESCRIPTION' : 'Setup server as Send-Ony SMTP Mail Server',
         'PRICE' : 0.00 ,
         'PACKAGES':(1, 7, 9, 8),
         'PACKAGES_COUNT': 1
@@ -51,7 +80,7 @@ PACKAGES = {
             1:[('sudo apt-get -y update', 'sudo apt-get -y upgrade')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
+            1:[('SCRIPT', 'apache_ubunt_18_04_x86.sh')]
         },
         'CONTROL_PANEL' : { }
 
@@ -192,7 +221,7 @@ PACKAGES = {
         },
      
         5:{
-        'NAME':'HaProxy',
+        'NAME':'HaProxy HTTP Load Balancing',
         'NAV_NAME' : 'HAPoxy',
         'APP_NAME' : 'loadBalancer',
         'SERVICE_VIEW' : False,
@@ -202,7 +231,7 @@ PACKAGES = {
             1:[('sudo apt-get update')],
         },
         'INSTALLATION_BASH_SCRIPT' : {
-            1:[('SCRIPT', 'haproxy_ubunt_18_04_x86.sh')]
+            1:[('SCRIPT', 'haproxy_ubunt_18_04_x86.sh'), ('FUNCTION', 'welcomepage')]
         },
 
         'CONTROL_PANEL' : { 'HAProxy':{
@@ -475,6 +504,49 @@ PACKAGES = {
         },
         'INSTALLATION_BASH_SCRIPT' : {
             1:[('SCRIPT', 'lets_encrypt_18_04_x86.sh.sh') ]
+        },
+        'CONTROL_PANEL' : {
+            "Let's Encrypt SSL":{
+                        "ICON" : {
+                             "URL":('fa fa-certificate', "Backend.lamp.views.add", False)
+                         },
+                        "HAProxy" : {
+                             "URL":('wpanel/<int:manage_id>/haproxy/ssl', "Backend.django_auto.views.virtual_env_view", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'install_virtual_env.sh')
+                                 }
+                             
+                         },
+                         "Domains" : {
+                             "URL":('wpanel/<int:manage_id>/ftp/<int:insert_id>/delete', "Backend.lamp.views.ftp_delete", True),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'vsftp_create_ubunt_18_04_x86.sh')
+                                 }
+                         },
+                         "IDE" : {
+                             "URL":('wpanel/<int:manage_id>/pyenvironment/<int:ide>', "Backend.django_auto.views.virtual_env_ide", False),
+                             "COMMAND":{
+                                 1:('SCRIPT', 'virtual_env_create_ubuntu_18_x64.sh')
+                                 }
+                             
+                         },
+              },
+        
+        }
+        },
+        12:{
+        'NAME':"Serverlized Utils",
+        'SERVICE_VIEW' : True,
+        'NAV_NAME' : 'PHP',
+        'APP_NAME' : 'lamp',
+        'DESCRIPTION':'A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them.',
+        'DEPENDENCIES' : [1],
+        'VERSION':'7.5',
+        'INIT_COMMAND' : {
+            1:[],
+        },
+        'INSTALLATION_BASH_SCRIPT' : {
+            1:[('SCRIPT', 'utils_ubuntu_18.04x64.sh'), ('FUNCTION', 'monitorscript') ]
         },
         'CONTROL_PANEL' : {
             "Let's Encrypt SSL":{

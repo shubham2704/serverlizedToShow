@@ -166,4 +166,4 @@ EMAIL_HOST = 'smtp.shopyink.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'no-reply@shopyink.com'
-EMAIL_HOST_PASSWORD = 'RNyS##@5'
+EMAIL_HOST_PASSWORD = 'DVkGaLG4'

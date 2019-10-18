@@ -1,0 +1,427 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Home - Serverlized</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+    <link href="https://fonts.googleapis.com/css?family=Hind+Madurai&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
+    <link href="/static/css/tostr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/alertify.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+ 
+    
+  </head>
+
+  <body>
+
+    {% include "user/navbar.html" %}
+
+    <main role="main" class="container">
+       
+         <div class="wrapper">
+                <!-- START PAGE CONTENT-->
+                <div class="page-content fade-in-up">
+                        <div class="flexbox-b mb-5 mt-5">
+                                <span class="mr-4 static-badge badge-info"><i class="fa fa-user"></i></span>
+                                <div>
+                                    <h5 class="font-strong">Account Settings</h5>
+                                    <div class="text-light">Update Profile / Manage Projects</div>
+                                </div>
+                            </div>
+                   
+                    <div class="row">
+                        <div class="col-lg-3">
+                           
+                            <ul class="list-group list-group-divider faq-tabs">
+                                <li class="list-group-item">
+                                    <a class="" href="#accordion-1" data-toggle="tab" aria-expanded="false"><i class="badge-point badge-primary mr-3"></i> Account</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#accordion-2" data-toggle="tab" class="" aria-expanded="false"><i class="badge-point badge-warning mr-3"></i>Billing</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#accordion-3" data-toggle="tab" class="active" aria-expanded="true"><i class="badge-point badge-info mr-3"></i>Projects</a>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                        <div class="col-lg-9">
+                                {% if messages %}
+
+
+                                {% for message in messages %}
+                        
+                                
+                                
+                                <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                                   
+                                    <div class="message">{{message}}</div>
+                                  </div>
+                        
+                        
+                            
+                                {% endfor %}
+                             {% endif %}
+                            <div class="ibox">
+                                <div class="ibox-body tab-content">
+                                    
+                                    <div class="tab-pane fade" id="accordion-1" aria-expanded="false">
+                                        <h5 class="font-strong mb-4 text-primary">Update Account</h5>
+                                        <div class="">
+                                                <hr>
+                                                <form action="" method="POST">
+                                                    {%csrf_token %}
+                                                <div class="">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                                <div class="form-group mb-4">
+                                                                        <label>First Name</label>
+                                                                        <input value="{{user.first_name}}" name="first_name" class="form-control" type="text" >
+                                                                    </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                                <div class="form-group mb-4">
+                                                                        <label>Last Name</label>
+                                                                        <input value="{{user.last_name}}" name="last_name" class="form-control" type="text" >
+                                                                    </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group mb-4">
+                                                        <label>Email</label>
+                                                        <input disabled class="form-control" type="text" value="{{user.email}}" placeholder="">
+                                                   </div>
+                                                    
+                                                   <div class="form-group mb-4">
+                                                        <label>Phone No.</label>
+                                                        <input name="phone" value="{{user.phone_no}}"  class="form-control" type="number" placeholder="911234567899">
+                                                   </div>
+                                                    
+                                                   <div class="form-group">
+                                                        <button class="btn btn-primary " name="account"  type="submit">Update Changes</button>
+                                                        </div> 
+                                                </div>
+
+                                            </form>
+
+
+                                            </div>
+                                            <form action="" method="POST">
+                                                    {%csrf_token %}
+<h5 class="font-strong mb-4 mt-5 text-primary">Change Password</h5>
+   <div class="form-group mb-4">
+        <label>Old Password</label>
+        <input  class="form-control" type="password" name="old" placeholder="">
+   </div>
+    
+   <div class="form-group mb-4">
+        <label>New Password</label>
+        <input class="form-control" name="new" type="password" placeholder="">
+   </div>
+    
+   <div class="form-group">
+        <button class="btn btn-primary " name="password" type="submit">Update Password</button>
+        </div>   
+        </form>           
+                                    </div>
+                                    <div class="tab-pane fade" id="accordion-2" aria-expanded="false">
+                                        <h5 class="font-strong mb-4 text-warning">Billing</h5>
+                                        <div class="row">
+                                                <div class="col-md-6">
+                                          <div style="background-color: #f2f2f2;" class="card mb-4">
+                                                <div class="card-body flexbox-b">
+                                                    <div class="easypie mr-4" data-percent="73" data-bar-color="#18C5A9" data-size="80" data-line-width="8">
+                                                        <span class="easypie-data text-success" style="font-size:32px;"><i class="fa fa-rupee"></i></span>
+                                                    <canvas height="100" width="100" style="height: 80px; width: 80px;"></canvas></div>
+                                                    <div>
+                                                        <h3 class="font-strong text-success">{{user.money | floatformat:2}}</h3>
+                                                        <div class="text-muted">Remaining Credit</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                                <div style="background-color: #f2f2f2;" class="card mb-4">
+                                                      <div class="card-body flexbox-b">
+                                                          <div class="easypie mr-4" data-percent="73" data-bar-color="#18C5A9" data-size="80" data-line-width="8">
+                                                              <span class="easypie-data text-primary" style="font-size:32px;"><i class="fa fa-bank"></i></span>
+                                                          <canvas height="100" width="100" style="height: 80px; width: 80px;"></canvas></div>
+                                                          <div>
+                                                              <h3 class="font-strong text-primary">{{user.monthly_charges | floatformat:2}}</h3>
+                                                              <div class="text-muted">Charges This Month</div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                        </div>
+                                       
+                                            <form action="" method="POST">
+                                                {%csrf_token%}
+                                                <div class="row">
+                                                <div class="col-md-6">
+                                                       
+                                                                <div class="input-group-icon input-group-icon-left">
+                                                                        <span class="input-icon input-icon-left"><i class="fa fa-rupee"></i></span>
+                                                                        <input name="amount" class="form-control" type="text" placeholder="Enter Amount, Min. 100">
+                                                                   
+                                                                    </div> 
+                                                                    <span class="help-block mt-2 ">Payment will be made to <em> TONz Innovation OPC Pvt. Ltd.</em></span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                            <div class="form-group mb-4">
+                                                               
+                                                                <button  name="deposit" class="btn btn-primary">Add Money</button>
+                                                            </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                            <h5 class="font-strong mb-4 mt-4  text-warning">My Credits</h5>
+                                            <table class="table table-bordered">
+                                                
+                                                    <tbody>
+                                                        {% for payment in payments %}
+                                                        <tr class="{% if payment.status == True %} success {%else%} warning {%endif%}">
+                                                            <td>{{payment.id}}</td>
+                                                            <td>{{payment.amount | floatformat:2}}</td>
+                                                            <td>{{payment.date}}</td>
+                                                       
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>     
+                                    </div>
+                                    <div class="tab-pane fade active show" id="accordion-3" aria-expanded="true">
+                                        <h5 class="font-strong mb-4 text-info">Projects</h5>
+                                        <form action="" method="POST">
+
+                                        {%csrf_token%}
+                                        <div class="row">
+                                            
+                                                <div class="col-md-12">
+                                                        <div class="form-group mb-4">
+                                                      
+                                                                <input name="pr_name" placeholder="Project Name" class="form-control" type="text" >
+                                                            </div>
+                                                </div>
+
+                                                
+                                                <div class="col-md-12">
+                                                        <div class="form-group mb-4">
+                                                      
+                                                                <textarea name="pr_des" placeholder="Project Description" class="form-control" ></textarea>
+                                                            </div>
+                                                </div>
+
+
+                                                <div class="col-md-12">
+                                                        <div class="form-group mb-4">
+                                                               
+                                                                <button name="project" class="btn btn-primary">Add Project</button>
+                                                            </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <ul class="list-group list-group-divider list-group-full faq-list">
+                                            {% for key, project in projects.items %}
+                                            <li class="list-group-item ">
+                                                <a class="font-strong" data-toggle="collapse" href="#faq3-{{project.id}}">{{project.name}} </a>
+                                                <div class="collapse show" id="faq3-{{project.id}}">
+                                                    <div class="row">
+                                                        <div class="col-md-9"> <div class="p-3 bg-primary-50 mt-3">{{project.des}}</div></div>
+                                                        <div class="col-md-3">
+                                                            <div class="text-center lead mt-3">
+                                                                    {{project.server_count}}
+                                                                <br>
+                                                                <small>SERVER  COUNT</small>
+                                                            </div>
+
+                                                         
+                                                        </div>
+                                             
+                                                    </div>
+                                                   
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+                                           
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <!-- END PAGE CONTENT-->
+              
+            </div>
+            
+                </div>
+         
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+    <script src="/static/alertify.min.js"></script>
+    <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/toastr.js"></script>
+    <script>
+      
+      function deleteserver(e){
+        alertify.confirm("Are you sure you want to delete the Managring Server(#"+e+")",
+  function(){
+    
+    $.ajax({url: "/wpanel/server/del/" + e, success: function(result){
+       if (result.status == "ok"){
+        toastr.success('Server succsfully deleted!', 'Server Deleted',{
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": true,
+          "positionClass": "toast-bottom-right",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        });
+       }else{
+        toastr.warning('We could not able to delete the server! please conact the support.  ', 'Error in Deletion',{
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": true,
+          "positionClass": "toast-bottom-right",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        });
+       }
+    }});
+    
+  },
+  function(){
+    
+  }).setHeader('Are you Sure? ').set('labels', {ok:'Delete Server', cancel:'Cancel'}); 
+      }
+
+function noactive(a){
+  toastr.warning('This server cannot be managed, re-start or delete since its in <b>'+ a +'</b> state ', 'Cannot perform action',{
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  });
+
+}
+     
+
+    </script>
+
+    <script>
+
+
+        var socket = new WebSocket('ws://' + window.location.host + '/real-time-notification/{{user.id}}/');
+    
+        socket.onopen = e => {
+          console.log('Open ', e);
+         }
+  
+         socket.onmessage = e => {
+          var js = e['data'];
+          var json = JSON.parse(js);
+          console.log(json)
+          
+          if (json['msg_type'] == "toast"){
+            if (json['css_a'] =="success"){
+              toastr.success(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+            if (json['css_a'] =="error"){
+              toastr.error(json['content'], json['title'],{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              });
+            }
+          }
+      }
+  
+      socket.onerror = e => {
+          console.log('Error ', e);
+      }
+  
+      socket.onoclose = e => {
+          console.log('Close ', e);
+      }
+      </script>
+  </body>
+</html>

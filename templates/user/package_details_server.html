@@ -15,23 +15,11 @@
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://www.jqueryscript.net/demo/Highly-Customizable-jQuery-Toast-Message-Plugin-Toastr/build/toastr.css" rel="stylesheet">
-
+    <link href="https://daneden.github.io/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/static/css/tostr.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <style>
-        body{
-            font-family: 'Hind Madurai', sans-serif;
-        }
-        .starter-template {
-            padding: 3rem 1.5rem;
-            text-align: center;
-          }
-          .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);}
-         .btn-labeled {padding-top: 0;padding-bottom: 0;}
-         .bg-ser{
-             background-color: #428bca;
-         }
-    </style>
+    
   </head>
 
   <body>
@@ -41,7 +29,7 @@
           <div class=" flex-column flex-md-row align-items-md-center p-5 bg-light">
               <div class=" row ">
                 <div class=" col-md-8 pt-md-3 pb-md-4">
-                  <h1 class="bd-title mt-0">{{package.NAME}}</h1>
+                  <h2 class="bd-title mt-1 ">{{package.NAME}}</h2>
                   <p class="bd-lead"> {{package.DESCRIPTION}}</p>
                   <p class=" bd-lead badge badge-primary"> {{package.TAG}} </p>
                   <p class=" bd-lead badge badge-default"> v{{package.VERSION}} </p>
@@ -65,7 +53,7 @@
                      <br>
                       <!-- Author -->
                       <p class="lead">
-                           Interface Screenshots 
+                           Interface Snapshots 
                       </p>
                       <div id="demo" class="carousel slide" data-ride="carousel">
 
@@ -120,7 +108,7 @@
                          
                                     {% for key, v in package.CONTROL_TREE.items %}
                                       <ul>
-                                            <li><span class="caret">{{key}}</span>
+                                            <li><span class="">{{key}}</span>
                                               <ul class="nested">
                                                     {% for  vs in v %}
                                                 <li>{{vs}}</li>
