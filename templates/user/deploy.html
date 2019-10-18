@@ -34,9 +34,11 @@
          body{
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
-            color: #333;
+            font-family:Roboto, sans-serif sans-serif;
+            color: rgb(26, 24, 24);
             background-color: #eee;
+            text-align: left;
+    
         }
         
         h1, h2, h3, h4, h5, h6{
@@ -91,10 +93,10 @@
         
         .form label{
             position: relative;
-            color: #fff;
-            background-color: #aaa;
+            background-color: #fff;
             font-size: 26px;
             text-align: center;
+            box-decoration-break: 1px solid #428bca;
             height: 176px;
             line-height: 150px;
             display: block;
@@ -106,8 +108,11 @@
         }
         
         .form .plan input:checked + label, .form .payment-plan input:checked + label, .form .payment-type input:checked + label{
-            border: 1px solid #333;
-            background-color: #428bca;
+            border: 1px solid rgb(32, 30, 30);
+            background-color: #aaa;
+            box-shadow: 10px 10px 4px grey;
+            background-image: radial-gradient(#aaa,#428bca);
+  
         }
         
         .form .plan input:checked + label:after, form .payment-plan input:checked + label:after, .form .payment-type input:checked + label:after{
@@ -122,6 +127,7 @@
             position: absolute;
             top: -10px;
             right: -10px;
+            
         }
         
         .submit{
@@ -142,6 +148,11 @@
             cursor: pointer;
             transform: rotateX(360deg);
         }
+
+
+            @import url('https://fonts.googleapis.com/css?family=Fira+Sans:400');
+
+
     </style>
   </head>
 
@@ -170,26 +181,22 @@
         
             {% endfor %}
          {% endif %}
-            <label for="email">Operating System </label>
+            <label for="email"><strong>Operating System</strong> </label>
             <div class="form cf">
                    
                 <section class="plan cf">
                    
                   {% for key, SERVER in SERVER_OS_DISTRIBUTION.items %}
-
                     <input type="radio" name="os" id="sr{{key}}" value="{{key}}"><label class="free-label four col" for="sr{{key}}">
+                      <img src="/static/images/111.png" style="border-radius:50; width: 30%; height: 50%;">
                         {{SERVER.0}} {{SERVER.1}}
                     </label>
                
                 {% endfor %}
                 </section>
-                
-                
-               
-                
-                            </div>
+                    </div>
 
-                    <label for="email">Choose Stack </label>
+                    <label for="email"><strong> Choose Stack</strong> </label>
 
                      
 
