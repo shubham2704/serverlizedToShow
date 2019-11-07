@@ -45,23 +45,23 @@ Step 3
 
 # Technologies Used-
 
-Django 2.2 Framework
-Python 3.7
-Bootstrap Framework
-CSS3
-jQuery
-Javascript
-HTML5 
+1. Django 2.2 Framework
+2. Python 3.7
+3. Bootstrap Framework
+4. CSS3
+5. jQuery
+6. Javascript
+7. HTML5 
 
 
 
 
 # Third Party Components-
 
-Paramiko Library
-TLD Extract
-Celery
-Channels
+1. Paramiko Library
+2. TLD Extract
+3. Celery
+4. Channels
 etc.
 
 
@@ -93,8 +93,8 @@ Internet connection is required for overall system to function.
 
 # Resources Required-
 
-Apache WSGI Server as Web Server
-MySQL server
+1. Apache WSGI Server as Web Server
+2. MySQL server
 
 
 
