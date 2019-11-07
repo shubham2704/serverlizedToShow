@@ -147,25 +147,6 @@ def CreateFTPAccount(insert_id = 0):
         
         response = []
                         
-        for lin in stdderr:
-            response.append(str(lin))
-
-        server_output.objects.create(
-            server = get_server,
-            user = get_server.user_id,
-            PackageId = 6,
-            command = "Create FTP Account - " + inse_id.username,
-            output = json.dumps(response)
-        )
-        sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Created" , 'FTP account is succesfully created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-        inse_id.status = "Configured"
-        inse_id.save()
-
-    except Exception as e:
-        print(e)
-        traceback.print_exc(limit=1, file=sys.stdout)
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'FTP account is not created on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
-        inse_id.delete()
 
 
 
@@ -194,16 +175,7 @@ def DeleteFTPAccount(insert_id = 0):
         
         response = []
                         
-        for lin in stdderr:
-            response.append(str(lin))
-
-        server_output.objects.create(
-            server = get_server,
-            user = get_server.user_id,
-            PackageId = 6,
-            command = "Delete FTP Account - " + inse_id.username,
-            output = json.dumps(response)
-        )
+        
         sendNotification(get_server.user_id.id, 'toast', 'success', "FTP Account Deleted" , 'FTP account is succesfully deleted on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.delete()
 
@@ -228,23 +200,7 @@ def ConfigLetsEncrypt(insert_id = 0):
         client.load_system_host_keys()
         client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
         
-        if domain_get.subdomain != '':
-            a = domain_get.subdomain + "." + domain_get.domain_name
-        else:
-            a = domain_get.domain_name
-
-        conn = requests.get("http://"+a)
-        print(conn.status_code)
-        conn = 200
-        if conn == 200:
-
-
-            GetConfigCommand = "certbot --webroot-path /var/www/"+ domain_get.folder +" --authenticator webroot --installer apache --expand --non-interactive --agree-tos --email="+ inse_id.user.email +" --domains "+ a
-            
-            print(GetConfigCommand)
-            stdidn,stddout,stdderr=client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " " + GetConfigCommand)
-            print ("pwd: ", stddout.readlines())
-            response = []
+     
                             
             for lin in stdderr:
                 response.append(str(lin))
@@ -382,13 +338,7 @@ def MySQLDatabaseCreate(insert_id = 0):
             a = "localhost"
         
 
-        cmd = " create " + mysql_database_det.mysql_user.name + " " + mysql_database_det.mysql_user.password + " " + a + " " + mysql_database_det.database_name
-        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        
-        sendNotification(mysql_database_det.user.id, 'toast', 'success', 'MySQL Database Created', ''+ mysql_database_det.database_name +' is succesfully created on ' + mysql_database_det.server.server_name + '  (' + mysql_database_det.server.server_ip + ').')
-        mysql_database_det.status = "Configured"
-        mysql_database_det.save()
+       
         
     
     except Exception as e:
@@ -419,18 +369,7 @@ def MySQLUserDelete(insert_id = 0):
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
         
-        if mysql_user_det.remote == True :
-            a = mysql_user_det.server.server_ip
-        else:
-            a = "localhost"
-        
-
-        cmd = " delete " + mysql_user_det.name + " " + mysql_user_det.password + " " + a
-        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        
-        sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Deleted', ''+ mysql_user_det.name +' is Succesfully Deleted on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
-        mysql_user_det.delete()
+      
         
     
     except Exception as e:
@@ -461,20 +400,7 @@ def MySQLUserAdd(insert_id = 0):
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
         
-        if mysql_user_det.remote == True :
-            a = mysql_user_det.server.server_ip
-        else:
-            a = "localhost"
-        
-
-        cmd = " create " + mysql_user_det.name + " " + mysql_user_det.password + " " + a
-        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        mysql_user_det.status = "Configured"
-        mysql_user_det.save()
-        sendNotification(mysql_user_det.user.id, 'toast', 'success', 'MySQL User Created', ''+ mysql_user_det.name +' is Succesfully Created on ' + mysql_user_det.server.server_name + '  (' + mysql_user_det.server.server_ip + '), Please contact use for asistance.')
-         
-        
+       
     
     except Exception as e:
          if mysql_user_det.user.id is not None:
@@ -514,27 +440,7 @@ def DeleteLampDomain(insert_id = 0):
         
         sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
         client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-        if domain_get.subdomain != '':
-            a = domain_get.subdomain + "." + domain_get.domain_name
-            cmd = " delete " + a + " " + domain_get.folder
-        else:
-            a = domain_get.domain_name
-            cmd = " delete " + domain_get.domain_name + " " + domain_get.folder
-
-        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-            
-        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + cmd)
-        print ("stderr: ", stdderr.readlines())
-        #client.exec_command( SERVER_OS_DISTRIBUTION[domain_get.server.distribution_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
-
-        domain_get.delete()
-                        
-           
-        client.close()
-        sftp.close()
-        sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Deleted', '<b> ' + a +'</b> is succesfully deleted in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
-        
-        return "Installed"
+       
 
         
     except Exception as e:
@@ -571,38 +477,7 @@ def InstallServerPackage(server_id = 0, package_id = 0):
             sftp = paramiko.SFTPClient.from_transport(t)
 
             for get_cmd in package_details['INSTALLATION_BASH_SCRIPT'][getserver.distribution_id]:
-                if get_cmd[0] == "SCRIPT":
-                        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', get_cmd[1])
-                        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
-                        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        print(" cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-                        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-                        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        #client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
-                        #print ("stderr: ", stdderr.readlines())
-                        #print ("pwd: ", stddout.readlines())
-                        #print ("INSTALLED : " +  ntpath.basename(file_upload))
-                        
-                        get_installed_pkg_lst.append(package_id)
-                        getserver.JSON_PKG_LST = json.dumps(get_installed_pkg_lst)
-                        getserver.save()
-
-                        response = []
-                        
-                        for lin in stdderr:
-                            response.append(str(lin))
-
-                        server_output.objects.create(
-                            server = getserver,
-                            user = getserver.user_id,
-                            PackageId = package_id,
-                            command = "Install - " + PACKAGES[package_id]['NAME'],
-                            output = json.dumps(response)
-                        )
-
-                        sendNotification(getserver.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[package_id]['NAME'] +'</b> is succesfully installed on ' + getserver.server_name + '  (' + getserver.server_ip + ').')
-
-
+               
 
     except Exception as e:
         print(e)
@@ -651,12 +526,7 @@ def ConfigureLampDomain(insert_id = 0):
         domain_get.save()
                         
            
-        client.close()
-        sftp.close()
-        sendNotification(domain_get.user.id, 'toast', 'success', 'Domain Configured', '<b> ' + a +'</b> is succesfully installed in ' + domain_get.server.server_name + '  (' + domain_get.server.server_ip + ').')
-        
-        return "Installed"
-
+     
         
     except Exception as e:
          traceback.print_exc(limit=1, file=sys.stdout)
@@ -689,74 +559,7 @@ def installStack(insert_id = 0):
         #print(stderr.readlines)
         
         
-        for pkg_id in PKG_LST:
-            Package = PACKAGES[pkg_id]['INSTALLATION_BASH_SCRIPT']
-            sel_OS = Package[os_id]
-            for get_cmd in sel_OS:
-                    
-                    #sendNotification(get_server.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+STACK_DIST[get_server.stack_id]['NAME'] +'</b> is succesfully installed in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-                    
-
-                    if get_cmd[0] == "SCRIPT":
-                        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', get_cmd[1])
-                        sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
-                        print(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        print(" cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-                        sendNotification(get_server.user_id.id, 'toast', 'success', 'Started Installing', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is started installing on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-                        client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-                        stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload))
-                        #client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /etc/serverlized/" + ntpath.basename(file_upload))
-                        print ("stderr: ", stdderr.readlines())
-                        print ("pwd: ", stddout.readlines())
-                        print ("INSTALLED : " +  ntpath.basename(file_upload))
-
-                        Pkg_inst_data.objects.create(
-                            server = get_server,
-                            user = get_server.user_id, 
-                            ViewPKGOption = PACKAGES[pkg_id]['SERVICE_VIEW'], 
-                            PackageId = pkg_id,
-                            PackageName = PACKAGES[pkg_id]['NAME'],
-                            PackageStatus = "RUNNING"
-                        )
-                        response = []
-                            
-                        for lin in stdderr:
-                            response.append(str(lin))
-
-                        server_output.objects.create(
-                            server = get_server,
-                            user = get_server.user_id,
-                            PackageId = 6,
-                            command = "Install Stack Package - " + PACKAGES[pkg_id]['NAME'],
-                            output = json.dumps(response)
-                        )
-
-                        sendNotification(get_server.user_id.id, 'toast', 'success', 'Package Installed', '<b>'+ PACKAGES[pkg_id]['NAME'] +'</b> is succesfully installed on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-
-                        
-
-                    if get_cmd[0] == "COMMAND":
-                        client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + get_cmd[1])
-                        print ("COMMAND : " +  get_cmd[1])
-
-                    if get_cmd[0] == "FUNCTION":
-                        if get_cmd[1] == "welcomepage":
-                            client.exec_command( SERVER_OS_DISTRIBUTION[os_id][2] + " rm /var/www/html/index.html")
-                            file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', 'welcome.html')
-                            #print(file_upload)
-                            sftp.put(file_upload, "/var/www/html/index.html")
-
-        get_server.server_status = "Active"
-        get_server.running_status = "Running"
-        get_server.save()
-                        
-           
-        client.close()
-        sftp.close()
-        sendNotification(get_server.user_id.id, 'toast', 'success', 'Stack Installed', '<b>'+ STACK_DIST[get_server.stack_id]['NAME'] +'</b> is succesfully installed in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-        
-        return "Installed"
-
+       
         
     except Exception as e:
         if get_server.user_id.id is not None:
@@ -843,107 +646,7 @@ def DeleteLetsEncrypt(insert_id = 0):
         #conn = requests.get("https://"+a)
         #print(conn.status_code)
         conn = 200
-        if conn == 200:
-
-            GetPKG = PACKAGES[6]['CONTROL_PANEL']['Lets Encrypt']['Delete Certificate']['COMMAND'][get_server.distribution_id][1]
-            file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'bash_script', GetPKG)
-            sftp.put(file_upload, "/etc/serverlized/" + ntpath.basename(file_upload))
-            client.exec_command("cd  /etc/serverlized/; chmod +x " + ntpath.basename(file_upload))
-            stdidn,stddout,stdderr=client.exec_command(" cd  /etc/serverlized/; ./" + ntpath.basename(file_upload) + " " + a)
-            print ("pwd: ", stddout.readlines())
-            response = []
-                            
-            for lin in stdderr:
-                response.append(str(lin))
-
-            server_output.objects.create(
-                server = get_server,
-                user = get_server.user_id,
-                PackageId = 6,
-                command = "Delete Lets Encrypt - " + a,
-                output = json.dumps(response)
-            )
-            sendNotification(get_server.user_id.id, 'toast', 'success', "SSL Deleted" , 'Lets encrypt is succesfully Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-            #inse_id.status = "Configured"
-            inse_id.delete()
-
-      except Exception as e:
-        print(e)
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Lets encrypt is not Deleted for '+ a +' on ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
-        
-
-
-
-
-@task(name="Configure HAProxy Web")
-
-def ConfigHAProxyWeb(insert_id):
-    try:
-        inse_id = HAPoxyModel.objects.get(id = insert_id)
-        get_server = inse_id.server
-        os_id = get_server.distribution_id
-        ROOT_COMMAND = SERVER_OS_DISTRIBUTION[os_id][2]
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.load_system_host_keys()
-        client.connect(get_server.server_ip, username=get_server.superuser, password=get_server.password)
-        t = paramiko.Transport(get_server.server_ip, 22)
-        t.connect(username=get_server.superuser,password=get_server.password)
-        sftp = paramiko.SFTPClient.from_transport(t)
-        print(""+ ROOT_COMMAND +" rm /etc/haproxy/haproxy.cfg")
-        stdidn,stddout,stdderr=client.exec_command(""+ ROOT_COMMAND +" rm /etc/haproxy/haproxy.cfg")
-        filename = HAProxyBuilder(inse_id.id)
-        file_upload =  os.path.join(PROJECT_PATH,'Backend','BackendController', 'write_files', filename)
-       
-        sftp.put(file_upload, "/etc/haproxy/haproxy.cfg")
-        print(""+ ROOT_COMMAND +" service haproxy restart")
-        stdidn,stddout,stdderr=client.exec_command(""+ ROOT_COMMAND +" service haproxy restart")
-        
-        response = []
-                        
-        for lin in stdderr:
-            response.append(str(lin))
-
-        server_output.objects.create(
-            server = get_server,
-            user = get_server.user_id,
-            PackageId = 6,
-            command = "Config HAProxy Env - " + inse_id.label,
-            output = json.dumps(response)
-        )
-        sendNotification(get_server.user_id.id, 'toast', 'success', "HaProxy Configured" , 'HAProxy is succesfully Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-        inse_id.status = "Configured"
-        inse_id.save()
-
-    except Exception as e:
-        print(e)
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'HAProxy is not Configured in ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
-        inse_id.delete()
-
-@task(name="Configure HAProxy Domains")
-def ConfigHAProxyDomain(insert_id = 0):
-    try:
-        inse_id = HAProxy_Domains.objects.get(id = insert_id)
-        get_server = inse_id.server
-        json_ld = json.loads(inse_id.domain_insert_withftp_dict)
-        
-        for key, send_async_request in json_ld.items():
-            
-            print(json_ld)
-
-            ConfigureLampDomain(send_async_request['domain'])
-            CreateFTPAccount(send_async_request['ftp'])
-
-
-        sendNotification(get_server.user_id.id, 'toast', 'success', "Domains Replicated" , 'Domains is Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')
-        inse_id.status = "Configured"
-        inse_id.save()
-
-    except Exception as e:
-        print(e)
-        traceback.print_exc(limit=1, file=sys.stdout)
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
-        #inse_id.delete()
+     
 
 
 @task(name="Replicate Files")
