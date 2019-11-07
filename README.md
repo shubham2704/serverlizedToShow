@@ -117,6 +117,10 @@ Following are the conclusion of the Project (Serverlized)-
 
 # Note
 
-Many Files like install stack.py, server_config.py etc have been altered beacuse can't show the source code of these sensitive files 
+1. Many Files like install stack.py, server_config.py etc have been altered beacuse can't show the source code of these sensitive files 
 if you want to check serverlized you can visit  http://serverlized.com/signup
+
+2.  serverlized is still in it's development phase and many features will be added later on like database clustering,SMTP/POP3/IMAP Server, DNS Server, Remote Database,VPN Server,Package Manager, other os distros,  etc.
+
+ 
 
