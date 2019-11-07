@@ -41,15 +41,19 @@ Step 3
 
 # Technical Details
 
-Technologies Used-
 
-# Django 2.2 Framework
-# Python 3.7
-# Bootstrap Framework
-# CSS3
-# jQuery
-# Javascript
-# HTML5 
+
+# Technologies Used-
+
+Django 2.2 Framework
+Python 3.7
+Bootstrap Framework
+CSS3
+jQuery
+Javascript
+HTML5 
+
+
 
 
 # Third Party Components-
@@ -59,6 +63,8 @@ TLD Extract
 Celery
 Channels
 etc.
+
+
 
 
 # Functionality-
@@ -71,22 +77,32 @@ etc.
 6. After few minutes user will get successful message of the installed stacks.
 
 
+
+
 # Deployment Environment
 
 Apache Web Server , MySQL Database,WSGI Module, ASGI Module, MySQL Server
 
+
+
 # Network Requirement 
 
 Internet connection is required for overall system to function.
+
+
 
 # Resources Required-
 
 Apache WSGI Server as Web Server
 MySQL server
 
+
+
 # Designing Approach
 
 	MVT - (Model View  Template)/MVC
+
+
 
 
 # Conclusion
