@@ -702,12 +702,12 @@ def ReplicateHAProxyFiles(insert_id = 0):
             #CreateFTPAccount(send_async_request['ftp'])
 
 
-        sendNotification(get_server.user_id.id, 'toast', 'success', "File Replicated" , 'File is Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')
+        sendNotification(get_server.user_id.id, 'toast', 'success', "File Replicated" , 'File is Replicated to all node servers of main ' + get_server.server_name + '  (' + get_server.server_ip + ').')
         inse_id.status = "Configured"
         inse_id.save()
 
     except Exception as e:
         print(e)
         traceback.print_exc(limit=1, file=sys.stdout)
-        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of master ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
+        sendNotification(get_server.user_id.id, 'toast', 'error', ' Error Ocurred', 'Domains is not Replicated to all node servers of main ' + get_server.server_name + '  (' + get_server.server_ip + ').')    
         #inse_id.delete()
